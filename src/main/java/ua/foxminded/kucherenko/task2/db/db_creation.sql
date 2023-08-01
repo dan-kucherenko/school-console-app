@@ -1,0 +1,4 @@
+CREATE DATABASE school_db;
+CREATE USER school_admin WITH ENCRYPTED PASSWORD 'school_admin';
+GRANT ALL PRIVILEGES ON DATABASE school_db TO school_admin;
+CREATE SCHEMA school;
