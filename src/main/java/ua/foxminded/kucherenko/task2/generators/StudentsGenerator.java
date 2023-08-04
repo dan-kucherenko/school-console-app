@@ -37,7 +37,7 @@ public class StudentsGenerator implements IGenerator {
             for (int studentId = 1; studentId <= NUMBER_OF_STUDENTS; studentId++) {
                 int groupId = random.nextInt(11);
 
-                while (groupId != 0 && groupCounts.getOrDefault(groupId, 0) >= 30
+                while (groupId != 0 && groupCounts.getOrDefault(groupId, 0) == 30
                         || assignedStudents.contains(studentId)) {
                     groupId = random.nextInt(11);
                 }
