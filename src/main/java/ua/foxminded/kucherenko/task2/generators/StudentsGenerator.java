@@ -1,10 +1,7 @@
 package ua.foxminded.kucherenko.task2.generators;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Random;
+import java.sql.*;
+import java.util.*;
 
 public class StudentsGenerator implements IGenerator {
     private static final int NUMBER_OF_STUDENTS = 200;
@@ -34,12 +31,27 @@ public class StudentsGenerator implements IGenerator {
             connection = DriverManager.getConnection(URL, PROPERTIES);
             statement = connection.prepareStatement(QUERY);
 
-            for (int i = 0; i < NUMBER_OF_STUDENTS; i++) {
-                int groupId = random.nextInt(10) + 1;
+            Set<Integer> assignedStudents = new HashSet<>();
+            Map<Integer, Integer> groupCounts = new HashMap<>();
+
+            for (int studentId = 1; studentId <= NUMBER_OF_STUDENTS; studentId++) {
+                int groupId = random.nextInt(11);
+
+                while (groupId != 0 && groupCounts.getOrDefault(groupId, 0) >= 30
+                        || assignedStudents.contains(studentId)) {
+                    groupId = random.nextInt(11);
+                }
+
+                if (groupId != 0 && random.nextBoolean()) {
+                    groupCounts.put(groupId, groupCounts.getOrDefault(groupId, 0) + 1);
+                    assignedStudents.add(studentId);
+                    statement.setInt(1, groupId);
+                } else {
+                    statement.setNull(1, Types.INTEGER);
+                }
                 String firstName = FIRST_NAMES[random.nextInt(FIRST_NAMES.length)];
                 String lastName = LAST_NAMES[random.nextInt(LAST_NAMES.length)];
 
-                statement.setInt(1, groupId);
                 statement.setString(2, firstName);
                 statement.setString(3, lastName);
                 statement.executeUpdate();
@@ -50,6 +62,8 @@ public class StudentsGenerator implements IGenerator {
             try {
                 if (statement != null) {
                     statement.close();
+                }
+                if (connection != null) {
                     connection.close();
                 }
             } catch (SQLException e) {
