@@ -18,7 +18,7 @@ public class DeleteStudent implements IVoidQuery {
         System.out.print("Enter the studentID to delete: ");
         studentId = sc.nextInt();
         StudentExistence studentExistence = new StudentExistence(studentId);
-        if (studentId < 0 || !studentExistence.executeQueryWithRes()) {
+        if (studentId < 0 || Boolean.TRUE.equals(!studentExistence.executeQueryWithRes())) {
             throw new IllegalArgumentException("Student ID doesn't exist");
         }
     }

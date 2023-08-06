@@ -21,7 +21,7 @@ public class RemoveFromCourse implements IVoidQuery {
         StudentExistence studentExistence = new StudentExistence(studentId);
         System.out.println("Enter the courseId to delete: ");
         courseId = sc.nextInt();
-        if (Boolean.TRUE.equals(studentId < 0 || !studentExistence.executeQueryWithRes() && courseId < 0) || courseId > 10) {
+        if (Boolean.TRUE.equals(studentId < 0 || !studentExistence.executeQueryWithRes() || courseId < 0) || courseId > 10) {
             throw new IllegalArgumentException("Error in input data");
         }
     }
