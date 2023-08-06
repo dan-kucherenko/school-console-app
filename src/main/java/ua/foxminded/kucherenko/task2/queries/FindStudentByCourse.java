@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class FindStudentByCourse implements IResultingQuery<List<Student>> {
+    private String courseName;
     private static final String FIND_STUDENT_BY_COURSE = """
             SELECT students.student_id, group_id, first_name, last_name
             FROM school.student_courses
@@ -16,6 +17,14 @@ public class FindStudentByCourse implements IResultingQuery<List<Student>> {
             WHERE courses.course_name = ?;
             """;
 
+    private void passData() {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the name of the course for students you want to find: ");
+        courseName = sc.next();
+        if (courseName.isBlank()) {
+            throw new IllegalArgumentException("Course name cant be null");
+        }
+    }
 
     @Override
     public List<Student> executeQueryWithRes() {
@@ -24,13 +33,7 @@ public class FindStudentByCourse implements IResultingQuery<List<Student>> {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
 
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter the name of the course for students you want to find: ");
-        String courseName = sc.next();
-        if (courseName.isBlank()) {
-            throw new IllegalArgumentException("Course name cant be null");
-        }
-
+        passData();
         try {
             connection = DriverManager.getConnection(URL, PROPERTIES);
             statement = connection.prepareStatement(FIND_STUDENT_BY_COURSE);

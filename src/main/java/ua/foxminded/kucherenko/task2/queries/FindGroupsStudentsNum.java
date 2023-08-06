@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class FindGroupsStudentsNum implements IResultingQuery<List<Group>> {
+    private int studentsQuantity;
     private static final String FIND_GROUPS_BY_STUDENTS_NUMBER = """
             SELECT students.group_id, group_name, COUNT(*) AS num_of_students
             FROM school.students
@@ -17,6 +18,15 @@ public class FindGroupsStudentsNum implements IResultingQuery<List<Group>> {
             HAVING COUNT(*) <= ?
             """;
 
+    private void passData() {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the maximum number of students in group you want to find: ");
+        studentsQuantity = sc.nextInt();
+        if (studentsQuantity < 0) {
+            throw new IllegalArgumentException("Number of students can't be less than 0");
+        }
+    }
+
     @Override
     public List<Group> executeQueryWithRes() {
         List<Group> res = null;
@@ -24,13 +34,7 @@ public class FindGroupsStudentsNum implements IResultingQuery<List<Group>> {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter the maximum number of students in group you want to find: ");
-        int studentsQuantity = sc.nextInt();
-        if (studentsQuantity < 0) {
-            throw new IllegalArgumentException("Number of students can't be less than 0");
-        }
-
+        passData();
         try {
             connection = DriverManager.getConnection(URL, PROPERTIES);
             statement = connection.prepareStatement(FIND_GROUPS_BY_STUDENTS_NUMBER);

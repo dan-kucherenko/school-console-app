@@ -7,24 +7,31 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class AddStudentToCourse implements IVoidQuery {
+    private int studentId;
+    private int courseId;
     private static final String ADD_TO_COURSE = """
             INSERT INTO school.student_courses
             VALUES (?,?);
             """;
 
+    private void passData() {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the studentID: ");
+        studentId = sc.nextInt();
+        StudentExistence studentExistence = new StudentExistence(studentId);
+        System.out.print("Enter the courseID: ");
+        courseId = sc.nextInt();
+        if (Boolean.TRUE.equals(studentId < 0 || !studentExistence.executeQueryWithRes() || courseId < 0) || courseId > 10) {
+            throw new IllegalArgumentException("Error in input data");
+        }
+    }
+
     @Override
     public void executeOwnQuery() {
         Connection connection = null;
         PreparedStatement statement = null;
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter the studentID: ");
-        int studentId = sc.nextInt();
-        StudentExistence studentExistence = new StudentExistence(studentId);
-        System.out.print("Enter the courseID: ");
-        int courseId = sc.nextInt();
-        if (Boolean.TRUE.equals(studentId < 0 || !studentExistence.executeQueryWithRes() || courseId < 0) || courseId > 10 ) {
-            throw new IllegalArgumentException("Error in input data");
-        }
+
+        passData();
         try {
             connection = DriverManager.getConnection(URL, PROPERTIES);
             statement = connection.prepareStatement(ADD_TO_COURSE);
