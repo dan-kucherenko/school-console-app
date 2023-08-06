@@ -30,8 +30,12 @@ public class AddStudentToCourse implements IVoidQuery {
     public void executeOwnQuery() {
         Connection connection = null;
         PreparedStatement statement = null;
-
         passData();
+        StudentCourseExistence studentCourseExistence = new StudentCourseExistence(studentId, courseId);
+        if(studentCourseExistence.executeQueryWithRes()){
+            throw new IllegalArgumentException("This record already exists");
+        }
+
         try {
             connection = DriverManager.getConnection(URL, PROPERTIES);
             statement = connection.prepareStatement(ADD_TO_COURSE);
