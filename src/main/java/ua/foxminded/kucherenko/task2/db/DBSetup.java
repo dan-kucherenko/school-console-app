@@ -1,5 +1,7 @@
 package ua.foxminded.kucherenko.task2.db;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,12 +9,13 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DBSetup {
-    private static final String BASIC_URL = "jdbc:postgresql://localhost:5432/";
-    private static final String DATABASE_URL = "jdbc:postgresql://localhost:5432/school_db";
-    private static final String USER_ADMIN = "daniil";
-    private static final String PASSWORD_ADMIN = "daniil";
-    private static final String SCHOOL_USER = "school_admin";
-    private static final String SCHOOL_PASSWORD = "school_admin";
+    private static final Dotenv DOTENV_READER = Dotenv.load();
+    private static final String BASIC_URL = DOTENV_READER.get("BASIC_URL");
+    private static final String DATABASE_URL = DOTENV_READER.get("DATABASE_URL");
+    private static final String USER_ADMIN = DOTENV_READER.get("USER_ADMIN");
+    private static final String PASSWORD_ADMIN = DOTENV_READER.get("PASSWORD_ADMIN");
+    private static final String SCHOOL_USER = DOTENV_READER.get("SCHOOL_USER");
+    private static final String SCHOOL_PASSWORD = DOTENV_READER.get("SCHOOL_PASSWORD");
     private static Properties PROPERTIES = getDefaultProperties();
 
     private static final String DB_CREATION_QUERY = """
