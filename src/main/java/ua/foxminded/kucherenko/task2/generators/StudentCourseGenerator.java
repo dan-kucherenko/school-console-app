@@ -11,13 +11,8 @@ public class StudentCourseGenerator implements IGenerator {
     private static final int MAX_STUDENT_COURSES_NUM = 3;
     private static final int MAX_COURSE_ID = 10;
     private static final int NUMBER_OF_STUDENTS = 200;
-    private static final String CREATE_STUDENT_COURSE = """
-            DROP TABLE IF EXISTS school.student_courses;
-            CREATE TABLE IF NOT EXISTS school.student_courses (
-            student_id INT REFERENCES school.students(student_id) ON DELETE CASCADE,
-            course_id INT REFERENCES school.courses(course_id),
-            PRIMARY KEY (student_id, course_id));
-            """;
+    private static final String CREATE_STUDENT_COURSE_FILEPATH = "src/main/resources/sql_queries/generators/create_student_course.sql";
+    private static final String CREATE_STUDENT_COURSE_QUERY= QueryParser.parseQuery(CREATE_STUDENT_COURSE_FILEPATH);
 
     private static final String INSERT_STUDENT_COURSE_FILEPATH = "src/main/resources/sql_queries/generators/insert_student_course.sql";
     private static final String INSERT_STUDENT_COURSE = QueryParser.parseQuery(INSERT_STUDENT_COURSE_FILEPATH);
@@ -25,7 +20,7 @@ public class StudentCourseGenerator implements IGenerator {
 
     public void createStudentCoursesTable() {
         try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
-             PreparedStatement statement = connection.prepareStatement(CREATE_STUDENT_COURSE)) {
+             PreparedStatement statement = connection.prepareStatement(CREATE_STUDENT_COURSE_QUERY)) {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
