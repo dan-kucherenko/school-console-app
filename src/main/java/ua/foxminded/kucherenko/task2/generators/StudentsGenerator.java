@@ -1,11 +1,19 @@
 package ua.foxminded.kucherenko.task2.generators;
 
+import ua.foxminded.kucherenko.task2.parser.QueryParser;
+
 import java.sql.*;
 import java.util.*;
 
 public class StudentsGenerator implements IGenerator {
     private static final int NUMBER_OF_STUDENTS = 200;
-    private static final String QUERY = "INSERT INTO school.students (group_id, first_name, last_name) VALUES (?, ?, ?)";
+    private static final int MAX_GROUP_CAPACITY = 30;
+    private static final int NO_GROUP_INDEX = 0;
+    private static final int GROUP_INDEX = 1;
+    private static final int FIRST_NAME_INDEX = 2;
+    private static final int LAST_NAME_INDEX = 3;
+    private static final String ADD_STUDENT_QUERY_FILEPATH = "src/main/resources/sql_queries/generators/insert_student.sql";
+    private static final String ADD_STUDENT_QUERY = QueryParser.parseQuery(ADD_STUDENT_QUERY_FILEPATH);
 
     private static final String[] FIRST_NAMES = {
             "John", "Emma", "Michael", "Sophia", "William",
@@ -23,13 +31,10 @@ public class StudentsGenerator implements IGenerator {
 
     @Override
     public void addToDb() {
-        Connection connection = null;
-        PreparedStatement statement = null;
         Random random = new Random();
 
-        try {
-            connection = DriverManager.getConnection(URL, PROPERTIES);
-            statement = connection.prepareStatement(QUERY);
+        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+             PreparedStatement statement = connection.prepareStatement(ADD_STUDENT_QUERY)) {
 
             Set<Integer> assignedStudents = new HashSet<>();
             Map<Integer, Integer> groupCounts = new HashMap<>();
@@ -37,38 +42,29 @@ public class StudentsGenerator implements IGenerator {
             for (int studentId = 1; studentId <= NUMBER_OF_STUDENTS; studentId++) {
                 int groupId = random.nextInt(11);
 
-                while (groupId != 0 && groupCounts.getOrDefault(groupId, 0) == 30
+                while (groupId != NO_GROUP_INDEX &&
+                        groupCounts.getOrDefault(groupId, 0) == MAX_GROUP_CAPACITY
                         || assignedStudents.contains(studentId)) {
                     groupId = random.nextInt(11);
                 }
 
-                if (groupId != 0 && random.nextBoolean()) {
+                boolean studentShouldBeAddedToGroup = random.nextBoolean();
+                if (groupId != NO_GROUP_INDEX && studentShouldBeAddedToGroup) {
                     groupCounts.put(groupId, groupCounts.getOrDefault(groupId, 0) + 1);
                     assignedStudents.add(studentId);
-                    statement.setInt(1, groupId);
+                    statement.setInt(GROUP_INDEX, groupId);
                 } else {
-                    statement.setNull(1, Types.INTEGER);
+                    statement.setNull(GROUP_INDEX, Types.INTEGER);
                 }
                 String firstName = FIRST_NAMES[random.nextInt(FIRST_NAMES.length)];
                 String lastName = LAST_NAMES[random.nextInt(LAST_NAMES.length)];
 
-                statement.setString(2, firstName);
-                statement.setString(3, lastName);
+                statement.setString(FIRST_NAME_INDEX, firstName);
+                statement.setString(LAST_NAME_INDEX, lastName);
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (statement != null) {
-                    statement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 }

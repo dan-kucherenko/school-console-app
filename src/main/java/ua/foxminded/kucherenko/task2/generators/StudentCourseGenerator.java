@@ -1,9 +1,15 @@
 package ua.foxminded.kucherenko.task2.generators;
 
+import ua.foxminded.kucherenko.task2.parser.QueryParser;
+
 import java.sql.*;
 import java.util.*;
 
 public class StudentCourseGenerator implements IGenerator {
+    private static final int STUDENT_ID_INDEX = 1;
+    private static final int COURSE_ID_INDEX = 2;
+    private static final int MAX_STUDENT_COURSES_NUM = 3;
+    private static final int MAX_COURSE_ID = 10;
     private static final int NUMBER_OF_STUDENTS = 200;
     private static final String CREATE_STUDENT_COURSE = """
             DROP TABLE IF EXISTS school.student_courses;
@@ -13,75 +19,44 @@ public class StudentCourseGenerator implements IGenerator {
             PRIMARY KEY (student_id, course_id));
             """;
 
-    private static final String INSERT_STUDENT_COURSE = "INSERT INTO school.student_courses (student_id, course_id) VALUES (?, ?)";
+    private static final String INSERT_STUDENT_COURSE_FILEPATH = "src/main/resources/sql_queries/generators/insert_student_course.sql";
+    private static final String INSERT_STUDENT_COURSE = QueryParser.parseQuery(INSERT_STUDENT_COURSE_FILEPATH);
 
 
     public void createStudentCoursesTable() {
-        Connection connection = null;
-        PreparedStatement statement = null;
-
-
-        try {
-            connection = DriverManager.getConnection(URL, PROPERTIES);
-            statement = connection.prepareStatement(CREATE_STUDENT_COURSE);
+        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+             PreparedStatement statement = connection.prepareStatement(CREATE_STUDENT_COURSE)) {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (statement != null) {
-                    statement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
     @Override
     public void addToDb() {
         createStudentCoursesTable();
-        Connection connection = null;
-        PreparedStatement studentCourseStatement = null;
         Random random = new Random();
-
-        try {
-            connection = DriverManager.getConnection(URL, PROPERTIES);
-            studentCourseStatement = connection.prepareStatement(INSERT_STUDENT_COURSE);
+        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+             PreparedStatement statement = connection.prepareStatement(INSERT_STUDENT_COURSE)) {
             Map<Integer, Set<Integer>> studentCourseMap = new HashMap<>();
-
             for (int studentId = 1; studentId <= NUMBER_OF_STUDENTS; studentId++) {
                 Set<Integer> studentCourses = studentCourseMap.computeIfAbsent(studentId, k -> new HashSet<>());
-                int numberOfCourses = random.nextInt(3) + 1;
-                numberOfCourses = Math.min(numberOfCourses, 10 - studentCourses.size());
+                int numberOfCourses = random.nextInt(MAX_STUDENT_COURSES_NUM) + 1;
+                numberOfCourses = Math.min(numberOfCourses, MAX_COURSE_ID - studentCourses.size());
 
                 while (studentCourses.size() < numberOfCourses) {
-                    int courseId = random.nextInt(10) + 1;
+                    int courseId = random.nextInt(MAX_COURSE_ID) + 1;
                     studentCourses.add(courseId);
                 }
                 studentCourseMap.put(studentId, studentCourses);
                 for (int courseId : studentCourses) {
-                    studentCourseStatement.setInt(1, studentId);
-                    studentCourseStatement.setInt(2, courseId);
-                    studentCourseStatement.executeUpdate();
+                    statement.setInt(STUDENT_ID_INDEX, studentId);
+                    statement.setInt(COURSE_ID_INDEX, courseId);
+                    statement.executeUpdate();
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (studentCourseStatement != null) {
-                    studentCourseStatement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
