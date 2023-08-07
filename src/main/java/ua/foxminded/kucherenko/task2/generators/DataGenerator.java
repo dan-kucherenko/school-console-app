@@ -1,16 +1,19 @@
 package ua.foxminded.kucherenko.task2.generators;
 
+import java.util.List;
+
 public class DataGenerator {
     public void generateData() {
-        IGenerator generator;
-        generator = new CourseNameGenerator();
-        generator.addToDb();
-        generator = new GroupsNameGenerator();
-        generator.addToDb();
-        generator = new StudentsGenerator();
-        generator.addToDb();
-        generator = new StudentCourseGenerator();
-        generator.addToDb();
+        List<IGenerator> generators = List.of(
+                new CourseNameGenerator(),
+                new GroupsNameGenerator(),
+                new StudentsGenerator(),
+                new StudentCourseGenerator()
+        );
+
+        for (IGenerator generator : generators) {
+            generator.addToDb();
+        }
         System.out.println("Initialisation was made");
     }
 }
