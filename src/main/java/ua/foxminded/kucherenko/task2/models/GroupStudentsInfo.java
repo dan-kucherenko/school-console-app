@@ -1,11 +1,11 @@
 package ua.foxminded.kucherenko.task2.models;
 
-public class Group {
+public class GroupStudentsInfo {
     private final int id;
     private final String name;
     private final int studentsQuantity;
 
-    public Group(int id, String name, int studentQuantity) {
+    public GroupStudentsInfo(int id, String name, int studentQuantity) {
         this.id = id;
         this.name = name;
         this.studentsQuantity = studentQuantity;
