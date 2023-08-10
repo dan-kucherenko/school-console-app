@@ -29,34 +29,16 @@ public class FindStudentByCourse implements IResultingQuery<List<Student>> {
     @Override
     public List<Student> executeQueryWithRes() {
         List<Student> res = null;
-        Connection connection = null;
         ResultSet resultSet = null;
-        PreparedStatement statement = null;
 
         passData();
-        try {
-            connection = DriverManager.getConnection(URL, PROPERTIES);
-            statement = connection.prepareStatement(FIND_STUDENT_BY_COURSE);
-
+        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+             PreparedStatement statement = connection.prepareStatement(FIND_STUDENT_BY_COURSE)) {
             statement.setString(1, courseName);
             resultSet = statement.executeQuery();
             res = parseResultSet(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (statement != null) {
-                    statement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return res;
     }

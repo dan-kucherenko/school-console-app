@@ -17,38 +17,22 @@ public class DeleteStudent implements IVoidQuery {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter the studentID to delete: ");
         studentId = sc.nextInt();
-        StudentExistence studentExistence = new StudentExistence(studentId);
+        StudentExistQuery studentExistence = new StudentExistQuery(studentId);
         if (studentId < 0 || Boolean.TRUE.equals(!studentExistence.executeQueryWithRes())) {
             throw new IllegalArgumentException("Student ID doesn't exist");
         }
     }
 
     @Override
-    public void executeOwnQuery() {
-        Connection connection = null;
-        PreparedStatement statement = null;
-
+    public void executeQuery() {
         passData();
-        try {
-            connection = DriverManager.getConnection(URL, PROPERTIES);
-            statement = connection.prepareStatement(DELETE_STUDENT_BY_ID);
-
+        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+             PreparedStatement statement = connection.prepareStatement(DELETE_STUDENT_BY_ID)) {
             statement.setInt(1, studentId);
             statement.executeUpdate();
             System.out.println("Student with id " + studentId + " was successfully deleted");
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (statement != null) {
-                    statement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 }

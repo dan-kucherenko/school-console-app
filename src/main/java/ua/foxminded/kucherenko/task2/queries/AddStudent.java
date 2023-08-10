@@ -11,13 +11,17 @@ public class AddStudent implements IVoidQuery {
             INSERT INTO school.students (group_id, first_name, last_name)
             VALUES (?, ?, ?);
             """;
+    private static final String STUDENT_QUANTITY_QUERY = """
+            SELECT COUNT (*) AS num_of_students FROM school.students
+            WHERE group_id = ?;
+            """;
 
     private void passData() {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter the student groupID (0 if student isnt in group): ");
         groupId = sc.nextInt();
         if (groupId < 0 || groupId > 10 || groupIsFull(groupId)) {
-            throw new IllegalArgumentException("Error in input data");
+            throw new IllegalArgumentException("GroupID should be between 1 and 10 or group is full");
         }
         System.out.print("Enter the student first name: ");
         firstName = sc.next();
@@ -27,13 +31,9 @@ public class AddStudent implements IVoidQuery {
     }
 
     @Override
-    public void executeOwnQuery() {
-        Connection connection = null;
-        PreparedStatement statement = null;
-
-        try {
-            connection = DriverManager.getConnection(URL, PROPERTIES);
-            statement = connection.prepareStatement(ADD_STUDENT_QUERY);
+    public void executeQuery() {
+        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+             PreparedStatement statement = connection.prepareStatement(ADD_STUDENT_QUERY)) {
             passData();
             if (groupId == 0) {
                 statement.setNull(1, Types.INTEGER);
@@ -46,32 +46,14 @@ public class AddStudent implements IVoidQuery {
             System.out.println("User " + firstName + ' ' + lastName + " from group " + groupId + " was successfully added");
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (statement != null) {
-                    statement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
     private boolean groupIsFull(int groupId) {
-        Connection connection = null;
-        PreparedStatement statement = null;
         ResultSet resultSet = null;
         int groupQuantity = 0;
-        final String studentQuantityQuery = """
-                SELECT COUNT (*) AS num_of_students FROM school.students
-                WHERE group_id = ?;
-                """;
-        try {
-            connection = DriverManager.getConnection(URL, PROPERTIES);
-            statement = connection.prepareStatement(studentQuantityQuery);
+        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+             PreparedStatement statement = connection.prepareStatement(STUDENT_QUANTITY_QUERY)) {
 
             statement.setInt(1, groupId);
             resultSet = statement.executeQuery();
@@ -79,17 +61,6 @@ public class AddStudent implements IVoidQuery {
             groupQuantity = resultSet.getInt("num_of_students");
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (statement != null) {
-                    statement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return groupQuantity >= 30;
     }

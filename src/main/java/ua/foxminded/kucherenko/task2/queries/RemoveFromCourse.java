@@ -18,7 +18,7 @@ public class RemoveFromCourse implements IVoidQuery {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter the studentId to delete: ");
         studentId = sc.nextInt();
-        StudentExistence studentExistence = new StudentExistence(studentId);
+        StudentExistQuery studentExistence = new StudentExistQuery(studentId);
         System.out.println("Enter the courseId to delete: ");
         courseId = sc.nextInt();
         if (Boolean.TRUE.equals(studentId < 0 || !studentExistence.executeQueryWithRes() || courseId < 0) || courseId > 10) {
@@ -27,30 +27,15 @@ public class RemoveFromCourse implements IVoidQuery {
     }
 
     @Override
-    public void executeOwnQuery() {
-        Connection connection = null;
-        PreparedStatement statement = null;
-
+    public void executeQuery() {
         passData();
-        try {
-            connection = DriverManager.getConnection(URL, PROPERTIES);
-            statement = connection.prepareStatement(REMOVE_STUDENT_FROM_COURSE);
+        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+             PreparedStatement statement = connection.prepareStatement(REMOVE_STUDENT_FROM_COURSE)) {
             statement.setInt(1, studentId);
             statement.setInt(2, courseId);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (statement != null) {
-                    statement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
