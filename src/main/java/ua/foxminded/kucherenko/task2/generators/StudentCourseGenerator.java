@@ -1,5 +1,6 @@
 package ua.foxminded.kucherenko.task2.generators;
 
+import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
 import java.sql.*;
@@ -19,7 +20,7 @@ public class StudentCourseGenerator implements IGenerator {
 
 
     public void createStudentCoursesTable() {
-        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+        try (Connection connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getProps());
              PreparedStatement statement = connection.prepareStatement(CREATE_STUDENT_COURSE_QUERY)) {
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -31,7 +32,7 @@ public class StudentCourseGenerator implements IGenerator {
     public void addToDb() {
         createStudentCoursesTable();
         Random random = new Random();
-        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+        try (Connection connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getProps());
              PreparedStatement statement = connection.prepareStatement(INSERT_STUDENT_COURSE)) {
             Map<Integer, Set<Integer>> studentCourseMap = new HashMap<>();
             for (int studentId = 1; studentId <= NUMBER_OF_STUDENTS; studentId++) {

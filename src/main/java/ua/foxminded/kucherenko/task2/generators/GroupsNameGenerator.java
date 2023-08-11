@@ -1,5 +1,6 @@
 package ua.foxminded.kucherenko.task2.generators;
 
+import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
 import java.sql.Connection;
@@ -18,7 +19,7 @@ public class GroupsNameGenerator implements IGenerator {
 
     @Override
     public void addToDb() {
-        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+        try (Connection connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getProps());
              PreparedStatement statement = connection.prepareStatement(INSERT_GROUP_QUERY)) {
             for (int i = 0; i < GROUPS_QUANTITY; i++) {
                 String groupName = generateGroupNames();

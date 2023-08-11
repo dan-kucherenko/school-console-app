@@ -1,6 +1,7 @@
 package ua.foxminded.kucherenko.task2.generators;
 
 
+import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
 import java.sql.Connection;
@@ -25,12 +26,13 @@ public class CourseNameGenerator implements IGenerator {
     private static final int COURSE_DESCRIPTION_INDEX = 2;
     private static final String ADD_COURSE_QUERY_FILEPATH = "src/main/resources/sql_queries/generators/insert_course.sql";
     private static final String ADD_COURSE_QUERY = QueryParser.parseQuery(ADD_COURSE_QUERY_FILEPATH);
+
     public CourseNameGenerator() {
     }
 
     @Override
     public void addToDb() {
-        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+        try (Connection connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getProps());
              PreparedStatement statement = connection.prepareStatement(ADD_COURSE_QUERY)) {
 
             for (Map.Entry<String, String> entry : COURSES.entrySet()) {

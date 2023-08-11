@@ -1,5 +1,6 @@
 package ua.foxminded.kucherenko.task2.generators;
 
+import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
 import java.sql.*;
@@ -33,7 +34,7 @@ public class StudentsGenerator implements IGenerator {
     public void addToDb() {
         Random random = new Random();
 
-        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+        try (Connection connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getProps());
              PreparedStatement statement = connection.prepareStatement(ADD_STUDENT_QUERY)) {
 
             Set<Integer> assignedStudents = new HashSet<>();
