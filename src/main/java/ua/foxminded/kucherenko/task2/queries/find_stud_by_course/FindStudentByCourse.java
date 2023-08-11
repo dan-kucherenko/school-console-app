@@ -1,40 +1,27 @@
-package ua.foxminded.kucherenko.task2.queries;
+package ua.foxminded.kucherenko.task2.queries.find_stud_by_course;
 
+import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.models.Student;
+import ua.foxminded.kucherenko.task2.parser.QueryParser;
+import ua.foxminded.kucherenko.task2.queries.IResultingQuery;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-public class FindStudentByCourse implements IResultingQuery<List<Student>> {
-    private String courseName;
-    private static final String FIND_STUDENT_BY_COURSE = """
-            SELECT students.student_id, group_id, first_name, last_name
-            FROM school.student_courses
-                     INNER JOIN school.students ON student_courses.student_id = students.student_id
-                     INNER JOIN school.courses ON student_courses.course_id = courses.course_id
-            WHERE courses.course_name = ?;
-            """;
+public class FindStudentByCourse implements IResultingQuery<List<Student>, FindStudentByCourseData> {
+    private static final String FIND_STUDENT_BY_COURSE_FILEPATH = "src/main/resources/sql_queries/business_queries/find_student_by_course.sql";
+    private static final String FIND_STUDENT_BY_COURSE = QueryParser.parseQuery(FIND_STUDENT_BY_COURSE_FILEPATH);
 
-    private void passData() {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter the name of the course for students you want to find: ");
-        courseName = sc.next();
-        if (courseName.isBlank()) {
-            throw new IllegalArgumentException("Course name cant be null");
-        }
-    }
 
     @Override
-    public List<Student> executeQueryWithRes() {
+    public List<Student> executeQueryWithRes(FindStudentByCourseData data) {
         List<Student> res = null;
         ResultSet resultSet = null;
 
-        passData();
-        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+        try (Connection connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getProps());
              PreparedStatement statement = connection.prepareStatement(FIND_STUDENT_BY_COURSE)) {
-            statement.setString(1, courseName);
+            statement.setString(1, data.getCourseName());
             resultSet = statement.executeQuery();
             res = parseResultSet(resultSet);
         } catch (SQLException e) {
