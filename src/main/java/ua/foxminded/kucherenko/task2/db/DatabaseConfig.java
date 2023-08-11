@@ -14,7 +14,7 @@ public class DatabaseConfig {
         Dotenv dotenv = Dotenv.load();
 
         url = dotenv.get("DATABASE_URL");
-        username = dotenv.get("SCHOOL_ADMIN");
+        username = dotenv.get("SCHOOL_USER");
         password = dotenv.get("SCHOOL_PASSWORD");
         props = new Properties();
         props.setProperty("user", username);
