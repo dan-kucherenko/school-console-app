@@ -2,10 +2,10 @@ package ua.foxminded.kucherenko.task2.queries;
 
 import java.sql.*;
 
-public class StudentExistQuery implements IResultingQuery<Boolean> {
+public class StudentExistByIdQuery implements IResultingQuery<Boolean> {
     private final int studentId;
 
-    public StudentExistQuery(int studentId) {
+    public StudentExistByIdQuery(int studentId) {
         this.studentId = studentId;
     }
 
