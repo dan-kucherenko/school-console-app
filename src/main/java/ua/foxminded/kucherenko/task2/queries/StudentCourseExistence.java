@@ -1,8 +1,11 @@
 package ua.foxminded.kucherenko.task2.queries;
 
+import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
+import ua.foxminded.kucherenko.task2.parser.QueryParser;
+
 import java.sql.*;
 
-public class StudentCourseExistence implements IResultingQuery<Boolean> {
+public class StudentCourseExistence implements IUtilityQuery<Boolean> {
     private final int studentId;
     private final int courseId;
 
@@ -11,10 +14,8 @@ public class StudentCourseExistence implements IResultingQuery<Boolean> {
         this.courseId = courseId;
     }
 
-    private static final String STUDENT_EXISTS_QUERY = """
-            SELECT * FROM school.student_courses
-            WHERE student_id = ? AND course_id = ?;
-            """;
+    private static final String STUDENT_COURSE_EXISTS_QUERY_FILEPATH = "src/main/resources/sql_queries/business_queries/student_course_exists.sql";
+    private static final String STUDENT_COURSE_EXISTS_QUERY = QueryParser.parseQuery(STUDENT_COURSE_EXISTS_QUERY_FILEPATH);
 
     @Override
     public Boolean executeQueryWithRes() {
@@ -22,8 +23,8 @@ public class StudentCourseExistence implements IResultingQuery<Boolean> {
 
         boolean studentCourseExists = true;
 
-        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
-             PreparedStatement statement = connection.prepareStatement(STUDENT_EXISTS_QUERY)) {
+        try (Connection connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getProps());
+             PreparedStatement statement = connection.prepareStatement(STUDENT_COURSE_EXISTS_QUERY)) {
             statement.setInt(1, studentId);
             statement.setInt(2, courseId);
             resultSet = statement.executeQuery();
@@ -32,11 +33,5 @@ public class StudentCourseExistence implements IResultingQuery<Boolean> {
             e.printStackTrace();
         }
         return studentCourseExists;
-    }
-
-    @Override
-    public Boolean parseResultSet(ResultSet resultSet) {
-        // method is not implemented because it's useless here
-        return true;
     }
 }

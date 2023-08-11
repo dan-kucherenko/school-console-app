@@ -1,8 +1,10 @@
 package ua.foxminded.kucherenko.task2.queries;
 
+import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
+
 import java.sql.*;
 
-public class StudentExistByNameQuery implements IResultingQuery<Integer> {
+public class StudentExistByNameQuery implements IUtilityQuery<Integer> {
     private final String studentFirstName;
     private final String studentLastName;
 
@@ -22,7 +24,7 @@ public class StudentExistByNameQuery implements IResultingQuery<Integer> {
 
         int studentId = -1;
 
-        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+        try (Connection connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getProps());
              PreparedStatement statement = connection.prepareStatement(STUDENT_EXISTS_QUERY)) {
             statement.setString(1, studentFirstName);
             statement.setString(2, studentLastName);
@@ -34,11 +36,5 @@ public class StudentExistByNameQuery implements IResultingQuery<Integer> {
             e.printStackTrace();
         }
         return studentId;
-    }
-
-    @Override
-    public Integer parseResultSet(ResultSet resultSet) {
-        // not implemented because it's useless here
-        return 0;
     }
 }
