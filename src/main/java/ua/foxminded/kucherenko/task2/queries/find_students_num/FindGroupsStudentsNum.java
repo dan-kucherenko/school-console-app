@@ -1,41 +1,28 @@
-package ua.foxminded.kucherenko.task2.queries;
+package ua.foxminded.kucherenko.task2.queries.find_students_num;
 
+import org.postgresql.PGResultSetMetaData;
+import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.models.GroupStudentsInfo;
+import ua.foxminded.kucherenko.task2.parser.QueryParser;
+import ua.foxminded.kucherenko.task2.queries.IResultingQuery;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class FindGroupsStudentsNum implements IResultingQuery<List<GroupStudentsInfo>> {
-    private int studentsQuantity;
-    private static final String FIND_GROUPS_BY_STUDENTS_NUMBER = """
-            SELECT students.group_id, group_name, COUNT(*) AS num_of_students
-            FROM school.students
-                INNER JOIN school.groups ON school.students.group_id = school.groups.group_id
-            WHERE students.group_id IS NOT NULL
-            GROUP BY students.group_id, group_name
-            HAVING COUNT(*) <= ?
-            """;
-
-    private void passData() {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter the maximum number of students in group you want to find: ");
-        studentsQuantity = sc.nextInt();
-        if (studentsQuantity < 0) {
-            throw new IllegalArgumentException("Number of students can't be less than 0");
-        }
-    }
+public class FindGroupsStudentsNum implements IResultingQuery<List<GroupStudentsInfo>, FindGroupsStudentsNumData> {
+    private static final String FIND_GROUPS_BY_STUDENTS_NUMBER_FILEPAPTH = "src/main/resources/sql_queries/business_queries/find_groups_students_num.sql";
+    private static final String FIND_GROUPS_BY_STUDENTS_NUMBER = QueryParser.parseQuery(FIND_GROUPS_BY_STUDENTS_NUMBER_FILEPAPTH);
 
     @Override
-    public List<GroupStudentsInfo> executeQueryWithRes() {
+    public List<GroupStudentsInfo> executeQueryWithRes(FindGroupsStudentsNumData data) {
         List<GroupStudentsInfo> res = null;
         ResultSet resultSet = null;
 
-        passData();
-        try (Connection connection = DriverManager.getConnection(URL, PROPERTIES);
+        try (Connection connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getProps());
              PreparedStatement statement = connection.prepareStatement(FIND_GROUPS_BY_STUDENTS_NUMBER)) {
-            statement.setInt(1, studentsQuantity);
+            statement.setInt(1, data.getStudentsQuantity());
             resultSet = statement.executeQuery();
             res = parseResultSet(resultSet);
         } catch (SQLException e) {
