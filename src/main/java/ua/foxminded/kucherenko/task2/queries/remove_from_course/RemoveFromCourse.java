@@ -23,6 +23,12 @@ public class RemoveFromCourse implements IVoidQuery<RemoveFromCourseData> {
 
     @Override
     public void executeQuery(RemoveFromCourseData data) {
+        if (data.getStudentId() == -1) {
+            throw new IllegalArgumentException("Student doesn't exist or the studentId is incorrect");
+        }
+        if (data.getCourseId() <= 0 || data.getCourseId() > 10) {
+            throw new IllegalArgumentException("Course Id should be between 1 and 10");
+        }
         try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(REMOVE_STUDENT_FROM_COURSE)) {
             statement.setInt(1, data.getStudentId());

@@ -1,48 +1,56 @@
-//package ua.foxminded.kucherenko.task2.queries;
-//
-//import org.junit.jupiter.api.Assertions;
-//import org.junit.jupiter.api.BeforeAll;
-//import org.junit.jupiter.api.Test;
-//import ua.foxminded.kucherenko.task2.db.CreateTestDatabase;
-//import ua.foxminded.kucherenko.task2.generators.DataGenerator;
-//import ua.foxminded.kucherenko.task2.queries.remove_from_course.RemoveFromCourse;
-//
-//import java.io.ByteArrayInputStream;
-//import java.io.InputStream;
-//
-//class RemoveFromCourseTest {
-//    private final RemoveFromCourse removeFromCourse = new RemoveFromCourse();
-//
-//    @BeforeAll
-//    static void initTestData() {
-//        CreateTestDatabase.initDatabase();
-//        DataGenerator generator = new DataGenerator();
-//        generator.generateData();
-//    }
-//
-//    @Test
-//    void findStudent_ShouldntThrowException() {
-//        final String input = "25\n5";
-//        final InputStream in = new ByteArrayInputStream(input.getBytes());
-//        System.setIn(in);
-//
-//        Assertions.assertDoesNotThrow(removeFromCourse::executeQuery);
-//    }
-//
-//    @Test
-//    void findStudent_NonExistingStudent_ShouldThrowException() {
-//        final String input = "-25\n5\n";
-//        final InputStream in = new ByteArrayInputStream(input.getBytes());
-//        System.setIn(in);
-//
-//        Assertions.assertThrows(IllegalArgumentException.class, removeFromCourse::executeQuery);
-//    }
-//    @Test
-//    void findStudent_NonExistingCourse_ShouldThrowException() {
-//        final String input = "25\n-5\n";
-//        final InputStream in = new ByteArrayInputStream(input.getBytes());
-//        System.setIn(in);
-//
-//        Assertions.assertThrows(IllegalArgumentException.class, removeFromCourse::executeQuery);
-//    }
-//}
+package ua.foxminded.kucherenko.task2.queries;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import ua.foxminded.kucherenko.task2.data_generator.AddDataForTest;
+import ua.foxminded.kucherenko.task2.db.CreateTestDatabase;
+import ua.foxminded.kucherenko.task2.db.CreateTestTables;
+import ua.foxminded.kucherenko.task2.db.DatabaseTestConfig;
+import ua.foxminded.kucherenko.task2.queries.remove_from_course.RemoveFromCourse;
+import ua.foxminded.kucherenko.task2.queries.remove_from_course.RemoveFromCourseData;
+
+class RemoveFromCourseTest {
+    private static final DatabaseTestConfig testConfig = new DatabaseTestConfig();
+    private final RemoveFromCourse removeFromCourse = new RemoveFromCourse(testConfig);
+
+    @BeforeAll
+    static void initTestData() {
+        CreateTestDatabase.initDatabase();
+        CreateTestTables.createTables();
+        AddDataForTest testDataGenerator = new AddDataForTest();
+        testDataGenerator.addStudents();
+        testDataGenerator.addStudentCourses();
+    }
+
+    @Test
+    void removeFromCourse_ShouldntThrowException() {
+        final int studentId = 25;
+        final int courseId = 5;
+        RemoveFromCourseData data = new RemoveFromCourseData(studentId, courseId);
+
+        Assertions.assertDoesNotThrow(() -> removeFromCourse.executeQuery(data));
+        Assertions.assertFalse(() -> {
+            StudentCourseExistence studentExistByNameQuery = new StudentCourseExistence(studentId, courseId, testConfig);
+            return studentExistByNameQuery.executeQueryWithRes();
+        });
+    }
+
+    @Test
+    void removeFromCourse_NonExistingStudent_ShouldThrowException() {
+        final int studentId = new StudentExistByNameQuery("Petro", "Petrovych", testConfig).executeQueryWithRes();
+        final int courseId = 5;
+        RemoveFromCourseData data = new RemoveFromCourseData(studentId, courseId);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> removeFromCourse.executeQuery(data));
+    }
+
+    @Test
+    void removeFromCourse_NonExistingCourse_ShouldThrowException() {
+        final int studentId = 25;
+        final int courseId = -5;
+        RemoveFromCourseData data = new RemoveFromCourseData(studentId, courseId);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> removeFromCourse.executeQuery(data));
+    }
+}
