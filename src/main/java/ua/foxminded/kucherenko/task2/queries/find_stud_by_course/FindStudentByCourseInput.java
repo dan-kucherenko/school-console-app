@@ -10,9 +10,6 @@ public class FindStudentByCourseInput implements IInputParser<FindStudentByCours
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter the name of the course for students you want to find: ");
         String courseName = sc.next();
-        if (courseName.isBlank()) {
-            throw new IllegalArgumentException("Course name cant be null");
-        }
         return new FindStudentByCourseData(courseName);
     }
 }

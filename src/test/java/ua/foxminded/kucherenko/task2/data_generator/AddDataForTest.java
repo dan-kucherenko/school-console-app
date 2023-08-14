@@ -3,6 +3,7 @@ package ua.foxminded.kucherenko.task2.data_generator;
 import ua.foxminded.kucherenko.task2.db.DatabaseTestConfig;
 import ua.foxminded.kucherenko.task2.generators.CourseNameGenerator;
 import ua.foxminded.kucherenko.task2.generators.GroupsNameGenerator;
+import ua.foxminded.kucherenko.task2.generators.StudentCourseGenerator;
 import ua.foxminded.kucherenko.task2.queries.add_student.AddStudent;
 import ua.foxminded.kucherenko.task2.queries.add_student.AddStudentData;
 import ua.foxminded.kucherenko.task2.queries.add_student_to_course.AddStudentToCourse;
@@ -69,6 +70,8 @@ public class AddDataForTest {
 
         CourseNameGenerator courseGenerator = new CourseNameGenerator(testConfig);
         courseGenerator.addToDb();
+        StudentCourseGenerator studentCourseGenerator = new StudentCourseGenerator(testConfig);
+        studentCourseGenerator.createStudentCoursesTable();
 
         data = new AddStudentToCourseData(1, 5);
         addStudentToCourse.executeQuery(data);

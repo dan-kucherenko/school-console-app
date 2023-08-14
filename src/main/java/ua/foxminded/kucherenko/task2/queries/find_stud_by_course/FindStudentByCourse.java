@@ -26,7 +26,9 @@ public class FindStudentByCourse implements IResultingQuery<List<Student>, FindS
     public List<Student> executeQueryWithRes(FindStudentByCourseData data) {
         List<Student> res = null;
         ResultSet resultSet = null;
-
+        if (data.getCourseName().isBlank()) {
+            throw new IllegalArgumentException("Course name cant be null");
+        }
         try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(FIND_STUDENT_BY_COURSE)) {
             statement.setString(1, data.getCourseName());
