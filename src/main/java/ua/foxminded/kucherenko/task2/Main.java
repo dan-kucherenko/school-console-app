@@ -26,7 +26,8 @@ public class Main {
         CreateDatabase.initDatabase();
         CreateTables.createTables();
         DataGenerator generator = new DataGenerator();
-        generator.generateData();
+        DatabaseConfig databaseConfig = new DatabaseConfig();
+        generator.generateData(databaseConfig);
     }
 
     public static void main(String[] args) {
@@ -40,7 +41,7 @@ public class Main {
         QueryResPrinter printer = new QueryResPrinter();
         Map<Integer, Runnable> map = Map.of(
                 1, () -> {
-                    AddStudentInput addStudentInput = new AddStudentInput(databaseConfig);
+                    AddStudentInput addStudentInput = new AddStudentInput();
                     addStudent.executeQuery(addStudentInput.passData());
                 },
                 2, () -> {
@@ -48,7 +49,7 @@ public class Main {
                     addStudentToCourse.executeQuery(addStudentToCourseInput.passData());
                 },
                 3, () -> {
-                    DeleteStudentInput deleteStudentInput = new DeleteStudentInput(databaseConfig);
+                    DeleteStudentInput deleteStudentInput = new DeleteStudentInput();
                     deleteStudent.executeQuery(deleteStudentInput.passData());
                 },
                 4, () -> {
@@ -80,6 +81,9 @@ public class Main {
                     """);
             queryIndex = sc.nextInt();
             try {
+                if(queryIndex == -1){
+                    return;
+                }
                 map.get(queryIndex).run();
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
