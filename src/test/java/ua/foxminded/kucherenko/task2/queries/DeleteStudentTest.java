@@ -1,50 +1,49 @@
-//package ua.foxminded.kucherenko.task2.queries;
-//
-//import org.junit.jupiter.api.Assertions;
-//import org.junit.jupiter.api.BeforeAll;
-//import org.junit.jupiter.api.Test;
-//import ua.foxminded.kucherenko.task2.db.CreateTestDatabase;
-//import ua.foxminded.kucherenko.task2.generators.DataGenerator;
-//import ua.foxminded.kucherenko.task2.queries.delete_student.DeleteStudent;
-//
-//import java.io.ByteArrayInputStream;
-//import java.io.InputStream;
-//
-//class DeleteStudentTest {
-//    private final DeleteStudent deleteStudent = new DeleteStudent();
-//
-//    @BeforeAll
-//    static void initTestData() {
-//        CreateTestDatabase.initDatabase();
-//        DataGenerator generator = new DataGenerator();
-//        generator.generateData();
-//    }
-//
-//    @Test
-//    void deleteStudent_ShouldntThrowException() {
-//        final int groupId = 15;
-//        final String input = Integer.toString(groupId);
-//        final InputStream in = new ByteArrayInputStream(input.getBytes());
-//        System.setIn(in);
-//
-//        Assertions.assertDoesNotThrow(deleteStudent::executeQuery);
-//    }
-//
-//    @Test
-//    void deleteStudent_MissingStudent_ThrowException() {
-//        final String input = "250";
-//        final InputStream in = new ByteArrayInputStream(input.getBytes());
-//        System.setIn(in);
-//
-//        Assertions.assertThrows(IllegalArgumentException.class, deleteStudent::executeQuery);
-//    }
-//
-//    @Test
-//    void deleteStudent_NegativeStudentId_ThrowException() {
-//        final String input = "-250";
-//        final InputStream in = new ByteArrayInputStream(input.getBytes());
-//        System.setIn(in);
-//
-//        Assertions.assertThrows(IllegalArgumentException.class, deleteStudent::executeQuery);
-//    }
-//}
+package ua.foxminded.kucherenko.task2.queries;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import ua.foxminded.kucherenko.task2.db.CreateTestDatabase;
+import ua.foxminded.kucherenko.task2.db.CreateTestTables;
+import ua.foxminded.kucherenko.task2.db.DatabaseTestConfig;
+import ua.foxminded.kucherenko.task2.generators.DataGenerator;
+import ua.foxminded.kucherenko.task2.queries.delete_student.DeleteStudent;
+import ua.foxminded.kucherenko.task2.queries.delete_student.DeleteStudentData;
+
+class DeleteStudentTest {
+    private static final DatabaseTestConfig testConfig = new DatabaseTestConfig();
+    private final DeleteStudent deleteStudent = new DeleteStudent(testConfig);
+
+    @BeforeAll
+    static void initTestData() {
+        CreateTestDatabase.initDatabase();
+        CreateTestTables.createTables();
+        DataGenerator generator = new DataGenerator();
+        generator.generateData(testConfig);
+    }
+
+    @Test
+    void deleteStudent_ShouldntThrowException() {
+        final int studentId = 4;
+        DeleteStudentData data = new DeleteStudentData(studentId);
+        deleteStudent.executeQuery(data);
+        Assertions.assertFalse(() -> {
+            StudentExistByIdQuery studentExistByIdQuery = new StudentExistByIdQuery(studentId, testConfig);
+            return studentExistByIdQuery.executeQueryWithRes();
+        });
+    }
+
+    @Test
+    void deleteStudent_MissingStudent_ThrowException() {
+        final int studentId = 250;
+        DeleteStudentData data = new DeleteStudentData(studentId);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> deleteStudent.executeQuery(data));
+    }
+
+    @Test
+    void deleteStudent_NegativeStudentId_ThrowException() {
+        final int studentId = 250;
+        DeleteStudentData data = new DeleteStudentData(studentId);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> deleteStudent.executeQuery(data));
+    }
+}
