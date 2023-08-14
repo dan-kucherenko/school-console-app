@@ -4,7 +4,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.Properties;
 
-public class DatabaseConfig {
+public class DatabaseConfig implements Configuration {
     private static String url;
     private static String username;
     private static String password;
@@ -21,19 +21,23 @@ public class DatabaseConfig {
         props.setProperty("password", password);
     }
 
-    public static String getUrl() {
+    @Override
+    public String getUrl() {
         return url;
     }
 
-    public static String getUsername() {
+    @Override
+    public String getUsername() {
         return username;
     }
 
-    public static String getPassword() {
+    @Override
+    public String getPassword() {
         return password;
     }
 
-    public static Properties getProps() {
+    @Override
+    public Properties getProps() {
         return props;
     }
 }

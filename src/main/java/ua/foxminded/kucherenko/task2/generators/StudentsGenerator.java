@@ -1,5 +1,6 @@
 package ua.foxminded.kucherenko.task2.generators;
 
+import ua.foxminded.kucherenko.task2.db.Configuration;
 import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
@@ -29,12 +30,19 @@ public class StudentsGenerator implements IGenerator {
             "Taylor", "Thomas", "Jackson", "White", "Harris",
             "Martin", "Lewis", "Allen", "Young", "Clark"
     };
+    private final String url;
+    private final Properties properties;
+
+    public StudentsGenerator(Configuration configuration) {
+        this.url = configuration.getUrl();
+        this.properties = configuration.getProps();
+    }
 
     @Override
     public void addToDb() {
         Random random = new Random();
 
-        try (Connection connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getProps());
+        try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(ADD_STUDENT_QUERY)) {
 
             Set<Integer> assignedStudents = new HashSet<>();

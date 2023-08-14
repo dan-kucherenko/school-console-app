@@ -1,11 +1,17 @@
 package ua.foxminded.kucherenko.task2.queries.remove_from_course;
 
+import ua.foxminded.kucherenko.task2.db.Configuration;
 import ua.foxminded.kucherenko.task2.queries.IInputParser;
 import ua.foxminded.kucherenko.task2.queries.StudentExistByNameQuery;
 
 import java.util.Scanner;
 
 public class RemoveFromCourseInput implements IInputParser<RemoveFromCourseData> {
+    private final Configuration configuration;
+
+    public RemoveFromCourseInput(Configuration configuration) {
+        this.configuration = configuration;
+    }
 
     @Override
     public RemoveFromCourseData passData() {
@@ -14,12 +20,12 @@ public class RemoveFromCourseInput implements IInputParser<RemoveFromCourseData>
         String firstName = sc.next();
         System.out.print("Enter the student last name to delete: ");
         String lastName = sc.next();
-        StudentExistByNameQuery studentExistence = new StudentExistByNameQuery(firstName, lastName);
+        StudentExistByNameQuery studentExistence = new StudentExistByNameQuery(firstName, lastName, configuration);
         int studentId = studentExistence.executeQueryWithRes();
         if (studentId == -1) {
             throw new IllegalArgumentException("Student doesn't exist or the studentId is incorrect");
         }
-        System.out.println("Enter the courseId to delete: ");
+        System.out.print("Enter the courseId to delete: ");
         int courseId = sc.nextInt();
         if (courseId <= 0 || courseId > 10) {
             throw new IllegalArgumentException("Course Id should be between 1 and 10");

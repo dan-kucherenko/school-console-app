@@ -1,12 +1,13 @@
 package ua.foxminded.kucherenko.task2.generators;
 
-import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
+import ua.foxminded.kucherenko.task2.db.Configuration;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.Random;
 
 public class GroupsNameGenerator implements IGenerator {
@@ -16,10 +17,16 @@ public class GroupsNameGenerator implements IGenerator {
     private static final String DIGITS = "0123456789";
     private static final String INSERT_GROUP_QUERY_FILEPATH = "src/main/resources/sql_queries/generators/insert_group.sql";
     private static final String INSERT_GROUP_QUERY = QueryParser.parseQuery(INSERT_GROUP_QUERY_FILEPATH);
+    private final String url;
+    private final Properties properties;
 
+    public GroupsNameGenerator(Configuration configuration){
+        this.url = configuration.getUrl();
+        this.properties = configuration.getProps();
+    }
     @Override
     public void addToDb() {
-        try (Connection connection = DriverManager.getConnection(DatabaseConfig.getUrl(), DatabaseConfig.getProps());
+        try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(INSERT_GROUP_QUERY)) {
             for (int i = 0; i < GROUPS_QUANTITY; i++) {
                 String groupName = generateGroupNames();
