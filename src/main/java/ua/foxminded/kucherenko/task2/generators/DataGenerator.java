@@ -1,17 +1,16 @@
 package ua.foxminded.kucherenko.task2.generators;
 
-import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
+import ua.foxminded.kucherenko.task2.db.Configuration;
 
 import java.util.List;
 
 public class DataGenerator {
-    public void generateData() {
-        DatabaseConfig databaseConfig = new DatabaseConfig();
+    public void generateData(Configuration configuration) {
         List<IGenerator> generators = List.of(
-                new CourseNameGenerator(databaseConfig),
-                new GroupsNameGenerator(databaseConfig),
-                new StudentsGenerator(databaseConfig),
-                new StudentCourseGenerator(databaseConfig)
+                new CourseNameGenerator(configuration),
+                new GroupsNameGenerator(configuration),
+                new StudentsGenerator(configuration),
+                new StudentCourseGenerator(configuration)
         );
 
         for (IGenerator generator : generators) {

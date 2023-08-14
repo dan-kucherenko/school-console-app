@@ -3,52 +3,76 @@ package ua.foxminded.kucherenko.task2.queries;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import ua.foxminded.kucherenko.task2.db.DBSetup;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import ua.foxminded.kucherenko.task2.db.CreateTestDatabase;
+import ua.foxminded.kucherenko.task2.db.CreateTestTables;
+import ua.foxminded.kucherenko.task2.db.DatabaseTestConfig;
+import ua.foxminded.kucherenko.task2.queries.add_student.AddStudent;
+import ua.foxminded.kucherenko.task2.queries.add_student.AddStudentData;
 
 class AddStudentTest {
-    private final AddStudent addStudent = new AddStudent();
+    private final DatabaseTestConfig testConfig = new DatabaseTestConfig();
+    private final AddStudent addStudent = new AddStudent(testConfig);
+    private final int notExistingId = -1;
 
     @BeforeAll
     static void initTestData() {
-        DBSetup.initDatabase();
+        CreateTestDatabase.initDatabase();
+        CreateTestTables.createTables();
     }
 
     @Test
     void addStudent_ShouldNotThrowExceptionWhileAdding() {
-        final String input = "3\nJohn\nDoe\n";
-        final InputStream in = new ByteArrayInputStream(input.getBytes());
-        System.setIn(in);
+        final int groupId = 2;
+        final String firstName = "Daniil";
+        final String lastName = "Kucherenko";
 
-        Assertions.assertDoesNotThrow(addStudent::executeOwnQuery);
+        AddStudentData addStudentData = new AddStudentData(groupId, firstName, lastName);
+        Assertions.assertDoesNotThrow(() -> addStudent.executeQuery(addStudentData));
+        Assertions.assertTrue(() -> {
+            StudentExistByNameQuery studentExistByNameQuery = new StudentExistByNameQuery(firstName, lastName, testConfig);
+            return studentExistByNameQuery.executeQueryWithRes() != notExistingId;
+        });
     }
 
     @Test
     void addStudent_ShouldNotThrowExceptionWhileAddingWithNullGroup() {
-        final String input = "0\nJohn\nDoe\n";
-        final InputStream in = new ByteArrayInputStream(input.getBytes());
-        System.setIn(in);
+        final int groupId = 0;
+        final String firstName = "Petro";
+        final String lastName = "Petrov";
 
-        Assertions.assertDoesNotThrow(addStudent::executeOwnQuery);
+        AddStudentData addStudentData = new AddStudentData(groupId, firstName, lastName);
+        Assertions.assertDoesNotThrow(() -> addStudent.executeQuery(addStudentData));
+        Assertions.assertTrue(() -> {
+            StudentExistByNameQuery studentExistByNameQuery = new StudentExistByNameQuery(firstName, lastName, testConfig);
+            return studentExistByNameQuery.executeQueryWithRes() != notExistingId;
+        });
     }
 
     @Test
-    void addStudent_GroupIdIsNegative_ShouldThrowException() {
-        final String input = "-3\nJohn\nDoe\n";
-        final InputStream in = new ByteArrayInputStream(input.getBytes());
-        System.setIn(in);
+    void addStudent_GroupIsBiggerThanTen_ShouldThrowsException() {
+        final int groupId = 20;
+        final String firstName = "Igor";
+        final String lastName = "Igoriv";
 
-        Assertions.assertThrows(IllegalArgumentException.class, addStudent::executeOwnQuery);
+        AddStudentData addStudentData = new AddStudentData(groupId, firstName, lastName);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addStudent.executeQuery(addStudentData));
+        Assertions.assertFalse(() -> {
+            StudentExistByNameQuery studentExistByNameQuery = new StudentExistByNameQuery(firstName, lastName, testConfig);
+            return studentExistByNameQuery.executeQueryWithRes() != notExistingId;
+        });
     }
 
     @Test
-    void addStudent_GroupIdIsBiggerThanTen_ShouldThrowException() {
-        final String input = "15\nJohn\nDoe\n";
-        final InputStream in = new ByteArrayInputStream(input.getBytes());
-        System.setIn(in);
+    void addStudent_GroupIsNegative_ShouldThrowsException() {
+        final int groupId = -5;
+        final String firstName = "Dmytro";
+        final String lastName = "Dmytrov";
 
-        Assertions.assertThrows(IllegalArgumentException.class, addStudent::executeOwnQuery);
+        AddStudentData addStudentData = new AddStudentData(groupId, firstName, lastName);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> addStudent.executeQuery(addStudentData));
+        Assertions.assertFalse(() -> {
+            StudentExistByNameQuery studentExistByNameQuery = new StudentExistByNameQuery(firstName, lastName, testConfig);
+            return studentExistByNameQuery.executeQueryWithRes() != notExistingId;
+        });
     }
 }
