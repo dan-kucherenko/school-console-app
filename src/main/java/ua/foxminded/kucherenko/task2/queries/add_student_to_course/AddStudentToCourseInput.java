@@ -4,7 +4,6 @@ import ua.foxminded.kucherenko.task2.db.Configuration;
 import ua.foxminded.kucherenko.task2.queries.IInputParser;
 import ua.foxminded.kucherenko.task2.queries.StudentExistByNameQuery;
 
-import java.util.Properties;
 import java.util.Scanner;
 
 public class AddStudentToCourseInput implements IInputParser<AddStudentToCourseData> {
@@ -23,14 +22,10 @@ public class AddStudentToCourseInput implements IInputParser<AddStudentToCourseD
         String lastName = sc.next();
         StudentExistByNameQuery studentExistence = new StudentExistByNameQuery(firstName, lastName, configuration);
         int studentId = studentExistence.executeQueryWithRes();
-        if (studentId == -1) {
-            throw new IllegalArgumentException("Invalid student id: student id is less than 0 or student doesnt exist");
-        }
+
         System.out.print("Enter the courseID: ");
         int courseId = sc.nextInt();
-        if (courseId <= 0 || courseId > 10) {
-            throw new IllegalArgumentException("Invalid ");
-        }
+
         return new AddStudentToCourseData(studentId, courseId);
     }
 }
