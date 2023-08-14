@@ -25,7 +25,9 @@ public class FindGroupsStudentsNum implements IResultingQuery<List<GroupStudents
     public List<GroupStudentsInfo> executeQueryWithRes(FindGroupsStudentsNumData data) {
         List<GroupStudentsInfo> res = null;
         ResultSet resultSet = null;
-
+        if (data.getStudentsQuantity() < 0) {
+            throw new IllegalArgumentException("Number of students can't be less than 0");
+        }
         try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(FIND_GROUPS_BY_STUDENTS_NUMBER)) {
             statement.setInt(1, data.getStudentsQuantity());

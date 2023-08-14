@@ -1,40 +1,57 @@
-//package ua.foxminded.kucherenko.task2.queries;
-//
-//import org.junit.jupiter.api.Assertions;
-//import org.junit.jupiter.api.BeforeAll;
-//import org.junit.jupiter.api.Test;
-//import ua.foxminded.kucherenko.task2.db.CreateTestDatabase;
-//import ua.foxminded.kucherenko.task2.generators.DataGenerator;
-//import ua.foxminded.kucherenko.task2.queries.find_students_num.FindGroupsStudentsNum;
-//
-//import java.io.ByteArrayInputStream;
-//import java.io.InputStream;
-//
-//class FindGroupStudentsNumTest {
-//    private final FindGroupsStudentsNum findGroupsStudentsNum = new FindGroupsStudentsNum();
-//
-//    @BeforeAll
-//    static void initTestData() {
-//        CreateTestDatabase.initDatabase();
-//        DataGenerator generator = new DataGenerator();
-//        generator.generateData();
-//    }
-//
-//    @Test
-//    void findGroups_ShouldntThrowException() {
-//        final String input = "15";
-//        final InputStream in = new ByteArrayInputStream(input.getBytes());
-//        System.setIn(in);
-//
-//        Assertions.assertDoesNotThrow(findGroupsStudentsNum::executeQueryWithRes);
-//    }
-//
-//    @Test
-//    void findGroups_NegativeStudentNumber_ThrowException() {
-//        final String input = "-250";
-//        final InputStream in = new ByteArrayInputStream(input.getBytes());
-//        System.setIn(in);
-//
-//        Assertions.assertThrows(IllegalArgumentException.class, findGroupsStudentsNum::executeQueryWithRes);
-//    }
-//}
+package ua.foxminded.kucherenko.task2.queries;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import ua.foxminded.kucherenko.task2.data_generator.AddDataForTest;
+import ua.foxminded.kucherenko.task2.db.CreateTestDatabase;
+import ua.foxminded.kucherenko.task2.db.CreateTestTables;
+import ua.foxminded.kucherenko.task2.db.DatabaseTestConfig;
+import ua.foxminded.kucherenko.task2.models.GroupStudentsInfo;
+import ua.foxminded.kucherenko.task2.queries.find_students_num.FindGroupsStudentsNum;
+import ua.foxminded.kucherenko.task2.queries.find_students_num.FindGroupsStudentsNumData;
+
+import java.util.List;
+
+class FindGroupStudentsNumTest {
+    private static final DatabaseTestConfig testConfig = new DatabaseTestConfig();
+    private final FindGroupsStudentsNum findGroupsStudentsNum = new FindGroupsStudentsNum(testConfig);
+
+    @BeforeAll
+    static void initTestData() {
+        CreateTestDatabase.initDatabase();
+        CreateTestTables.createTables();
+        AddDataForTest dataAdder = new AddDataForTest();
+        dataAdder.addStudents();
+    }
+
+    @Test
+    void findGroups_ShouldntThrowException() {
+        final int studentsQuantity = 4;
+        FindGroupsStudentsNumData data = new FindGroupsStudentsNumData(studentsQuantity);
+
+        List<GroupStudentsInfo> actualRes = findGroupsStudentsNum.executeQueryWithRes(data);
+
+        Assertions.assertDoesNotThrow(() -> findGroupsStudentsNum.executeQueryWithRes(data));
+        Assertions.assertEquals(2, actualRes.size());
+    }
+
+    @Test
+    void findGroups_NoGroupsReturned_ShouldntThrowException() {
+        final int studentsQuantity = 2;
+        FindGroupsStudentsNumData data = new FindGroupsStudentsNumData(studentsQuantity);
+
+        List<GroupStudentsInfo> actualRes = findGroupsStudentsNum.executeQueryWithRes(data);
+
+        Assertions.assertDoesNotThrow(() -> findGroupsStudentsNum.executeQueryWithRes(data));
+        Assertions.assertEquals(0, actualRes.size());
+    }
+
+    @Test
+    void findGroups_NegativeStudenNumber_ThrowException() {
+        final int studentsQuantity = -5;
+        FindGroupsStudentsNumData data = new FindGroupsStudentsNumData(studentsQuantity);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> findGroupsStudentsNum.executeQueryWithRes(data));
+    }
+}
