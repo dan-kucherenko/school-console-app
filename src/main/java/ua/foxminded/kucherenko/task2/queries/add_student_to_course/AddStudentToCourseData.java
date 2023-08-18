@@ -3,16 +3,22 @@ package ua.foxminded.kucherenko.task2.queries.add_student_to_course;
 import ua.foxminded.kucherenko.task2.queries.IQueryData;
 
 public class AddStudentToCourseData implements IQueryData {
-    private final Integer studentId;
+    private final String firstName;
+    private final String lastName;
     private final int courseId;
 
-    public AddStudentToCourseData(Integer studentId, int courseId) {
-        this.studentId = studentId;
+    public AddStudentToCourseData(String firstName, String lastName, int courseId) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.courseId = courseId;
     }
 
-    public Integer getStudentId() {
-        return studentId;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public int getCourseId() {

@@ -4,6 +4,7 @@ import ua.foxminded.kucherenko.task2.db.Configuration;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 import ua.foxminded.kucherenko.task2.queries.IVoidQuery;
 import ua.foxminded.kucherenko.task2.queries.StudentCourseExistence;
+import ua.foxminded.kucherenko.task2.queries.StudentExistByNameQuery;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,23 +27,25 @@ public class AddStudentToCourse implements IVoidQuery<AddStudentToCourseData> {
 
     @Override
     public void executeQuery(AddStudentToCourseData data) {
-        if (data.getStudentId() == null) {
+        StudentExistByNameQuery studentExistence = new StudentExistByNameQuery(data.getFirstName(), data.getLastName(), configuration);
+        Integer studentId = studentExistence.executeQueryWithRes();
+        if (studentId == null) {
             throw new IllegalArgumentException("Invalid student id: student id is less than 0 or student doesnt exist");
         }
         if (data.getCourseId() <= 0 || data.getCourseId() > 10) {
             throw new IllegalArgumentException("Invalid ");
         }
-        StudentCourseExistence studentCourseExistence = new StudentCourseExistence(data.getStudentId(), data.getCourseId(), configuration);
+        StudentCourseExistence studentCourseExistence = new StudentCourseExistence(studentId, data.getCourseId(), configuration);
         if (Boolean.TRUE.equals(studentCourseExistence.executeQueryWithRes())) {
             throw new IllegalArgumentException("This record already exists");
         }
 
         try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(ADD_TO_COURSE)) {
-            statement.setInt(1, data.getStudentId());
+            statement.setInt(1, studentId);
             statement.setInt(2, data.getCourseId());
             statement.executeUpdate();
-            System.out.println("Student with id " + data.getStudentId() + " was successfully added to course " + data.getCourseId());
+            System.out.println("Student with id " + studentId + " was successfully added to course " + data.getCourseId());
         } catch (SQLException e) {
             e.printStackTrace();
         }
