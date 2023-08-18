@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class CreateTables {
+public class TablesCreator {
     private static final String CREATE_TABLES_FILEPATH = "src/main/resources/sql_queries/database/create_tables.sql";
     private static final Dotenv DOTENV_READER = Dotenv.load();
     private static final String DATABASE_URL = DOTENV_READER.get("DATABASE_URL");
@@ -25,7 +25,7 @@ public class CreateTables {
         return props;
     }
 
-    public static void createTables() {
+    public void createTables() {
         final String tableCreationQuery = QueryParser.parseQuery(CREATE_TABLES_FILEPATH);
         try (Connection connection = DriverManager.getConnection(DATABASE_URL, PROPERTIES);
              PreparedStatement statement = connection.prepareStatement(tableCreationQuery)) {
