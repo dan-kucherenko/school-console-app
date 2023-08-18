@@ -1,7 +1,6 @@
 package ua.foxminded.kucherenko.task2.generators;
 
 import ua.foxminded.kucherenko.task2.db.Configuration;
-import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
 import java.sql.*;
@@ -13,31 +12,23 @@ public class StudentCourseGenerator implements IGenerator {
     private static final int MAX_STUDENT_COURSES_NUM = 3;
     private static final int MAX_COURSE_ID = 10;
     private static final int NUMBER_OF_STUDENTS = 200;
-    private static final String CREATE_STUDENT_COURSE_FILEPATH = "src/main/resources/sql_queries/generators/create_student_course.sql";
-    private static final String CREATE_STUDENT_COURSE_QUERY = QueryParser.parseQuery(CREATE_STUDENT_COURSE_FILEPATH);
-
     private static final String INSERT_STUDENT_COURSE_FILEPATH = "src/main/resources/sql_queries/generators/insert_student_course.sql";
     private static final String INSERT_STUDENT_COURSE = QueryParser.parseQuery(INSERT_STUDENT_COURSE_FILEPATH);
     private final String url;
     private final Properties properties;
+    private final Configuration configuration;
 
     public StudentCourseGenerator(Configuration configuration) {
+        this.configuration = configuration;
         this.url = configuration.getUrl();
         this.properties = configuration.getProps();
     }
 
-    public void createStudentCoursesTable() {
-        try (Connection connection = DriverManager.getConnection(url, properties);
-             PreparedStatement statement = connection.prepareStatement(CREATE_STUDENT_COURSE_QUERY)) {
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void addToDb() {
-        createStudentCoursesTable();
+        StudentCourseTable tableCreator = new StudentCourseTable(configuration);
+        tableCreator.createStudentCoursesTable();
         Random random = new Random();
         try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(INSERT_STUDENT_COURSE)) {
