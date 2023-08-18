@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Properties;
 
 public class CourseNameGenerator implements IGenerator {
-    private static Map<String, String> courses = new LinkedHashMap<>();
     private static final int COURSE_NAME_INDEX = 1;
     private static final int COURSE_DESCRIPTION_INDEX = 2;
     private static final String ADD_COURSE_QUERY_FILEPATH = "src/main/resources/sql_queries/generators/insert_course.sql";
@@ -24,6 +23,11 @@ public class CourseNameGenerator implements IGenerator {
     public CourseNameGenerator(Configuration configuration) {
         this.url = configuration.getUrl();
         this.properties = configuration.getProps();
+    }
+
+    @Override
+    public void addToDb() {
+        Map<String, String> courses = new LinkedHashMap<>();
         courses.put("Math", "Study of numbers, quantities, and shapes.");
         courses.put("Biology", "Study of living organisms and their interactions.");
         courses.put("Physics", "Study of matter, energy, and fundamental forces.");
@@ -34,10 +38,6 @@ public class CourseNameGenerator implements IGenerator {
         courses.put("Geography", "Study of the Earth's landscapes and environments.");
         courses.put("Art", "Study of visual arts and creative expression.");
         courses.put("Music", "Study of musical theory, composition, and performance.");
-    }
-
-    @Override
-    public void addToDb() {
         try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(ADD_COURSE_QUERY)) {
 

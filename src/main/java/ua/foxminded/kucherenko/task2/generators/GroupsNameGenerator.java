@@ -20,10 +20,11 @@ public class GroupsNameGenerator implements IGenerator {
     private final String url;
     private final Properties properties;
 
-    public GroupsNameGenerator(Configuration configuration){
+    public GroupsNameGenerator(Configuration configuration) {
         this.url = configuration.getUrl();
         this.properties = configuration.getProps();
     }
+
     @Override
     public void addToDb() {
         try (Connection connection = DriverManager.getConnection(url, properties);
@@ -41,16 +42,25 @@ public class GroupsNameGenerator implements IGenerator {
     private String generateGroupNames() {
         Random random = new Random();
         StringBuilder groupNameBuilder = new StringBuilder();
+        groupNameBuilder.append(generateGroupPrefix(random)).append("-").append(generateGroupSuffix(random));
+        return groupNameBuilder.toString();
+    }
 
+    private String generateGroupPrefix(Random random) {
+        StringBuilder letterGroupName = new StringBuilder();
         for (int i = 0; i < 2; i++) {
             char randomChar = ALPHABET_CHARS.charAt(random.nextInt(ALPHABET_CHARS.length()));
-            groupNameBuilder.append(randomChar);
+            letterGroupName.append(randomChar);
         }
-        groupNameBuilder.append("-");
+        return letterGroupName.toString();
+    }
+
+    private String generateGroupSuffix(Random random) {
+        StringBuilder numberGroup = new StringBuilder();
         for (int i = 0; i < 2; i++) {
-            char randomDigit = DIGITS.charAt(random.nextInt(DIGITS.length()));
-            groupNameBuilder.append(randomDigit);
+            char randomChar = ALPHABET_CHARS.charAt(random.nextInt(ALPHABET_CHARS.length()));
+            numberGroup.append(randomChar);
         }
-        return groupNameBuilder.toString();
+        return numberGroup.toString();
     }
 }

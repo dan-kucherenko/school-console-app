@@ -1,7 +1,7 @@
 package ua.foxminded.kucherenko.task2;
 
-import ua.foxminded.kucherenko.task2.db.CreateDatabase;
-import ua.foxminded.kucherenko.task2.db.CreateTables;
+import ua.foxminded.kucherenko.task2.db.DatabaseCreator;
+import ua.foxminded.kucherenko.task2.db.TablesCreator;
 import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.generators.*;
 import ua.foxminded.kucherenko.task2.queries.*;
@@ -23,51 +23,55 @@ import java.util.Scanner;
 
 public class Main {
     static {
-        CreateDatabase.initDatabase();
-        CreateTables.createTables();
+        DatabaseCreator databaseCreator = new DatabaseCreator();
+        databaseCreator.initDatabase();
+        TablesCreator tablesCreator = new TablesCreator();
+        tablesCreator.createTables();
         DataGenerator generator = new DataGenerator();
         DatabaseConfig databaseConfig = new DatabaseConfig();
         generator.generateData(databaseConfig);
     }
 
+    private static final DatabaseConfig databaseConfig = new DatabaseConfig();
+    private static final AddStudent addStudent = new AddStudent(databaseConfig);
+    private static final AddStudentToCourse addStudentToCourse = new AddStudentToCourse(databaseConfig);
+    private static final DeleteStudent deleteStudent = new DeleteStudent(databaseConfig);
+    private static final FindGroupsStudentsNum findGroupsStudentsNum = new FindGroupsStudentsNum(databaseConfig);
+    private static final FindStudentByCourse findStudentByCourse = new FindStudentByCourse(databaseConfig);
+    private static final RemoveFromCourse removeFromCourse = new RemoveFromCourse(databaseConfig);
+    private static final QueryResPrinter printer = new QueryResPrinter();
+
+    private static final Map<Integer, Runnable> map = Map.of(
+            1, () -> {
+                AddStudentInput addStudentInput = new AddStudentInput();
+                addStudent.executeQuery(addStudentInput.passData());
+            },
+            2, () -> {
+                AddStudentToCourseInput addStudentToCourseInput = new AddStudentToCourseInput(databaseConfig);
+                addStudentToCourse.executeQuery(addStudentToCourseInput.passData());
+            },
+            3, () -> {
+                DeleteStudentInput deleteStudentInput = new DeleteStudentInput();
+                deleteStudent.executeQuery(deleteStudentInput.passData());
+            },
+            4, () -> {
+                FindGroupsStudentNumInput findGroupsStudentNumInput = new FindGroupsStudentNumInput();
+                System.out.println(printer.printResults(findGroupsStudentsNum.executeQueryWithRes(findGroupsStudentNumInput.passData())));
+            },
+            5, () -> {
+                FindStudentByCourseInput findStudentByCourseInput = new FindStudentByCourseInput();
+                System.out.println(printer.printResults(findStudentByCourse.executeQueryWithRes(findStudentByCourseInput.passData())));
+            },
+            6, () -> {
+                RemoveFromCourseInput removeFromCourseInput = new RemoveFromCourseInput(databaseConfig);
+                removeFromCourse.executeQuery(removeFromCourseInput.passData());
+            }
+    );
+
     public static void main(String[] args) {
-        DatabaseConfig databaseConfig = new DatabaseConfig();
-        AddStudent addStudent = new AddStudent(databaseConfig);
-        AddStudentToCourse addStudentToCourse = new AddStudentToCourse(databaseConfig);
-        DeleteStudent deleteStudent = new DeleteStudent(databaseConfig);
-        FindGroupsStudentsNum findGroupsStudentsNum = new FindGroupsStudentsNum(databaseConfig);
-        FindStudentByCourse findStudentByCourse = new FindStudentByCourse(databaseConfig);
-        RemoveFromCourse removeFromCourse = new RemoveFromCourse(databaseConfig);
-        QueryResPrinter printer = new QueryResPrinter();
-        Map<Integer, Runnable> map = Map.of(
-                1, () -> {
-                    AddStudentInput addStudentInput = new AddStudentInput();
-                    addStudent.executeQuery(addStudentInput.passData());
-                },
-                2, () -> {
-                    AddStudentToCourseInput addStudentToCourseInput = new AddStudentToCourseInput(databaseConfig);
-                    addStudentToCourse.executeQuery(addStudentToCourseInput.passData());
-                },
-                3, () -> {
-                    DeleteStudentInput deleteStudentInput = new DeleteStudentInput();
-                    deleteStudent.executeQuery(deleteStudentInput.passData());
-                },
-                4, () -> {
-                    FindGroupsStudentNumInput findGroupsStudentNumInput = new FindGroupsStudentNumInput();
-                    System.out.println(printer.printResults(findGroupsStudentsNum.executeQueryWithRes(findGroupsStudentNumInput.passData())));
-                },
-                5, () -> {
-                    FindStudentByCourseInput findStudentByCourseInput = new FindStudentByCourseInput();
-                    System.out.println(printer.printResults(findStudentByCourse.executeQueryWithRes(findStudentByCourseInput.passData())));
-                },
-                6, () -> {
-                    RemoveFromCourseInput removeFromCourseInput = new RemoveFromCourseInput(databaseConfig);
-                    removeFromCourse.executeQuery(removeFromCourseInput.passData());
-                }
-        );
         Scanner sc = new Scanner(System.in);
-        int queryIndex;
-        do {
+        int queryIndex = 0;
+        while (true){
             System.out.println("""
                                         
                     Pick a query to run:
@@ -81,14 +85,13 @@ public class Main {
                     """);
             queryIndex = sc.nextInt();
             try {
-                if(queryIndex == -1){
-                    return;
+                if (queryIndex == -1) {
+                    break;
                 }
                 map.get(queryIndex).run();
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }
         }
-        while (queryIndex != -1);
     }
 }

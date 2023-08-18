@@ -1,7 +1,6 @@
 package ua.foxminded.kucherenko.task2.queries.find_stud_by_course;
 
 import ua.foxminded.kucherenko.task2.db.Configuration;
-import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.models.Student;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 import ua.foxminded.kucherenko.task2.queries.IResultingQuery;

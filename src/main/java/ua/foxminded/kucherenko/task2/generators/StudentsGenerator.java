@@ -1,7 +1,6 @@
 package ua.foxminded.kucherenko.task2.generators;
 
 import ua.foxminded.kucherenko.task2.db.Configuration;
-import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
 import java.sql.*;
@@ -51,9 +50,9 @@ public class StudentsGenerator implements IGenerator {
             for (int studentId = 1; studentId <= NUMBER_OF_STUDENTS; studentId++) {
                 int groupId = random.nextInt(11);
 
-                while (groupId != NO_GROUP_INDEX &&
-                        groupCounts.getOrDefault(groupId, 0) == MAX_GROUP_CAPACITY
-                        || assignedStudents.contains(studentId)) {
+                while ((groupId != NO_GROUP_INDEX) &&
+                        (groupCounts.getOrDefault(groupId, 0) == MAX_GROUP_CAPACITY
+                        || assignedStudents.contains(studentId))) {
                     groupId = random.nextInt(11);
                 }
 

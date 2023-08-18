@@ -5,10 +5,10 @@ import io.github.cdimascio.dotenv.Dotenv;
 import java.util.Properties;
 
 public class DatabaseTestConfig implements Configuration {
-    private static String URL;
-    private static String USERNAME;
-    private static String PASSWORD;
-    private static Properties PROPS;
+    private String URL;
+    private String USERNAME;
+    private String PASSWORD;
+    private Properties PROPS;
 
     public DatabaseTestConfig() {
         Dotenv dotenv = Dotenv.load();
