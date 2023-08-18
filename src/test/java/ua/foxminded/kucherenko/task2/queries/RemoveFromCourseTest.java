@@ -38,7 +38,7 @@ class RemoveFromCourseTest {
 
     @Test
     void removeFromCourse_NonExistingStudent_ShouldThrowException() {
-        final int studentId = new StudentExistByNameQuery("Petro", "Petrovych", testConfig).executeQueryWithRes();
+        final Integer studentId = new StudentExistByNameQuery("Petro", "Petrovych", testConfig).executeQueryWithRes();
         final int courseId = 5;
         RemoveFromCourseData data = new RemoveFromCourseData(studentId, courseId);
 

@@ -23,7 +23,7 @@ public class RemoveFromCourse implements IVoidQuery<RemoveFromCourseData> {
 
     @Override
     public void executeQuery(RemoveFromCourseData data) {
-        if (data.getStudentId() == -1) {
+        if (data.getStudentId() == null) {
             throw new IllegalArgumentException("Student doesn't exist or the studentId is incorrect");
         }
         if (data.getCourseId() <= 0 || data.getCourseId() > 10) {

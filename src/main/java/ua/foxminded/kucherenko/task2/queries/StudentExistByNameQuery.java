@@ -26,7 +26,7 @@ public class StudentExistByNameQuery implements IUtilityQuery<Integer> {
     public Integer executeQueryWithRes() {
         ResultSet resultSet = null;
 
-        int studentId = -1;
+        Integer studentId = null;
 
         try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(STUDENT_EXISTS_QUERY)) {
