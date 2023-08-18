@@ -1,19 +1,18 @@
 package ua.foxminded.kucherenko.task2.queries;
 
 import ua.foxminded.kucherenko.task2.db.Configuration;
-import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
 import java.sql.*;
 import java.util.Properties;
 
 public class StudentCourseExistence implements IUtilityQuery<Boolean> {
-    private final int studentId;
+    private final Integer studentId;
     private final int courseId;
     private final String url;
     private final Properties properties;
 
-    public StudentCourseExistence(int studentId, int courseId, Configuration configuration) {
+    public StudentCourseExistence(Integer studentId, int courseId, Configuration configuration) {
         this.studentId = studentId;
         this.courseId = courseId;
         this.url = configuration.getUrl();
@@ -28,6 +27,9 @@ public class StudentCourseExistence implements IUtilityQuery<Boolean> {
         ResultSet resultSet = null;
 
         boolean studentCourseExists = true;
+        if(studentId == null){
+            return false;
+        }
 
         try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(STUDENT_COURSE_EXISTS_QUERY)) {

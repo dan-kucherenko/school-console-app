@@ -46,7 +46,7 @@ class AddStudentToCourseTest {
 
     @Test
     void addStudentToCourse_MissingStudent_ThrowsException() {
-        final int studentId = new StudentExistByNameQuery("Royal", "Marines", testConfig).executeQueryWithRes();
+        final Integer studentId = new StudentExistByNameQuery("Royal", "Marines", testConfig).executeQueryWithRes();
         final int courseId = 6;
         AddStudentToCourseData data = new AddStudentToCourseData(studentId, courseId);
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));

@@ -26,13 +26,13 @@ public class AddStudentToCourse implements IVoidQuery<AddStudentToCourseData> {
 
     @Override
     public void executeQuery(AddStudentToCourseData data) {
-        StudentCourseExistence studentCourseExistence = new StudentCourseExistence(data.getStudentId(), data.getCourseId(), configuration);
-        if (data.getStudentId() == -1) {
+        if (data.getStudentId() == null) {
             throw new IllegalArgumentException("Invalid student id: student id is less than 0 or student doesnt exist");
         }
         if (data.getCourseId() <= 0 || data.getCourseId() > 10) {
             throw new IllegalArgumentException("Invalid ");
         }
+        StudentCourseExistence studentCourseExistence = new StudentCourseExistence(data.getStudentId(), data.getCourseId(), configuration);
         if (Boolean.TRUE.equals(studentCourseExistence.executeQueryWithRes())) {
             throw new IllegalArgumentException("This record already exists");
         }
