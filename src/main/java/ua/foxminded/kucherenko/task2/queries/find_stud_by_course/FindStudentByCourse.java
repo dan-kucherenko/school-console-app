@@ -39,8 +39,7 @@ public class FindStudentByCourse implements IResultingQuery<List<Student>, FindS
         return res;
     }
 
-    @Override
-    public List<Student> parseResultSet(ResultSet resultSet) {
+    private List<Student> parseResultSet(ResultSet resultSet) {
         List<Student> res = new ArrayList<>();
         Student student = null;
         try {

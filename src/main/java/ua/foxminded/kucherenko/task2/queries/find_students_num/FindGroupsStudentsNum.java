@@ -39,8 +39,7 @@ public class FindGroupsStudentsNum implements IResultingQuery<List<GroupStudents
         return res;
     }
 
-    @Override
-    public List<GroupStudentsInfo> parseResultSet(ResultSet resultSet) {
+    private List<GroupStudentsInfo> parseResultSet(ResultSet resultSet) {
         List<GroupStudentsInfo> res = new ArrayList<>();
         GroupStudentsInfo group = null;
         try {
