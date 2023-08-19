@@ -1,6 +1,5 @@
 package ua.foxminded.kucherenko.task2.db;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
 import java.sql.Connection;
@@ -11,23 +10,17 @@ import java.util.Properties;
 
 public class CreateTestTables {
     private static final String CREATE_TABLES_FILEPATH = "src/test/resources/database/create_tables.sql";
-    private static final Dotenv DOTENV_READER = Dotenv.load();
-    private static final String DATABASE_URL = DOTENV_READER.get("DATABASE_URL");
-    private static final String SCHOOL_USER = DOTENV_READER.get("SCHOOL_TEST_USER");
-    private static final String SCHOOL_PASSWORD = DOTENV_READER.get("SCHOOL_TEST_PASSWORD");
-    private static final Properties PROPERTIES = getDefaultProperties();
+    private final String url;
+    private final Properties properties;
 
-
-    private static Properties getDefaultProperties() {
-        Properties props = new Properties();
-        props.setProperty("user", SCHOOL_USER);
-        props.setProperty("password", SCHOOL_PASSWORD);
-        return props;
+    public CreateTestTables(Configuration configuration) {
+        this.url = configuration.getUrl();
+        this.properties = configuration.getProps();
     }
 
-    public static void createTables() {
+    public void createTables() {
         final String tableCreationQuery = QueryParser.parseQuery(CREATE_TABLES_FILEPATH);
-        try (Connection connection = DriverManager.getConnection(DATABASE_URL, PROPERTIES);
+        try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(tableCreationQuery)) {
             statement.executeUpdate();
         } catch (SQLException e) {

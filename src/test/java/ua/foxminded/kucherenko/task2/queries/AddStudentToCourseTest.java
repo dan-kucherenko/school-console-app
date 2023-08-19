@@ -3,9 +3,10 @@ package ua.foxminded.kucherenko.task2.queries;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import ua.foxminded.kucherenko.task2.db.ConfigReader;
 import ua.foxminded.kucherenko.task2.db.CreateTestDatabase;
 import ua.foxminded.kucherenko.task2.db.CreateTestTables;
-import ua.foxminded.kucherenko.task2.db.DatabaseTestConfig;
+import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.generators.DataGenerator;
 import ua.foxminded.kucherenko.task2.queries.add_student.AddStudent;
 import ua.foxminded.kucherenko.task2.queries.add_student.AddStudentData;
@@ -13,13 +14,17 @@ import ua.foxminded.kucherenko.task2.queries.add_student_to_course.AddStudentToC
 import ua.foxminded.kucherenko.task2.queries.add_student_to_course.AddStudentToCourseData;
 
 class AddStudentToCourseTest {
-    private final static DatabaseTestConfig testConfig = new DatabaseTestConfig();
+    private static final ConfigReader reader = new ConfigReader();
+    private static final DatabaseConfig testConfig = reader.readTestSchoolAdminConfiguration();
     private final AddStudentToCourse addStudentToCourse = new AddStudentToCourse(testConfig);
 
     @BeforeAll
     static void initTestData() {
-        CreateTestDatabase.initDatabase();
-        CreateTestTables.createTables();
+        DatabaseConfig adminTestConfig = reader.readAdminConfiguration();
+        CreateTestDatabase createTestDatabase = new CreateTestDatabase(adminTestConfig);
+        createTestDatabase.initDatabase();
+        CreateTestTables createTestTables = new CreateTestTables(testConfig);
+        createTestTables.createTables();
         DataGenerator generator = new DataGenerator();
         generator.generateData(testConfig);
     }
@@ -35,7 +40,7 @@ class AddStudentToCourseTest {
 
         final int studentId = new StudentExistByNameQuery(studentFirstName, studentLastName, testConfig).executeQueryWithRes();
         final int courseId = 6;
-        AddStudentToCourseData data = new AddStudentToCourseData(studentId, courseId);
+        AddStudentToCourseData data = new AddStudentToCourseData(studentFirstName, studentLastName, courseId);
 
         Assertions.assertDoesNotThrow(() -> addStudentToCourse.executeQuery(data));
         Assertions.assertTrue(() -> {
@@ -46,9 +51,11 @@ class AddStudentToCourseTest {
 
     @Test
     void addStudentToCourse_MissingStudent_ThrowsException() {
-        final Integer studentId = new StudentExistByNameQuery("Royal", "Marines", testConfig).executeQueryWithRes();
+        final String firstName = "Royal";
+        final String lastName = "Marines";
+        final Integer studentId = new StudentExistByNameQuery(firstName, lastName, testConfig).executeQueryWithRes();
         final int courseId = 6;
-        AddStudentToCourseData data = new AddStudentToCourseData(studentId, courseId);
+        AddStudentToCourseData data = new AddStudentToCourseData(firstName, lastName, courseId);
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));
         Assertions.assertFalse(() -> {
             StudentCourseExistence studentCourseExistence = new StudentCourseExistence(studentId, courseId, testConfig);
@@ -58,12 +65,14 @@ class AddStudentToCourseTest {
 
     @Test
     void addStudentToCourse_MissingCourseId_ThrowsException() {
-        final int studentId = 5;
+        final String firstName = "Michael1";
+        final String lastName = "Michaelson1";
         final int courseId = 60;
-        AddStudentToCourseData data = new AddStudentToCourseData(studentId, courseId);
+        AddStudentToCourseData data = new AddStudentToCourseData(firstName, lastName, courseId);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));
         Assertions.assertFalse(() -> {
+            final Integer studentId = new StudentExistByNameQuery(firstName, lastName, testConfig).executeQueryWithRes();
             StudentCourseExistence studentCourseExistence = new StudentCourseExistence(studentId, courseId, testConfig);
             return studentCourseExistence.executeQueryWithRes();
         });
@@ -71,12 +80,14 @@ class AddStudentToCourseTest {
 
     @Test
     void addStudentToCourse_NegativeInput_ThrowsException() {
-        final int studentId = -5;
+        final String firstName = "Royal";
+        final String lastName = "Marines";
         final int courseId = -6;
-        AddStudentToCourseData data = new AddStudentToCourseData(studentId, courseId);
+        AddStudentToCourseData data = new AddStudentToCourseData(firstName, lastName, courseId);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));
         Assertions.assertFalse(() -> {
+            final Integer studentId = new StudentExistByNameQuery(firstName, lastName, testConfig).executeQueryWithRes();
             StudentCourseExistence studentCourseExistence = new StudentCourseExistence(studentId, courseId, testConfig);
             return studentCourseExistence.executeQueryWithRes();
         });

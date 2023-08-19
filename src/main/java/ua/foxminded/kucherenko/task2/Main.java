@@ -1,5 +1,6 @@
 package ua.foxminded.kucherenko.task2;
 
+import ua.foxminded.kucherenko.task2.db.ConfigReader;
 import ua.foxminded.kucherenko.task2.db.DatabaseCreator;
 import ua.foxminded.kucherenko.task2.db.TablesCreator;
 import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
@@ -22,23 +23,26 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
+    private static final ConfigReader READER = new ConfigReader();
+    private static final DatabaseConfig SCHOOL_ADMIN_CONFIGURATION = READER.readSchoolAdminConfiguration();
+
+
     static {
-        DatabaseCreator databaseCreator = new DatabaseCreator();
+        DatabaseConfig adminConfig = READER.readAdminConfiguration();
+        DatabaseCreator databaseCreator = new DatabaseCreator(adminConfig);
         databaseCreator.initDatabase();
-        TablesCreator tablesCreator = new TablesCreator();
+        TablesCreator tablesCreator = new TablesCreator(SCHOOL_ADMIN_CONFIGURATION);
         tablesCreator.createTables();
         DataGenerator generator = new DataGenerator();
-        DatabaseConfig databaseConfig = new DatabaseConfig();
-        generator.generateData(databaseConfig);
+        generator.generateData(SCHOOL_ADMIN_CONFIGURATION);
     }
 
-    private static final DatabaseConfig databaseConfig = new DatabaseConfig();
-    private static final AddStudent addStudent = new AddStudent(databaseConfig);
-    private static final AddStudentToCourse addStudentToCourse = new AddStudentToCourse(databaseConfig);
-    private static final DeleteStudent deleteStudent = new DeleteStudent(databaseConfig);
-    private static final FindGroupsStudentsNum findGroupsStudentsNum = new FindGroupsStudentsNum(databaseConfig);
-    private static final FindStudentByCourse findStudentByCourse = new FindStudentByCourse(databaseConfig);
-    private static final RemoveFromCourse removeFromCourse = new RemoveFromCourse(databaseConfig);
+    private static final AddStudent addStudent = new AddStudent(SCHOOL_ADMIN_CONFIGURATION);
+    private static final AddStudentToCourse addStudentToCourse = new AddStudentToCourse(SCHOOL_ADMIN_CONFIGURATION);
+    private static final DeleteStudent deleteStudent = new DeleteStudent(SCHOOL_ADMIN_CONFIGURATION);
+    private static final FindGroupsStudentsNum findGroupsStudentsNum = new FindGroupsStudentsNum(SCHOOL_ADMIN_CONFIGURATION);
+    private static final FindStudentByCourse findStudentByCourse = new FindStudentByCourse(SCHOOL_ADMIN_CONFIGURATION);
+    private static final RemoveFromCourse removeFromCourse = new RemoveFromCourse(SCHOOL_ADMIN_CONFIGURATION);
     private static final QueryResPrinter printer = new QueryResPrinter();
 
     private static final Map<Integer, Runnable> map = Map.of(
@@ -47,7 +51,7 @@ public class Main {
                 addStudent.executeQuery(addStudentInput.passData());
             },
             2, () -> {
-                AddStudentToCourseInput addStudentToCourseInput = new AddStudentToCourseInput(databaseConfig);
+                AddStudentToCourseInput addStudentToCourseInput = new AddStudentToCourseInput();
                 addStudentToCourse.executeQuery(addStudentToCourseInput.passData());
             },
             3, () -> {
@@ -63,7 +67,7 @@ public class Main {
                 System.out.println(printer.printResults(findStudentByCourse.executeQueryWithRes(findStudentByCourseInput.passData())));
             },
             6, () -> {
-                RemoveFromCourseInput removeFromCourseInput = new RemoveFromCourseInput(databaseConfig);
+                RemoveFromCourseInput removeFromCourseInput = new RemoveFromCourseInput(SCHOOL_ADMIN_CONFIGURATION);
                 removeFromCourse.executeQuery(removeFromCourseInput.passData());
             }
     );
@@ -71,7 +75,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int queryIndex = 0;
-        while (true){
+        while (true) {
             System.out.println("""
                                         
                     Pick a query to run:

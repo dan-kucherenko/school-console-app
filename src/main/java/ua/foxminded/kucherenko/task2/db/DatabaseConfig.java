@@ -1,24 +1,18 @@
 package ua.foxminded.kucherenko.task2.db;
 
-import io.github.cdimascio.dotenv.Dotenv;
-
 import java.util.Properties;
 
 public class DatabaseConfig implements Configuration {
-    private static String url;
-    private static String username;
-    private static String password;
-    private static Properties props;
+    private final String url;
+    private final String username;
+    private final String password;
+    private final Properties props;
 
-    public DatabaseConfig() {
-        Dotenv dotenv = Dotenv.load();
-
-        url = dotenv.get("DATABASE_URL");
-        username = dotenv.get("SCHOOL_USER");
-        password = dotenv.get("SCHOOL_PASSWORD");
-        props = new Properties();
-        props.setProperty("user", username);
-        props.setProperty("password", password);
+    public DatabaseConfig(String url, String username, String password, Properties props) {
+        this.url = url;
+        this.username = username;
+        this.password = password;
+        this.props = props;
     }
 
     @Override

@@ -58,7 +58,7 @@ public class GroupsNameGenerator implements IGenerator {
     private String generateGroupSuffix(Random random) {
         StringBuilder numberGroup = new StringBuilder();
         for (int i = 0; i < 2; i++) {
-            char randomChar = ALPHABET_CHARS.charAt(random.nextInt(ALPHABET_CHARS.length()));
+            char randomChar = DIGITS.charAt(random.nextInt(DIGITS.length()));
             numberGroup.append(randomChar);
         }
         return numberGroup.toString();

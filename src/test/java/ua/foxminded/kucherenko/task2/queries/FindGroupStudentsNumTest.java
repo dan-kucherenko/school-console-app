@@ -4,9 +4,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import ua.foxminded.kucherenko.task2.data_generator.AddDataForTest;
+import ua.foxminded.kucherenko.task2.db.ConfigReader;
 import ua.foxminded.kucherenko.task2.db.CreateTestDatabase;
 import ua.foxminded.kucherenko.task2.db.CreateTestTables;
-import ua.foxminded.kucherenko.task2.db.DatabaseTestConfig;
+import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.models.GroupStudentsInfo;
 import ua.foxminded.kucherenko.task2.queries.find_students_num.FindGroupsStudentsNum;
 import ua.foxminded.kucherenko.task2.queries.find_students_num.FindGroupsStudentsNumData;
@@ -14,13 +15,17 @@ import ua.foxminded.kucherenko.task2.queries.find_students_num.FindGroupsStudent
 import java.util.List;
 
 class FindGroupStudentsNumTest {
-    private static final DatabaseTestConfig testConfig = new DatabaseTestConfig();
+    private static final ConfigReader reader = new ConfigReader();
+    private static final DatabaseConfig testConfig = reader.readTestSchoolAdminConfiguration();
     private final FindGroupsStudentsNum findGroupsStudentsNum = new FindGroupsStudentsNum(testConfig);
 
     @BeforeAll
     static void initTestData() {
-        CreateTestDatabase.initDatabase();
-        CreateTestTables.createTables();
+        DatabaseConfig adminTestConfig = reader.readAdminConfiguration();
+        CreateTestDatabase createTestDatabase = new CreateTestDatabase(adminTestConfig);
+        createTestDatabase.initDatabase();
+        CreateTestTables createTestTables = new CreateTestTables(testConfig);
+        createTestTables.createTables();
         AddDataForTest dataAdder = new AddDataForTest();
         dataAdder.addStudents();
     }
