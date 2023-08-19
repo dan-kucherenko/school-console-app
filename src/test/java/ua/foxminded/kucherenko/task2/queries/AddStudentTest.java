@@ -40,20 +40,6 @@ class AddStudentTest {
     }
 
     @Test
-    void addStudent_GroupIsBiggerThanTen_ShouldThrowsException() {
-        final int groupId = 20;
-        final String firstName = "Igor";
-        final String lastName = "Igoriv";
-
-        AddStudentData addStudentData = new AddStudentData(groupId, firstName, lastName);
-        Assertions.assertThrows(IllegalArgumentException.class, () -> addStudent.executeQuery(addStudentData));
-        Assertions.assertFalse(() -> {
-            StudentExistByNameQuery studentExistByNameQuery = new StudentExistByNameQuery(firstName, lastName, testConfig);
-            return studentExistByNameQuery.executeQueryWithRes() != notExistingId;
-        });
-    }
-
-    @Test
     void addStudent_GroupIsNegative_ShouldThrowsException() {
         final int groupId = -5;
         final String firstName = "Dmytro";

@@ -24,7 +24,7 @@ public class AddStudent implements IVoidQuery<AddStudentData> {
     public void executeQuery(AddStudentData data) {
         try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(ADD_STUDENT_QUERY)) {
-            if (data.getGroupId() < 0 || data.getGroupId() > 10 || groupIsFull(data.getGroupId())) {
+            if (data.getGroupId() < 0 || groupIsFull(data.getGroupId())) {
                 throw new IllegalArgumentException("GroupID should be between 1 and 10 or group is full");
             }
             if (data.getGroupId() == 0) {
