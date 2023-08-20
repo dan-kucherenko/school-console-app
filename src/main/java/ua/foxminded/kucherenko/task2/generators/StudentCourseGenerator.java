@@ -2,6 +2,7 @@ package ua.foxminded.kucherenko.task2.generators;
 
 import ua.foxminded.kucherenko.task2.db.Configuration;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
+import ua.foxminded.kucherenko.task2.queries.GetStudentsIds;
 
 import java.sql.*;
 import java.util.*;
@@ -11,7 +12,6 @@ public class StudentCourseGenerator implements IGenerator {
     private static final int COURSE_ID_INDEX = 2;
     private static final int MAX_STUDENT_COURSES_NUM = 3;
     private static final int MAX_COURSE_ID = 10;
-    private static final int NUMBER_OF_STUDENTS = 200;
     private static final String INSERT_STUDENT_COURSE_FILEPATH = "src/main/resources/sql_queries/generators/insert_student_course.sql";
     private static final String INSERT_STUDENT_COURSE = QueryParser.parseQuery(INSERT_STUDENT_COURSE_FILEPATH);
     private final String url;
@@ -31,7 +31,10 @@ public class StudentCourseGenerator implements IGenerator {
         try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(INSERT_STUDENT_COURSE)) {
             Map<Integer, Set<Integer>> studentCourseMap = new HashMap<>();
-            for (int studentId = 1; studentId <= NUMBER_OF_STUDENTS; studentId++) {
+            GetStudentsIds getStudentsIds = new GetStudentsIds(configuration);
+            List<Integer> availableIds = getStudentsIds.executeQueryWithRes();
+
+            for (Integer studentId : availableIds) {
                 Set<Integer> studentCourses = studentCourseMap.computeIfAbsent(studentId, k -> new HashSet<>());
                 int numberOfCourses = random.nextInt(MAX_STUDENT_COURSES_NUM) + 1;
                 numberOfCourses = Math.min(numberOfCourses, MAX_COURSE_ID - studentCourses.size());

@@ -2,6 +2,7 @@ package ua.foxminded.kucherenko.task2.generators;
 
 import ua.foxminded.kucherenko.task2.db.Configuration;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
+import ua.foxminded.kucherenko.task2.queries.GetGroupIds;
 
 import java.sql.*;
 import java.util.*;
@@ -31,8 +32,10 @@ public class StudentsGenerator implements IGenerator {
     };
     private final String url;
     private final Properties properties;
+    private final Configuration configuration;
 
     public StudentsGenerator(Configuration configuration) {
+        this.configuration = configuration;
         this.url = configuration.getUrl();
         this.properties = configuration.getProps();
     }
@@ -43,17 +46,19 @@ public class StudentsGenerator implements IGenerator {
 
         try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(ADD_STUDENT_QUERY)) {
+            GetGroupIds getGroupIds = new GetGroupIds(configuration);
+            List<Integer> availableGroupIds = getGroupIds.executeQueryWithRes();
 
             Set<Integer> assignedStudents = new HashSet<>();
             Map<Integer, Integer> groupCounts = new HashMap<>();
 
             for (int studentId = 1; studentId <= NUMBER_OF_STUDENTS; studentId++) {
-                int groupId = random.nextInt(11);
+                int groupId = random.nextInt(availableGroupIds.size() + 1);
 
                 while ((groupId != NO_GROUP_INDEX) &&
                         (groupCounts.getOrDefault(groupId, 0) == MAX_GROUP_CAPACITY
-                        || assignedStudents.contains(studentId))) {
-                    groupId = random.nextInt(11);
+                                || assignedStudents.contains(studentId))) {
+                    groupId = random.nextInt(availableGroupIds.size() + 1);
                 }
 
                 boolean studentShouldBeAddedToGroup = random.nextBoolean();
