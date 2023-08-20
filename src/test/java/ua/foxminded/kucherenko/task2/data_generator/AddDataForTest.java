@@ -1,6 +1,6 @@
 package ua.foxminded.kucherenko.task2.data_generator;
 
-import ua.foxminded.kucherenko.task2.db.ConfigReader;
+import ua.foxminded.kucherenko.task2.db.TestConfigReader;
 import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.generators.CourseNameGenerator;
 import ua.foxminded.kucherenko.task2.generators.GroupsNameGenerator;
@@ -11,7 +11,7 @@ import ua.foxminded.kucherenko.task2.queries.add_student_to_course.AddStudentToC
 import ua.foxminded.kucherenko.task2.queries.add_student_to_course.AddStudentToCourseData;
 
 public class AddDataForTest {
-    private static final ConfigReader reader = new ConfigReader();
+    private static final TestConfigReader reader = new TestConfigReader();
     private static final DatabaseConfig testConfig = reader.readTestSchoolAdminConfiguration();
     private final AddStudent addStudent = new AddStudent(testConfig);
     private final AddStudentToCourse addStudentToCourse = new AddStudentToCourse(testConfig);

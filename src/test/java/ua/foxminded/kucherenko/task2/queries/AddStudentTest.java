@@ -3,7 +3,7 @@ package ua.foxminded.kucherenko.task2.queries;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import ua.foxminded.kucherenko.task2.db.ConfigReader;
+import ua.foxminded.kucherenko.task2.db.TestConfigReader;
 import ua.foxminded.kucherenko.task2.db.CreateTestDatabase;
 import ua.foxminded.kucherenko.task2.db.CreateTestTables;
 import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
@@ -11,7 +11,7 @@ import ua.foxminded.kucherenko.task2.queries.add_student.AddStudent;
 import ua.foxminded.kucherenko.task2.queries.add_student.AddStudentData;
 
 class AddStudentTest {
-    private static final ConfigReader reader = new ConfigReader();
+    private static final TestConfigReader reader = new TestConfigReader();
     private static final DatabaseConfig testConfig = reader.readTestSchoolAdminConfiguration();
     private final AddStudent addStudent = new AddStudent(testConfig);
     private final Integer notExistingId = null;

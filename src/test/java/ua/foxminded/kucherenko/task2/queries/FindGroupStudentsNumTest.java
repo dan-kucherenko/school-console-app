@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import ua.foxminded.kucherenko.task2.data_generator.AddDataForTest;
-import ua.foxminded.kucherenko.task2.db.ConfigReader;
+import ua.foxminded.kucherenko.task2.db.TestConfigReader;
 import ua.foxminded.kucherenko.task2.db.CreateTestDatabase;
 import ua.foxminded.kucherenko.task2.db.CreateTestTables;
 import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
@@ -15,7 +15,7 @@ import ua.foxminded.kucherenko.task2.queries.find_students_num.FindGroupsStudent
 import java.util.List;
 
 class FindGroupStudentsNumTest {
-    private static final ConfigReader reader = new ConfigReader();
+    private static final TestConfigReader reader = new TestConfigReader();
     private static final DatabaseConfig testConfig = reader.readTestSchoolAdminConfiguration();
     private final FindGroupsStudentsNum findGroupsStudentsNum = new FindGroupsStudentsNum(testConfig);
 
