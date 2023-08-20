@@ -13,9 +13,7 @@ public class DataGenerator {
                 new StudentCourseGenerator(configuration)
         );
 
-        for (IGenerator generator : generators) {
-            generator.addToDb();
-        }
+        generators.forEach(IGenerator::addToDb);
         System.out.println("Initialisation was made");
     }
 }
