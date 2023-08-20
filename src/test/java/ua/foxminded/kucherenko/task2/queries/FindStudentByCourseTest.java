@@ -4,10 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import ua.foxminded.kucherenko.task2.data_generator.AddDataForTest;
-import ua.foxminded.kucherenko.task2.db.TestConfigReader;
-import ua.foxminded.kucherenko.task2.db.CreateTestDatabase;
-import ua.foxminded.kucherenko.task2.db.CreateTestTables;
-import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
+import ua.foxminded.kucherenko.task2.db.*;
 import ua.foxminded.kucherenko.task2.models.Student;
 import ua.foxminded.kucherenko.task2.queries.find_stud_by_course.FindStudentByCourse;
 import ua.foxminded.kucherenko.task2.queries.find_stud_by_course.FindStudentByCourseData;
@@ -22,11 +19,7 @@ class FindStudentByCourseTest {
 
     @BeforeAll
     static void initTestData() {
-        DatabaseConfig adminTestConfig = reader.readAdminConfiguration();
-        CreateTestDatabase createTestDatabase = new CreateTestDatabase(adminTestConfig);
-        createTestDatabase.initDatabase();
-        CreateTestTables createTestTables = new CreateTestTables(testConfig);
-        createTestTables.createTables();
+        DbInit.initDatabase();
         AddDataForTest testDataGenerator = new AddDataForTest();
         testDataGenerator.addStudents();
         testDataGenerator.addStudentCourses();

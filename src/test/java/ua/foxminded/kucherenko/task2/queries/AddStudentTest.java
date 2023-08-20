@@ -3,10 +3,7 @@ package ua.foxminded.kucherenko.task2.queries;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import ua.foxminded.kucherenko.task2.db.TestConfigReader;
-import ua.foxminded.kucherenko.task2.db.CreateTestDatabase;
-import ua.foxminded.kucherenko.task2.db.CreateTestTables;
-import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
+import ua.foxminded.kucherenko.task2.db.*;
 import ua.foxminded.kucherenko.task2.queries.add_student.AddStudent;
 import ua.foxminded.kucherenko.task2.queries.add_student.AddStudentData;
 
@@ -17,11 +14,7 @@ class AddStudentTest {
 
     @BeforeAll
     static void initTestData() {
-        DatabaseConfig adminTestConfig = reader.readAdminConfiguration();
-        CreateTestDatabase createTestDatabase = new CreateTestDatabase(adminTestConfig);
-        createTestDatabase.initDatabase();
-        CreateTestTables createTestTables = new CreateTestTables(testConfig);
-        createTestTables.createTables();
+        DbInit.initDatabase();
     }
 
     @Test
