@@ -4,7 +4,7 @@ import ua.foxminded.kucherenko.task2.db.Configuration;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 import ua.foxminded.kucherenko.task2.queries.IVoidQuery;
 import ua.foxminded.kucherenko.task2.queries.StudentCourseExistence;
-import ua.foxminded.kucherenko.task2.queries.StudentExistByNameQuery;
+import ua.foxminded.kucherenko.task2.queries.StudentIdByNameQuery;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,7 +27,7 @@ public class AddStudentToCourse implements IVoidQuery<AddStudentToCourseData> {
 
     @Override
     public void executeQuery(AddStudentToCourseData data) {
-        StudentExistByNameQuery studentExistence = new StudentExistByNameQuery(data.getFirstName(), data.getLastName(), configuration);
+        StudentIdByNameQuery studentExistence = new StudentIdByNameQuery(data.getFirstName(), data.getLastName(), configuration);
         Integer studentId = studentExistence.executeQueryWithRes();
         if (studentId == null) {
             throw new IllegalArgumentException("Invalid student id: student id is less than 0 or student doesnt exist");
@@ -36,7 +36,7 @@ public class AddStudentToCourse implements IVoidQuery<AddStudentToCourseData> {
             throw new IllegalArgumentException("Invalid ");
         }
         StudentCourseExistence studentCourseExistence = new StudentCourseExistence(studentId, data.getCourseId(), configuration);
-        if (Boolean.TRUE.equals(studentCourseExistence.executeQueryWithRes())) {
+        if (studentCourseExistence.executeQueryWithRes()) {
             throw new IllegalArgumentException("This record already exists");
         }
 

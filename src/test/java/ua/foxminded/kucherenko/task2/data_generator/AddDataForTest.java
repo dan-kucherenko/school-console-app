@@ -4,7 +4,6 @@ import ua.foxminded.kucherenko.task2.db.TestConfigReader;
 import ua.foxminded.kucherenko.task2.db.DatabaseConfig;
 import ua.foxminded.kucherenko.task2.generators.CourseNameGenerator;
 import ua.foxminded.kucherenko.task2.generators.GroupsNameGenerator;
-import ua.foxminded.kucherenko.task2.generators.StudentCourseTable;
 import ua.foxminded.kucherenko.task2.queries.add_student.AddStudent;
 import ua.foxminded.kucherenko.task2.queries.add_student.AddStudentData;
 import ua.foxminded.kucherenko.task2.queries.add_student_to_course.AddStudentToCourse;
@@ -19,87 +18,57 @@ public class AddDataForTest {
     public void addStudents() {
         GroupsNameGenerator groupGenerator = new GroupsNameGenerator(testConfig);
         groupGenerator.addToDb();
-        AddStudentData data;
 
-        data = new AddStudentData(4, "John", "Johnson");
-        addStudent.executeQuery(data);
+        addStudent.executeQuery(new AddStudentData(4, "John", "Johnson"));
 
-        data = new AddStudentData(4, "Michael", "Michaelson");
-        addStudent.executeQuery(data);
+        addStudent.executeQuery(new AddStudentData(4, "Michael", "Michaelson"));
 
-        data = new AddStudentData(4, "Emma", "Emmson");
-        addStudent.executeQuery(data);
+        addStudent.executeQuery(new AddStudentData(4, "Emma", "Emmson"));
 
-        data = new AddStudentData(4, "Alice", "Alison");
-        addStudent.executeQuery(data);
+        addStudent.executeQuery(new AddStudentData(4, "Alice", "Alison"));
 
-        data = new AddStudentData(5, "David", "Davidson");
-        addStudent.executeQuery(data);
+        addStudent.executeQuery(new AddStudentData(5, "David", "Davidson"));
 
-        data = new AddStudentData(5, "John1", "Johnson1");
-        addStudent.executeQuery(data);
+        addStudent.executeQuery(new AddStudentData(5, "John1", "Johnson1"));
 
-        data = new AddStudentData(5, "Michael1", "Michaelson1");
-        addStudent.executeQuery(data);
+        addStudent.executeQuery(new AddStudentData(5, "Michael1", "Michaelson1"));
 
-        data = new AddStudentData(5, "Emma1", "Emmson1");
-        addStudent.executeQuery(data);
+        addStudent.executeQuery(new AddStudentData(5, "Emma1", "Emmson1"));
 
-        data = new AddStudentData(6, "Alice1", "Alison1");
-        addStudent.executeQuery(data);
+        addStudent.executeQuery(new AddStudentData(6, "Alice1", "Alison1"));
 
-        data = new AddStudentData(6, "David1", "Davidson1");
-        addStudent.executeQuery(data);
+        addStudent.executeQuery(new AddStudentData(6, "David1", "Davidson1"));
 
-        data = new AddStudentData(5, "John2", "Johnson2");
-        addStudent.executeQuery(data);
+        addStudent.executeQuery(new AddStudentData(5, "John2", "Johnson2"));
 
-        data = new AddStudentData(5, "Michael2", "Michaelson2");
-        addStudent.executeQuery(data);
+        addStudent.executeQuery(new AddStudentData(5, "Michael2", "Michaelson2"));
 
-        data = new AddStudentData(5, "Emma2", "Emmson2");
-        addStudent.executeQuery(data);
+        addStudent.executeQuery(new AddStudentData(5, "Emma2", "Emmson2"));
 
-        data = new AddStudentData(6, "Alice2", "Alison2");
-        addStudent.executeQuery(data);
+        addStudent.executeQuery(new AddStudentData(6, "Alice2", "Alison2"));
 
-        data = new AddStudentData(6, "David2", "Davidson2");
-        addStudent.executeQuery(data);
+        addStudent.executeQuery(new AddStudentData(6, "David2", "Davidson2"));
     }
 
     public void addStudentCourses() {
-        AddStudentToCourseData data;
-
         CourseNameGenerator courseGenerator = new CourseNameGenerator(testConfig);
         courseGenerator.addToDb();
-        StudentCourseTable studentCourseTable = new StudentCourseTable(testConfig);
-        studentCourseTable.createStudentCoursesTable();
+        addStudentToCourse.executeQuery(new AddStudentToCourseData("John", "Johnson", 5));
 
-        data = new AddStudentToCourseData("John", "Johnson", 5);
-        addStudentToCourse.executeQuery(data);
+        addStudentToCourse.executeQuery(new AddStudentToCourseData("Michael", "Michaelson", 5));
 
-        data = new AddStudentToCourseData("Michael", "Michaelson", 5);
-        addStudentToCourse.executeQuery(data);
+        addStudentToCourse.executeQuery(new AddStudentToCourseData("Emma", "Emmson", 5));
 
-        data = new AddStudentToCourseData("Emma", "Emmson", 5);
-        addStudentToCourse.executeQuery(data);
+        addStudentToCourse.executeQuery(new AddStudentToCourseData("Alice", "Alison", 3));
 
-        data = new AddStudentToCourseData("Alice", "Alison", 3);
-        addStudentToCourse.executeQuery(data);
+        addStudentToCourse.executeQuery(new AddStudentToCourseData("Alice", "Alison", 5));
 
-        data = new AddStudentToCourseData("Alice", "Alison", 5);
-        addStudentToCourse.executeQuery(data);
+        addStudentToCourse.executeQuery(new AddStudentToCourseData("David", "Davidson", 6));
 
-        data = new AddStudentToCourseData("David", "Davidson", 6);
-        addStudentToCourse.executeQuery(data);
+        addStudentToCourse.executeQuery(new AddStudentToCourseData("John1", "Johnson1", 5));
 
-        data = new AddStudentToCourseData("John1", "Johnson1", 5);
-        addStudentToCourse.executeQuery(data);
+        addStudentToCourse.executeQuery(new AddStudentToCourseData("Michael1", "Michaelson1", 5));
 
-        data = new AddStudentToCourseData("Michael1", "Michaelson1", 5);
-        addStudentToCourse.executeQuery(data);
-
-        data = new AddStudentToCourseData("Emma1", "Emmson1", 5);
-        addStudentToCourse.executeQuery(data);
+        addStudentToCourse.executeQuery(new AddStudentToCourseData("Emma1", "Emmson1", 5));
     }
 }

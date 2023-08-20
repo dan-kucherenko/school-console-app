@@ -27,8 +27,6 @@ public class StudentCourseGenerator implements IGenerator {
 
     @Override
     public void addToDb() {
-        StudentCourseTable tableCreator = new StudentCourseTable(configuration);
-        tableCreator.createStudentCoursesTable();
         Random random = new Random();
         try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(INSERT_STUDENT_COURSE)) {

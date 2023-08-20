@@ -14,7 +14,6 @@ class AddStudentTest {
     private static final TestConfigReader reader = new TestConfigReader();
     private static final DatabaseConfig testConfig = reader.readTestSchoolAdminConfiguration();
     private final AddStudent addStudent = new AddStudent(testConfig);
-    private final Integer notExistingId = null;
 
     @BeforeAll
     static void initTestData() {
@@ -34,8 +33,8 @@ class AddStudentTest {
         AddStudentData addStudentData = new AddStudentData(groupId, firstName, lastName);
         Assertions.assertDoesNotThrow(() -> addStudent.executeQuery(addStudentData));
         Assertions.assertTrue(() -> {
-            StudentExistByNameQuery studentExistByNameQuery = new StudentExistByNameQuery(firstName, lastName, testConfig);
-            return studentExistByNameQuery.executeQueryWithRes() != notExistingId;
+            StudentIdByNameQuery studentExistByNameQuery = new StudentIdByNameQuery(firstName, lastName, testConfig);
+            return studentExistByNameQuery.executeQueryWithRes() != null;
         });
     }
 
@@ -48,8 +47,8 @@ class AddStudentTest {
         AddStudentData addStudentData = new AddStudentData(groupId, firstName, lastName);
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudent.executeQuery(addStudentData));
         Assertions.assertFalse(() -> {
-            StudentExistByNameQuery studentExistByNameQuery = new StudentExistByNameQuery(firstName, lastName, testConfig);
-            return studentExistByNameQuery.executeQueryWithRes() != notExistingId;
+            StudentIdByNameQuery studentExistByNameQuery = new StudentIdByNameQuery(firstName, lastName, testConfig);
+            return studentExistByNameQuery.executeQueryWithRes() != null;
         });
     }
 }

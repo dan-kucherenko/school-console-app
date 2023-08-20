@@ -48,11 +48,8 @@ public class FindStudentByCourse implements IResultingQuery<List<Student>, FindS
                 int groupId = resultSet.getInt("group_id");
                 String firstName = resultSet.getString("first_name");
                 String lastName = resultSet.getString("last_name");
-                if (groupId == 0) {
-                    student = new Student(studentId, firstName, lastName);
-                } else {
-                    student = new Student(studentId, groupId, firstName, lastName);
-                }
+                student = new Student(studentId, groupId, firstName, lastName);
+
                 res.add(student);
             }
         } catch (SQLException e) {

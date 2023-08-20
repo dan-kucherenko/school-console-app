@@ -1,21 +1,20 @@
 package ua.foxminded.kucherenko.task2.queries;
 
 import ua.foxminded.kucherenko.task2.db.Configuration;
+import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
 import java.sql.*;
 import java.util.Properties;
 
-public class StudentExistByNameQuery implements IUtilityQuery<Integer> {
+public class StudentIdByNameQuery implements IUtilityQuery<Integer> {
     private final String studentFirstName;
     private final String studentLastName;
     private final String url;
     private final Properties properties;
-    private static final String STUDENT_EXISTS_QUERY = """
-            SELECT student_id FROM school.students
-            WHERE first_name = ? AND last_name = ?;
-            """;
+    private static final String STUDENT_EXISTS_QUERY_FILEPATH = "src/main/resources/sql_queries/business_queries/student_exist_by_name.sql";
+    private static final String STUDENT_EXISTS_QUERY = QueryParser.parseQuery(STUDENT_EXISTS_QUERY_FILEPATH);
 
-    public StudentExistByNameQuery(String studentFirstName, String studentLastName, Configuration configuration) {
+    public StudentIdByNameQuery(String studentFirstName, String studentLastName, Configuration configuration) {
         this.studentFirstName = studentFirstName;
         this.studentLastName = studentLastName;
         this.url = configuration.getUrl();

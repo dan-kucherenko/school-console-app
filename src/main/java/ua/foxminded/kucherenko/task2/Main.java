@@ -25,11 +25,10 @@ import java.util.Scanner;
 public class Main {
     private static final ConfigReader READER = new ConfigReader();
     private static final DatabaseConfig SCHOOL_ADMIN_CONFIGURATION = READER.readSchoolAdminConfiguration();
-
+    private static final DatabaseConfig ADMIN_CONFIG = READER.readAdminConfiguration();
 
     static {
-        DatabaseConfig adminConfig = READER.readAdminConfiguration();
-        DatabaseCreator databaseCreator = new DatabaseCreator(adminConfig);
+        DatabaseCreator databaseCreator = new DatabaseCreator(ADMIN_CONFIG);
         databaseCreator.initDatabase();
         TablesCreator tablesCreator = new TablesCreator(SCHOOL_ADMIN_CONFIGURATION);
         tablesCreator.createTables();
@@ -37,44 +36,44 @@ public class Main {
         generator.generateData(SCHOOL_ADMIN_CONFIGURATION);
     }
 
-    private static final AddStudent addStudent = new AddStudent(SCHOOL_ADMIN_CONFIGURATION);
-    private static final AddStudentToCourse addStudentToCourse = new AddStudentToCourse(SCHOOL_ADMIN_CONFIGURATION);
-    private static final DeleteStudent deleteStudent = new DeleteStudent(SCHOOL_ADMIN_CONFIGURATION);
-    private static final FindGroupsStudentsNum findGroupsStudentsNum = new FindGroupsStudentsNum(SCHOOL_ADMIN_CONFIGURATION);
-    private static final FindStudentByCourse findStudentByCourse = new FindStudentByCourse(SCHOOL_ADMIN_CONFIGURATION);
-    private static final RemoveFromCourse removeFromCourse = new RemoveFromCourse(SCHOOL_ADMIN_CONFIGURATION);
-    private static final QueryResPrinter printer = new QueryResPrinter();
+    private static final AddStudent ADD_STUDENT_OPERATION = new AddStudent(SCHOOL_ADMIN_CONFIGURATION);
+    private static final AddStudentToCourse ADD_STUDENT_TO_COURSE = new AddStudentToCourse(SCHOOL_ADMIN_CONFIGURATION);
+    private static final DeleteStudent DELETE_STUDENT = new DeleteStudent(SCHOOL_ADMIN_CONFIGURATION);
+    private static final FindGroupsStudentsNum FIND_GROUPS_STUDENTS_NUM = new FindGroupsStudentsNum(SCHOOL_ADMIN_CONFIGURATION);
+    private static final FindStudentByCourse FIND_STUDENT_BY_COURSE = new FindStudentByCourse(SCHOOL_ADMIN_CONFIGURATION);
+    private static final RemoveFromCourse REMOVE_FROM_COURSE = new RemoveFromCourse(SCHOOL_ADMIN_CONFIGURATION);
+    private static final QueryResPrinter RES_PRINTER = new QueryResPrinter();
 
     private static final Map<Integer, Runnable> map = Map.of(
             1, () -> {
                 AddStudentInput addStudentInput = new AddStudentInput();
-                addStudent.executeQuery(addStudentInput.passData());
+                ADD_STUDENT_OPERATION.executeQuery(addStudentInput.passData());
             },
             2, () -> {
                 AddStudentToCourseInput addStudentToCourseInput = new AddStudentToCourseInput();
-                addStudentToCourse.executeQuery(addStudentToCourseInput.passData());
+                ADD_STUDENT_TO_COURSE.executeQuery(addStudentToCourseInput.passData());
             },
             3, () -> {
                 DeleteStudentInput deleteStudentInput = new DeleteStudentInput();
-                deleteStudent.executeQuery(deleteStudentInput.passData());
+                DELETE_STUDENT.executeQuery(deleteStudentInput.passData());
             },
             4, () -> {
                 FindGroupsStudentNumInput findGroupsStudentNumInput = new FindGroupsStudentNumInput();
-                System.out.println(printer.printResults(findGroupsStudentsNum.executeQueryWithRes(findGroupsStudentNumInput.passData())));
+                System.out.println(RES_PRINTER.printResults(FIND_GROUPS_STUDENTS_NUM.executeQueryWithRes(findGroupsStudentNumInput.passData())));
             },
             5, () -> {
                 FindStudentByCourseInput findStudentByCourseInput = new FindStudentByCourseInput();
-                System.out.println(printer.printResults(findStudentByCourse.executeQueryWithRes(findStudentByCourseInput.passData())));
+                System.out.println(RES_PRINTER.printResults(FIND_STUDENT_BY_COURSE.executeQueryWithRes(findStudentByCourseInput.passData())));
             },
             6, () -> {
-                RemoveFromCourseInput removeFromCourseInput = new RemoveFromCourseInput(SCHOOL_ADMIN_CONFIGURATION);
-                removeFromCourse.executeQuery(removeFromCourseInput.passData());
+                RemoveFromCourseInput removeFromCourseInput = new RemoveFromCourseInput();
+                REMOVE_FROM_COURSE.executeQuery(removeFromCourseInput.passData());
             }
     );
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int queryIndex = 0;
+        int queryIndex;
         while (true) {
             System.out.println("""
                                         

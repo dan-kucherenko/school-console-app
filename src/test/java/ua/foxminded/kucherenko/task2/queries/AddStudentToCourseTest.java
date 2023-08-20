@@ -38,7 +38,7 @@ class AddStudentToCourseTest {
         AddStudent addStudent = new AddStudent(testConfig);
         addStudent.executeQuery(studentData);
 
-        final int studentId = new StudentExistByNameQuery(studentFirstName, studentLastName, testConfig).executeQueryWithRes();
+        final int studentId = new StudentIdByNameQuery(studentFirstName, studentLastName, testConfig).executeQueryWithRes();
         final int courseId = 6;
         AddStudentToCourseData data = new AddStudentToCourseData(studentFirstName, studentLastName, courseId);
 
@@ -53,7 +53,7 @@ class AddStudentToCourseTest {
     void addStudentToCourse_MissingStudent_ThrowsException() {
         final String firstName = "Royal";
         final String lastName = "Marines";
-        final Integer studentId = new StudentExistByNameQuery(firstName, lastName, testConfig).executeQueryWithRes();
+        final Integer studentId = new StudentIdByNameQuery(firstName, lastName, testConfig).executeQueryWithRes();
         final int courseId = 6;
         AddStudentToCourseData data = new AddStudentToCourseData(firstName, lastName, courseId);
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));
@@ -72,7 +72,7 @@ class AddStudentToCourseTest {
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));
         Assertions.assertFalse(() -> {
-            final Integer studentId = new StudentExistByNameQuery(firstName, lastName, testConfig).executeQueryWithRes();
+            final Integer studentId = new StudentIdByNameQuery(firstName, lastName, testConfig).executeQueryWithRes();
             StudentCourseExistence studentCourseExistence = new StudentCourseExistence(studentId, courseId, testConfig);
             return studentCourseExistence.executeQueryWithRes();
         });
@@ -87,7 +87,7 @@ class AddStudentToCourseTest {
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));
         Assertions.assertFalse(() -> {
-            final Integer studentId = new StudentExistByNameQuery(firstName, lastName, testConfig).executeQueryWithRes();
+            final Integer studentId = new StudentIdByNameQuery(firstName, lastName, testConfig).executeQueryWithRes();
             StudentCourseExistence studentCourseExistence = new StudentCourseExistence(studentId, courseId, testConfig);
             return studentCourseExistence.executeQueryWithRes();
         });

@@ -30,12 +30,14 @@ class RemoveFromCourseTest {
 
     @Test
     void removeFromCourse_ShouldntThrowException() {
-        final int studentId = 25;
+        final String firstName = "Emma";
+        final String lastName = "Emmson";
         final int courseId = 5;
-        RemoveFromCourseData data = new RemoveFromCourseData(studentId, courseId);
+        RemoveFromCourseData data = new RemoveFromCourseData(firstName, lastName, courseId);
 
         Assertions.assertDoesNotThrow(() -> removeFromCourse.executeQuery(data));
         Assertions.assertFalse(() -> {
+            Integer studentId = new StudentIdByNameQuery(firstName, lastName, testConfig).executeQueryWithRes();
             StudentCourseExistence studentExistByNameQuery = new StudentCourseExistence(studentId, courseId, testConfig);
             return studentExistByNameQuery.executeQueryWithRes();
         });
@@ -43,18 +45,20 @@ class RemoveFromCourseTest {
 
     @Test
     void removeFromCourse_NonExistingStudent_ShouldThrowException() {
-        final Integer studentId = new StudentExistByNameQuery("Petro", "Petrovych", testConfig).executeQueryWithRes();
+        final String firstName = "Petro";
+        final String lastName = "Petrovych";
         final int courseId = 5;
-        RemoveFromCourseData data = new RemoveFromCourseData(studentId, courseId);
+        RemoveFromCourseData data = new RemoveFromCourseData(firstName, lastName, courseId);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> removeFromCourse.executeQuery(data));
     }
 
     @Test
     void removeFromCourse_NonExistingCourse_ShouldThrowException() {
-        final int studentId = 25;
+        final String firstName = "Petro";
+        final String lastName = "Petrovych";
         final int courseId = -5;
-        RemoveFromCourseData data = new RemoveFromCourseData(studentId, courseId);
+        RemoveFromCourseData data = new RemoveFromCourseData(firstName, lastName, courseId);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> removeFromCourse.executeQuery(data));
     }

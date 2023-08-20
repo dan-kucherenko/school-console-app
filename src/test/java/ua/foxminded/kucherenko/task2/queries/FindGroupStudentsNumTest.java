@@ -49,7 +49,7 @@ class FindGroupStudentsNumTest {
         List<GroupStudentsInfo> actualRes = findGroupsStudentsNum.executeQueryWithRes(data);
 
         Assertions.assertDoesNotThrow(() -> findGroupsStudentsNum.executeQueryWithRes(data));
-        Assertions.assertEquals(0, actualRes.size());
+        Assertions.assertTrue(actualRes.isEmpty());
     }
 
     @Test
