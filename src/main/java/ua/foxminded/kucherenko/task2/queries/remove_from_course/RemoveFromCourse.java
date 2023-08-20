@@ -3,6 +3,7 @@ package ua.foxminded.kucherenko.task2.queries.remove_from_course;
 import ua.foxminded.kucherenko.task2.db.Configuration;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 import ua.foxminded.kucherenko.task2.queries.IVoidQuery;
+import ua.foxminded.kucherenko.task2.queries.StudentIdByNameQuery;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,15 +16,19 @@ public class RemoveFromCourse implements IVoidQuery<RemoveFromCourseData> {
     private static final String REMOVE_STUDENT_FROM_COURSE = QueryParser.parseQuery(REMOVE_STUDENT_FROM_COURSE_FILEPATH);
     private final String url;
     private final Properties properties;
+    private final Configuration configuration;
 
     public RemoveFromCourse(Configuration configuration) {
+        this.configuration = configuration;
         this.url = configuration.getUrl();
         this.properties = configuration.getProps();
     }
 
     @Override
     public void executeQuery(RemoveFromCourseData data) {
-        if (data.getStudentId() == null) {
+        StudentIdByNameQuery studentExistence = new StudentIdByNameQuery(data.getFirstName(), data.getLastName(), configuration);
+        Integer studentId = studentExistence.executeQueryWithRes();
+        if (studentId == null) {
             throw new IllegalArgumentException("Student doesn't exist or the studentId is incorrect");
         }
         if (data.getCourseId() <= 0 || data.getCourseId() > 10) {
@@ -31,7 +36,7 @@ public class RemoveFromCourse implements IVoidQuery<RemoveFromCourseData> {
         }
         try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(REMOVE_STUDENT_FROM_COURSE)) {
-            statement.setInt(1, data.getStudentId());
+            statement.setInt(1, studentId);
             statement.setInt(2, data.getCourseId());
             statement.executeUpdate();
         } catch (SQLException e) {
