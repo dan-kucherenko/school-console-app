@@ -44,8 +44,8 @@ public class StudentCourseGenerator implements IGenerator {
                 numberOfCourses = Math.min(numberOfCourses, availableCoursesIds.size() - studentCourses.size());
 
                 while (studentCourses.size() < numberOfCourses) {
-                    int courseId = random.nextInt(availableCoursesIds.size()) + 1;
-                    studentCourses.add(courseId);
+                    int courseIndex = random.nextInt(availableCoursesIds.size());
+                    studentCourses.add(availableCoursesIds.get(courseIndex));
                 }
                 studentCourseMap.put(studentId, studentCourses);
                 for (int courseId : studentCourses) {
