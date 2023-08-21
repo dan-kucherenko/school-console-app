@@ -1,0 +1,5 @@
+DROP DATABASE IF EXISTS school_db;
+CREATE DATABASE school_db;
+DROP USER IF EXISTS school_admin;
+CREATE USER school_admin WITH ENCRYPTED PASSWORD 'school_admin';
+GRANT ALL PRIVILEGES ON DATABASE school_db TO school_admin;
