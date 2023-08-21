@@ -15,9 +15,9 @@ public class AddStudent implements IVoidQuery<AddStudentData> {
     private final String url;
     private final Properties properties;
 
-    public AddStudent(Configuration config) {
-        this.url = config.getUrl();
-        this.properties = config.getProps();
+    public AddStudent(Configuration configuration) {
+        this.url = configuration.getUrl();
+        this.properties = configuration.getProps();
     }
 
     @Override
@@ -25,7 +25,7 @@ public class AddStudent implements IVoidQuery<AddStudentData> {
         try (Connection connection = DriverManager.getConnection(url, properties);
              PreparedStatement statement = connection.prepareStatement(ADD_STUDENT_QUERY)) {
             if (data.getGroupId() < 0 || groupIsFull(data.getGroupId())) {
-                throw new IllegalArgumentException("GroupID should be between 1 and 10 or group is full");
+                throw new IllegalArgumentException("GroupID should be positive number or group is full");
             }
             if (data.getGroupId() == 0) {
                 statement.setNull(1, Types.INTEGER);

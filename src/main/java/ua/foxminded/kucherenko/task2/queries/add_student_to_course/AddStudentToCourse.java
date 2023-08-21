@@ -32,8 +32,8 @@ public class AddStudentToCourse implements IVoidQuery<AddStudentToCourseData> {
         if (studentId == null) {
             throw new IllegalArgumentException("Invalid student id: student id is less than 0 or student doesnt exist");
         }
-        if (data.getCourseId() <= 0 || data.getCourseId() > 10) {
-            throw new IllegalArgumentException("Invalid course id: it should be between 1 and 10");
+        if (data.getCourseId() <= 0) {
+            throw new IllegalArgumentException("Invalid course id: it should be more than 0");
         }
         StudentCourseExistence studentCourseExistence = new StudentCourseExistence(studentId, data.getCourseId(), configuration);
         if (studentCourseExistence.executeQueryWithRes()) {
