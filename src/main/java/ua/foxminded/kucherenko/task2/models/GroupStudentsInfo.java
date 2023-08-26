@@ -1,34 +1,52 @@
 package ua.foxminded.kucherenko.task2.models;
 
 public class GroupStudentsInfo {
-    private final int id;
-    private final String name;
-    private final int studentsQuantity;
+    private int groupId;
+    private String groupName;
+    private int numOfStudents;
 
-    public GroupStudentsInfo(int id, String name, int studentQuantity) {
-        this.id = id;
-        this.name = name;
-        this.studentsQuantity = studentQuantity;
+    public GroupStudentsInfo() {
+        this.groupId = 0;
+        this.groupName = null;
+        this.numOfStudents = 0;
     }
 
-    public int getId() {
-        return id;
+    public GroupStudentsInfo(int groupId, String groupName, int numOfStudents) {
+        this.groupId = groupId;
+        this.groupName = groupName;
+        this.numOfStudents = numOfStudents;
     }
 
-    public String getName() {
-        return name;
+    public int getGroupId() {
+        return groupId;
     }
 
-    public int getStudentsQuantity() {
-        return studentsQuantity;
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public int getNumOfStudents() {
+        return numOfStudents;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public void setNumOfStudents(int numOfStudents) {
+        this.numOfStudents = numOfStudents;
     }
 
     @Override
     public String toString() {
         return "Group{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", quantity=" + studentsQuantity +
+                "id=" + groupId +
+                ", name='" + groupName + '\'' +
+                ", quantity=" + numOfStudents +
                 '}';
     }
 }
