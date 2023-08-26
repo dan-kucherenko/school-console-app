@@ -1,39 +1,30 @@
 package ua.foxminded.kucherenko.task2.queries;
 
-import ua.foxminded.kucherenko.task2.db.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
-import java.sql.*;
-import java.util.Properties;
+import javax.sql.DataSource;
 
-public class StudentExistByIdQuery implements IUtilityQuery<Boolean> {
-    private final int studentId;
-    private final String url;
-    private final Properties properties;
-
-    public StudentExistByIdQuery(int studentId, Configuration configuration) {
-        this.studentId = studentId;
-        this.url = configuration.getUrl();
-        this.properties = configuration.getProps();
-    }
-
+@Component
+public class StudentExistByIdQuery {
+    private final JdbcTemplate jdbcTemplate;
     private static final String STUDENT_EXISTS_QUERY_FILEPATH = "src/main/resources/sql_queries/business_queries/student_exists.sql";
     private static final String STUDENT_EXISTS_QUERY = QueryParser.parseQuery(STUDENT_EXISTS_QUERY_FILEPATH);
 
-    @Override
-    public Boolean executeQueryWithRes() {
-        ResultSet resultSet = null;
+    @Autowired
+    public StudentExistByIdQuery(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
 
-        boolean studentExists = true;
+    public Boolean executeQueryWithRes(int studentId) {
+        Integer count = jdbcTemplate.queryForObject(
+                STUDENT_EXISTS_QUERY,
+                new Object[]{studentId},
+                Integer.class
+        );
 
-        try (Connection connection = DriverManager.getConnection(url, properties);
-             PreparedStatement statement = connection.prepareStatement(STUDENT_EXISTS_QUERY)) {
-            statement.setInt(1, studentId);
-            resultSet = statement.executeQuery();
-            studentExists = resultSet.next();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return studentExists;
+        return count != null && count > 0;
     }
 }

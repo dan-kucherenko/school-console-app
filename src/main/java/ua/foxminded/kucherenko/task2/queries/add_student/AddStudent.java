@@ -1,60 +1,54 @@
 package ua.foxminded.kucherenko.task2.queries.add_student;
 
-import ua.foxminded.kucherenko.task2.db.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 import ua.foxminded.kucherenko.task2.queries.IVoidQuery;
 
-import java.sql.*;
-import java.util.Properties;
+import javax.sql.DataSource;
 
+@Component
 public class AddStudent implements IVoidQuery<AddStudentData> {
-    private static final String ADD_STUDENT_QUERY_FILEPATH = "src/main/resources/sql_queries/generators/insert_student.sql";
+    private final JdbcTemplate jdbcTemplate;
+    private static final String ADD_STUDENT_QUERY_FILEPATH = "src/main/resources/sql_queries/business_queries/insert_student.sql";
     private static final String ADD_STUDENT_QUERY = QueryParser.parseQuery(ADD_STUDENT_QUERY_FILEPATH);
     private static final String STUDENT_QUANTITY_QUERY_FILEPATH = "src/main/resources/sql_queries/business_queries/get_student_group_quantity.sql";
-    private static final String STUDENT_QUANTITY_QUERY = QueryParser.parseQuery(STUDENT_QUANTITY_QUERY_FILEPATH);
-    private final String url;
-    private final Properties properties;
+    private static final String STUDENT_QUANTITY_QUERY = QueryParser.parseQuery(STUDENT_QUANTITY_QUERY_FILEPATH).trim();
 
-    public AddStudent(Configuration configuration) {
-        this.url = configuration.getUrl();
-        this.properties = configuration.getProps();
+    @Autowired
+    public AddStudent(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
     public void executeQuery(AddStudentData data) {
-        try (Connection connection = DriverManager.getConnection(url, properties);
-             PreparedStatement statement = connection.prepareStatement(ADD_STUDENT_QUERY)) {
-            if (data.getGroupId() < 0 || groupIsFull(data.getGroupId())) {
-                throw new IllegalArgumentException("GroupID should be positive number or group is full");
-            }
-            if (data.getGroupId() == 0) {
-                statement.setNull(1, Types.INTEGER);
-            } else {
-                statement.setInt(1, data.getGroupId());
-            }
-            statement.setString(2, data.getFirstName());
-            statement.setString(3, data.getLastName());
-            statement.executeUpdate();
-            System.out.println("User " + data.getFirstName() + ' ' + data.getLastName() + " from group "
-                    + data.getGroupId() + " was successfully added");
-        } catch (SQLException e) {
+        int groupQuantity = getGroupQuantity(data.getGroupId());
+
+        if (data.getGroupId() < 0 || groupIsFull(groupQuantity)) {
+            throw new IllegalArgumentException("GroupID should be a positive number or group is full");
+        }
+
+        try {
+            jdbcTemplate.update(
+                    ADD_STUDENT_QUERY,
+                    data.getGroupId() == 0 ? null : data.getGroupId(),
+                    data.getFirstName(),
+                    data.getLastName()
+            );
+
+            System.out.println("User " + data.getFirstName() + ' ' + data.getLastName() + " from group " +
+                    data.getGroupId() + " was successfully added");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private boolean groupIsFull(int groupId) {
-        ResultSet resultSet = null;
-        int groupQuantity = 0;
-        try (Connection connection = DriverManager.getConnection(url, properties);
-             PreparedStatement statement = connection.prepareStatement(STUDENT_QUANTITY_QUERY)) {
+    private int getGroupQuantity(int groupId) {
+        return jdbcTemplate.queryForObject(STUDENT_QUANTITY_QUERY, Integer.class, groupId);
+    }
 
-            statement.setInt(1, groupId);
-            resultSet = statement.executeQuery();
-            resultSet.next();
-            groupQuantity = resultSet.getInt("num_of_students");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    private boolean groupIsFull(int groupQuantity) {
         return groupQuantity >= 30;
     }
 }

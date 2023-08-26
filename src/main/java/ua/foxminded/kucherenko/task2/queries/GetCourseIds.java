@@ -1,38 +1,28 @@
 package ua.foxminded.kucherenko.task2.queries;
 
-import ua.foxminded.kucherenko.task2.db.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
-import java.sql.*;
-import java.util.ArrayList;
+import javax.sql.DataSource;
 import java.util.List;
-import java.util.Properties;
 
-public class GetCourseIds implements IUtilityQuery<List<Integer>> {
-    private final String url;
-    private final Properties properties;
+@Component
+public class GetCourseIds {
+    private final JdbcTemplate jdbcTemplate;
     private static final String GET_COURSES_ID_FILEPATH = "src/main/resources/sql_queries/business_queries/get_all_groups_id.sql";
     private static final String GET_COURSES_ID_QUERY = QueryParser.parseQuery(GET_COURSES_ID_FILEPATH);
 
-    public GetCourseIds(Configuration configuration) {
-        this.url = configuration.getUrl();
-        this.properties = configuration.getProps();
+    @Autowired
+    public GetCourseIds(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    @Override
     public List<Integer> executeQueryWithRes() {
-        ResultSet resultSet = null;
-        List<Integer> courseIds = new ArrayList<>();
-
-        try (Connection connection = DriverManager.getConnection(url, properties);
-             PreparedStatement statement = connection.prepareStatement(GET_COURSES_ID_QUERY)) {
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                courseIds.add(resultSet.getInt("group_id"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return courseIds;
+        return jdbcTemplate.query(
+                GET_COURSES_ID_QUERY,
+                (resultSet, rowNum) -> resultSet.getInt("course_id")
+        );
     }
 }
