@@ -1,10 +1,14 @@
 package ua.foxminded.kucherenko.task2.queries;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ua.foxminded.kucherenko.task2.data_generator.AddDataForTest;
-import ua.foxminded.kucherenko.task2.db.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import ua.foxminded.kucherenko.task2.models.Student;
 import ua.foxminded.kucherenko.task2.queries.find_stud_by_course.FindStudentByCourse;
 import ua.foxminded.kucherenko.task2.queries.find_stud_by_course.FindStudentByCourseData;
@@ -12,20 +16,23 @@ import ua.foxminded.kucherenko.task2.queries.find_stud_by_course.FindStudentByCo
 
 import java.util.List;
 
+@SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Testcontainers
+@Sql({"/database/create_tables.sql", "/database/clear_tables.sql"})
 class FindStudentByCourseTest {
-    private static final TestConfigReader reader = new TestConfigReader();
-    private static final DatabaseConfig testConfig = reader.readTestSchoolAdminConfiguration();
-    private final FindStudentByCourse findStudentByCourse = new FindStudentByCourse(testConfig);
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    private FindStudentByCourse findStudentByCourse;
 
-    @BeforeAll
-    static void initTestData() {
-        DbInit.initDatabase();
-        AddDataForTest testDataGenerator = new AddDataForTest();
-        testDataGenerator.addStudents();
-        testDataGenerator.addStudentCourses();
+    @BeforeEach
+    void setUp() {
+        findStudentByCourse = new FindStudentByCourse(jdbcTemplate);
     }
 
     @Test
+    @Sql({"/sample_data/students_samples.sql", "/sample_data/courses_samples.sql",
+            "/sample_data/student_courses_samples.sql"})
     void findStudentByCourse_ShouldntThrowException() {
         final String courseName = "Physics";
         FindStudentByCourseData data = new FindStudentByCourseData(courseName);
@@ -33,7 +40,6 @@ class FindStudentByCourseTest {
                 new Student(4, 4, "Alice", "Alison")
         );
         List<Student> actualRes = findStudentByCourse.executeQueryWithRes(data);
-
 
         Assertions.assertEquals(expectedRes, actualRes);
     }

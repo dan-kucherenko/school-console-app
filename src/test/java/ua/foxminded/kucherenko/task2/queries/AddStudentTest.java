@@ -1,20 +1,32 @@
 package ua.foxminded.kucherenko.task2.queries;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ua.foxminded.kucherenko.task2.db.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import ua.foxminded.kucherenko.task2.dao.StudentDao;
 import ua.foxminded.kucherenko.task2.queries.add_student.AddStudent;
 import ua.foxminded.kucherenko.task2.queries.add_student.AddStudentData;
 
+@SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Testcontainers
+@Sql({"/database/create_tables.sql", "/database/clear_tables.sql"})
 class AddStudentTest {
-    private static final TestConfigReader reader = new TestConfigReader();
-    private static final DatabaseConfig testConfig = reader.readTestSchoolAdminConfiguration();
-    private final AddStudent addStudent = new AddStudent(testConfig);
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    private AddStudent addStudent;
+    private StudentDao studentDao;
 
-    @BeforeAll
-    static void initTestData() {
-        DbInit.initDatabase();
+    @BeforeEach
+    void setUp() {
+        addStudent = new AddStudent(jdbcTemplate);
+        studentDao = new StudentDao(jdbcTemplate);
     }
 
     @Test
@@ -26,8 +38,8 @@ class AddStudentTest {
         AddStudentData addStudentData = new AddStudentData(groupId, firstName, lastName);
         Assertions.assertDoesNotThrow(() -> addStudent.executeQuery(addStudentData));
         Assertions.assertTrue(() -> {
-            StudentIdByNameQuery studentExistByNameQuery = new StudentIdByNameQuery(firstName, lastName, testConfig);
-            return studentExistByNameQuery.executeQueryWithRes() != null;
+            Integer studentId = studentDao.getIdByName(firstName, lastName);
+            return studentId != null;
         });
     }
 
@@ -40,8 +52,8 @@ class AddStudentTest {
         AddStudentData addStudentData = new AddStudentData(groupId, firstName, lastName);
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudent.executeQuery(addStudentData));
         Assertions.assertFalse(() -> {
-            StudentIdByNameQuery studentExistByNameQuery = new StudentIdByNameQuery(firstName, lastName, testConfig);
-            return studentExistByNameQuery.executeQueryWithRes() != null;
+            Integer studentId = studentDao.getIdByName(firstName, lastName);
+            return studentId != null;
         });
     }
 }

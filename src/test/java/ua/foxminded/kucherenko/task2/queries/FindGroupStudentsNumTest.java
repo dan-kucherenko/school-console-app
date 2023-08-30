@@ -1,26 +1,33 @@
 package ua.foxminded.kucherenko.task2.queries;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ua.foxminded.kucherenko.task2.data_generator.AddDataForTest;
-import ua.foxminded.kucherenko.task2.db.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import ua.foxminded.kucherenko.task2.models.GroupStudentsInfo;
 import ua.foxminded.kucherenko.task2.queries.find_students_num.FindGroupsStudentsNum;
 import ua.foxminded.kucherenko.task2.queries.find_students_num.FindGroupsStudentsNumData;
 
 import java.util.List;
 
+@SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Testcontainers
+@Sql({"/database/create_tables.sql", "/database/clear_tables.sql", "/sample_data/students_samples.sql",
+        "/sample_data/groups_samples.sql"})
 class FindGroupStudentsNumTest {
-    private static final TestConfigReader reader = new TestConfigReader();
-    private static final DatabaseConfig testConfig = reader.readTestSchoolAdminConfiguration();
-    private final FindGroupsStudentsNum findGroupsStudentsNum = new FindGroupsStudentsNum(testConfig);
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    private FindGroupsStudentsNum findGroupsStudentsNum;
 
-    @BeforeAll
-    static void initTestData() {
-        DbInit.initDatabase();
-        AddDataForTest dataAdder = new AddDataForTest();
-        dataAdder.addStudents();
+    @BeforeEach
+    void setUp() {
+        findGroupsStudentsNum = new FindGroupsStudentsNum(jdbcTemplate);
     }
 
     @Test
