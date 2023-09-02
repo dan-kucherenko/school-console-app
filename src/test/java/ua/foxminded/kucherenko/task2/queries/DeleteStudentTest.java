@@ -1,12 +1,10 @@
 package ua.foxminded.kucherenko.task2.queries;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ua.foxminded.kucherenko.task2.dao.StudentDao;
@@ -19,15 +17,9 @@ import ua.foxminded.kucherenko.task2.queries.delete_student.DeleteStudentData;
 @Sql({"/database/create_tables.sql", "/database/clear_tables.sql"})
 class DeleteStudentTest {
     @Autowired
-    private JdbcTemplate jdbcTemplate;
     private DeleteStudent deleteStudent;
+    @Autowired
     private StudentDao studentDao;
-
-    @BeforeEach
-    void setUp() {
-        deleteStudent = new DeleteStudent(jdbcTemplate);
-        studentDao = new StudentDao(jdbcTemplate);
-    }
 
     @Test
     @Sql("/sample_data/students_samples.sql")

@@ -1,12 +1,10 @@
 package ua.foxminded.kucherenko.task2.queries;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ua.foxminded.kucherenko.task2.models.GroupStudentsInfo;
@@ -22,13 +20,7 @@ import java.util.List;
         "/sample_data/groups_samples.sql"})
 class FindGroupStudentsNumTest {
     @Autowired
-    private JdbcTemplate jdbcTemplate;
     private FindGroupsStudentsNum findGroupsStudentsNum;
-
-    @BeforeEach
-    void setUp() {
-        findGroupsStudentsNum = new FindGroupsStudentsNum(jdbcTemplate);
-    }
 
     @Test
     void findGroups_ShouldntThrowException() {

@@ -11,12 +11,8 @@ import java.util.List;
 
 @Component
 public class FindGroupsStudentsNum implements IResultingQuery<List<GroupStudentsInfo>, FindGroupsStudentsNumData> {
-    private final GroupDao groupDao;
-
     @Autowired
-    public FindGroupsStudentsNum(JdbcTemplate jdbcTemplate) {
-        this.groupDao = new GroupDao(jdbcTemplate);
-    }
+    private GroupDao groupDao;
 
     @Override
     public List<GroupStudentsInfo> executeQueryWithRes(FindGroupsStudentsNumData data) {

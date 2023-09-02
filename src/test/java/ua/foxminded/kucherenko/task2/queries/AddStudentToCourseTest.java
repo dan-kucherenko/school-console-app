@@ -1,12 +1,10 @@
 package ua.foxminded.kucherenko.task2.queries;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ua.foxminded.kucherenko.task2.dao.StudentCourseDao;
@@ -22,17 +20,13 @@ import ua.foxminded.kucherenko.task2.queries.add_student_to_course.AddStudentToC
 @Sql({"/database/create_tables.sql", "/database/clear_tables.sql"})
 class AddStudentToCourseTest {
     @Autowired
-    private JdbcTemplate jdbcTemplate;
     private AddStudentToCourse addStudentToCourse;
+    @Autowired
     private StudentDao studentDao;
+    @Autowired
     private StudentCourseDao studentCourseDao;
-
-    @BeforeEach
-    void setUp() {
-        addStudentToCourse = new AddStudentToCourse(jdbcTemplate);
-        studentDao = new StudentDao(jdbcTemplate);
-        studentCourseDao = new StudentCourseDao(jdbcTemplate);
-    }
+    @Autowired
+    private AddStudent addStudent;
 
     @Sql("/sample_data/courses_samples.sql")
     @Test
@@ -41,7 +35,6 @@ class AddStudentToCourseTest {
         final String firstName = "Daniill";
         final String lastName = "Kucherenko";
         AddStudentData studentData = new AddStudentData(groupId, firstName, lastName);
-        AddStudent addStudent = new AddStudent(jdbcTemplate);
         addStudent.executeQuery(studentData);
 
         final int studentId = studentDao.getIdByName(firstName, lastName);
@@ -60,7 +53,12 @@ class AddStudentToCourseTest {
         final int courseId = 6;
         AddStudentToCourseData data = new AddStudentToCourseData(firstName, lastName, courseId);
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));
-        Assertions.assertFalse(() -> studentCourseDao.exists(studentId, courseId));
+        Assertions.assertFalse(() -> {
+            if (studentId == null) {
+                return false;
+            }
+            return studentCourseDao.exists(studentId, courseId);
+        });
     }
 
     @Test
@@ -73,6 +71,9 @@ class AddStudentToCourseTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));
         Assertions.assertFalse(() -> {
             final Integer studentId = studentDao.getIdByName(firstName, lastName);
+            if (studentId == null) {
+                return false;
+            }
             return studentCourseDao.exists(studentId, courseId);
         });
     }
@@ -87,6 +88,9 @@ class AddStudentToCourseTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));
         Assertions.assertFalse(() -> {
             final Integer studentId = studentDao.getIdByName(firstName, lastName);
+            if(studentId == null){
+                return false;
+            }
             return studentCourseDao.exists(studentId, courseId);
         });
     }

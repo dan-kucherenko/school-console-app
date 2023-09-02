@@ -74,7 +74,7 @@ public class StudentDao implements Dao<Student> {
     @Override
     public List<Student> getAll() {
         try {
-            return List.of(jdbcTemplate.queryForObject(GET_ALL_STUDENTS, new BeanPropertyRowMapper<>(Student.class)));
+            return jdbcTemplate.queryForList(GET_ALL_STUDENTS, Student.class);
         } catch (EmptyResultDataAccessException e) {
             return new ArrayList<>();
         }

@@ -3,6 +3,7 @@ package ua.foxminded.kucherenko.task2.dao;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 import ua.foxminded.kucherenko.task2.models.Group;
 import ua.foxminded.kucherenko.task2.models.GroupStudentsInfo;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class GroupDao implements Dao<Group> {
     private final JdbcTemplate jdbcTemplate;
     private static final String GET_GROUP_BY_ID_FILEPATH = "src/main/resources/sql_queries/dao/group/get_group.sql";
@@ -44,21 +46,17 @@ public class GroupDao implements Dao<Group> {
     }
 
     public List<GroupStudentsInfo> getGroupByStudentNum(int studentsNum) {
-        try {
-            return jdbcTemplate.query(
-                    FIND_GROUPS_BY_STUDENTS_NUMBER,
-                    new Object[]{studentsNum},
-                    new BeanPropertyRowMapper<>(GroupStudentsInfo.class)
-            );
-        } catch (EmptyResultDataAccessException e) {
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(
+                FIND_GROUPS_BY_STUDENTS_NUMBER,
+                new Object[]{studentsNum},
+                new BeanPropertyRowMapper<>(GroupStudentsInfo.class)
+        );
     }
 
     @Override
     public List<Group> getAll() {
         try {
-            return List.of(jdbcTemplate.queryForObject(GET_ALL_GROUPS, Group.class));
+            return jdbcTemplate.queryForList(GET_ALL_GROUPS, Group.class);
         } catch (EmptyResultDataAccessException e) {
             return new ArrayList<>();
         }

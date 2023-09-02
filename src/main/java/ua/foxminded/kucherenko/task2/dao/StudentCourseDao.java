@@ -2,12 +2,14 @@ package ua.foxminded.kucherenko.task2.dao;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 import ua.foxminded.kucherenko.task2.models.StudentCourse;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class StudentCourseDao {
     private final JdbcTemplate jdbcTemplate;
     private static final String GET_ALL_STUDENT_COURSES_FILEPATH = "src/main/resources/sql_queries/dao/student_courses/get_all_student_courses.sql";
@@ -26,27 +28,19 @@ public class StudentCourseDao {
 
     public List<StudentCourse> getAll() {
         try {
-            return List.of(jdbcTemplate.queryForObject(GET_ALL_STUDENT_COURSES, StudentCourse.class));
+            return jdbcTemplate.queryForList(GET_ALL_STUDENT_COURSES, StudentCourse.class);
         } catch (EmptyResultDataAccessException e) {
             return new ArrayList<>();
         }
     }
 
-    public boolean exists(Integer studentId, int courseId) {
-        if (studentId == null) {
-            return false;
-        }
-
-        try {
-            Integer count = jdbcTemplate.queryForObject(
-                    STUDENT_COURSE_EXISTS_QUERY,
-                    new Object[]{studentId, courseId},
-                    Integer.class
-            );
-            return count != null && count > 0;
-        } catch (EmptyResultDataAccessException e) {
-            return false;
-        }
+    public boolean exists(int studentId, int courseId) {
+        Integer count = jdbcTemplate.queryForObject(
+                STUDENT_COURSE_EXISTS_QUERY,
+                new Object[]{studentId, courseId},
+                Integer.class
+        );
+        return count != null && count > 0;
     }
 
     public void save(StudentCourse studentCourse) {

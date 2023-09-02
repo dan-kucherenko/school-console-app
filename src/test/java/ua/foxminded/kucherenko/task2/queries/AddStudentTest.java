@@ -1,12 +1,10 @@
 package ua.foxminded.kucherenko.task2.queries;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ua.foxminded.kucherenko.task2.dao.StudentDao;
@@ -19,15 +17,9 @@ import ua.foxminded.kucherenko.task2.queries.add_student.AddStudentData;
 @Sql({"/database/create_tables.sql", "/database/clear_tables.sql"})
 class AddStudentTest {
     @Autowired
-    private JdbcTemplate jdbcTemplate;
     private AddStudent addStudent;
+    @Autowired
     private StudentDao studentDao;
-
-    @BeforeEach
-    void setUp() {
-        addStudent = new AddStudent(jdbcTemplate);
-        studentDao = new StudentDao(jdbcTemplate);
-    }
 
     @Test
     void addStudent_ShouldNotThrowExceptionWhileAddingWithNullGroup() {

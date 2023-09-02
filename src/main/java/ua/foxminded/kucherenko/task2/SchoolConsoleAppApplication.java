@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import ua.foxminded.kucherenko.task2.models.Student;
 import ua.foxminded.kucherenko.task2.queries.QueryResPrinter;
 import ua.foxminded.kucherenko.task2.queries.add_student.AddStudent;
 import ua.foxminded.kucherenko.task2.queries.add_student.AddStudentInput;
@@ -24,7 +25,8 @@ import java.util.Scanner;
 @SpringBootApplication
 public class SchoolConsoleAppApplication {
     private final Map<Integer, Runnable> map;
-    private static final QueryResPrinter RES_PRINTER = new QueryResPrinter();
+    @Autowired
+    private static QueryResPrinter RES_PRINTER;
 
     @Autowired
     public SchoolConsoleAppApplication(
