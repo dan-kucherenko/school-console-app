@@ -6,9 +6,6 @@ public class GroupStudentsInfo {
     private int numOfStudents;
 
     public GroupStudentsInfo() {
-        this.groupId = 0;
-        this.groupName = null;
-        this.numOfStudents = 0;
     }
 
     public GroupStudentsInfo(int groupId, String groupName, int numOfStudents) {

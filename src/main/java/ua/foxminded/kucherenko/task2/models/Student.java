@@ -7,10 +7,6 @@ public class Student {
     private String lastName;
 
     public Student() {
-        this.studentId = 0;
-        this.groupId = 0;
-        this.firstName = null;
-        this.lastName = null;
     }
 
     public Student(int studentId, Integer groupId, String firstName, String lastName) {
