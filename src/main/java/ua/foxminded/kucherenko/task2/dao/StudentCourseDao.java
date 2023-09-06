@@ -1,12 +1,11 @@
 package ua.foxminded.kucherenko.task2.dao;
 
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ua.foxminded.kucherenko.task2.models.StudentCourse;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -27,11 +26,7 @@ public class StudentCourseDao {
     }
 
     public List<StudentCourse> getAll() {
-        try {
-            return jdbcTemplate.queryForList(GET_ALL_STUDENT_COURSES, StudentCourse.class);
-        } catch (EmptyResultDataAccessException e) {
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_ALL_STUDENT_COURSES, new BeanPropertyRowMapper<>(StudentCourse.class));
     }
 
     public boolean exists(int studentId, int courseId) {

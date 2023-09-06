@@ -1,6 +1,7 @@
 package ua.foxminded.kucherenko.task2.dao;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ua.foxminded.kucherenko.task2.models.Course;
@@ -18,12 +19,14 @@ public class CourseDao implements Dao<Course> {
     private static final String ADD_COURSE_FILEPATH = "src/main/resources/sql_queries/dao/course/add_course.sql";
     private static final String UPDATE_COURSE_FILEPATH = "src/main/resources/sql_queries/dao/course/update_course.sql";
     private static final String DELETE_COURSE_FILEPATH = "src/main/resources/sql_queries/dao/course/delete_course.sql";
+    private static final String GET_COURSES_ID_FILEPATH = "src/main/resources/sql_queries/business_queries/get_all_courses_id.sql";
 
     private static final String GET_COURSE_BY_ID = QueryParser.parseQuery(GET_COURSE_BY_ID_FILEPATH);
     private static final String GET_ALL_COURSES = QueryParser.parseQuery(GET_ALL_COURSES_FILEPATH);
     private static final String ADD_COURSE = QueryParser.parseQuery(ADD_COURSE_FILEPATH);
     private static final String UPDATE_COURSE = QueryParser.parseQuery(UPDATE_COURSE_FILEPATH);
     private static final String DELETE_COURSE = QueryParser.parseQuery(DELETE_COURSE_FILEPATH);
+    private static final String GET_COURSES_ID_QUERY = QueryParser.parseQuery(GET_COURSES_ID_FILEPATH);
 
     public CourseDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -32,7 +35,8 @@ public class CourseDao implements Dao<Course> {
     @Override
     public Optional<Course> get(int id) {
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(GET_COURSE_BY_ID, new Object[]{id}, Course.class));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(GET_COURSE_BY_ID,
+                    new Object[]{id}, new BeanPropertyRowMapper<>(Course.class)));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -40,8 +44,12 @@ public class CourseDao implements Dao<Course> {
 
     @Override
     public List<Course> getAll() {
+        return jdbcTemplate.query(GET_ALL_COURSES, new BeanPropertyRowMapper<>(Course.class));
+    }
+
+    public List<Integer> getAllCourseIds() {
         try {
-            return jdbcTemplate.queryForList(GET_ALL_COURSES, Course.class);
+            return jdbcTemplate.queryForList(GET_COURSES_ID_QUERY, Integer.class);
         } catch (EmptyResultDataAccessException e) {
             return new ArrayList<>();
         }

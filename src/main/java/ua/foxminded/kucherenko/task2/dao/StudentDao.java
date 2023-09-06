@@ -22,6 +22,7 @@ public class StudentDao implements Dao<Student> {
     private static final String DELETE_STUDENT_FILEPATH = "src/main/resources/sql_queries/dao/student/delete_student.sql";
     private static final String FIND_STUDENT_BY_COURSE_FILEPATH = "src/main/resources/sql_queries/business_queries/find_student_by_course.sql";
     private static final String STUDENT_ID_QUERY_FILEPATH = "src/main/resources/sql_queries/business_queries/student_exist_by_name.sql";
+    private static final String GET_STUDENTS_ID_FILEPATH = "src/main/resources/sql_queries/business_queries/get_all_students_id.sql";
 
     private static final String GET_STUDENT_BY_ID = QueryParser.parseQuery(GET_STUDENT_BY_ID_FILEPATH);
     private static final String GET_ALL_STUDENTS = QueryParser.parseQuery(GET_ALL_STUDENTS_FILEPATH);
@@ -30,6 +31,8 @@ public class StudentDao implements Dao<Student> {
     private static final String DELETE_STUDENT = QueryParser.parseQuery(DELETE_STUDENT_FILEPATH);
     private static final String FIND_STUDENT_BY_COURSE = QueryParser.parseQuery(FIND_STUDENT_BY_COURSE_FILEPATH);
     private static final String STUDENT_ID_QUERY = QueryParser.parseQuery(STUDENT_ID_QUERY_FILEPATH);
+    private static final String GET_STUDENTS_ID_QUERY = QueryParser.parseQuery(GET_STUDENTS_ID_FILEPATH);
+
 
     @Autowired
     public StudentDao(JdbcTemplate jdbcTemplate) {
@@ -73,8 +76,12 @@ public class StudentDao implements Dao<Student> {
 
     @Override
     public List<Student> getAll() {
+        return jdbcTemplate.query(GET_ALL_STUDENTS, new BeanPropertyRowMapper<>(Student.class));
+    }
+
+    public List<Integer> getAllStudentIds() {
         try {
-            return jdbcTemplate.queryForList(GET_ALL_STUDENTS, Student.class);
+            return jdbcTemplate.queryForList(GET_STUDENTS_ID_QUERY, Integer.class);
         } catch (EmptyResultDataAccessException e) {
             return new ArrayList<>();
         }
