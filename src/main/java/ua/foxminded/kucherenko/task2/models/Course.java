@@ -1,12 +1,30 @@
 package ua.foxminded.kucherenko.task2.models;
 
 public class Course {
+    private int courseId;
     private String courseName;
     private String courseDescription;
+
+    public Course() {
+    }
+
+    public Course(int courseId, String courseName, String courseDescription) {
+        this.courseId = courseId;
+        this.courseName = courseName;
+        this.courseDescription = courseDescription;
+    }
 
     public Course(String courseName, String courseDescription) {
         this.courseName = courseName;
         this.courseDescription = courseDescription;
+    }
+
+    public int getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
     }
 
     public String getCourseName() {
@@ -28,7 +46,8 @@ public class Course {
     @Override
     public String toString() {
         return "Course{" +
-                "courseName='" + courseName + '\'' +
+                "courseId=" + courseId +
+                ", courseName='" + courseName + '\'' +
                 ", courseDescription='" + courseDescription + '\'' +
                 '}';
     }
