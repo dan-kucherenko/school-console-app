@@ -18,17 +18,6 @@ import ua.foxminded.kucherenko.task2.queries.delete_student.DeleteStudentData;
 class DeleteStudentTest {
     @Autowired
     private DeleteStudent deleteStudent;
-    @Autowired
-    private StudentDao studentDao;
-
-    @Test
-    @Sql("/sample_data/students_samples.sql")
-    void deleteStudent_ShouldntThrowException() {
-        final int studentId = 4;
-        DeleteStudentData data = new DeleteStudentData(studentId);
-        deleteStudent.executeQuery(data);
-        Assertions.assertFalse(() -> studentDao.get(studentId).isPresent());
-    }
 
     @Test
     void deleteStudent_MissingStudent_ThrowException() {

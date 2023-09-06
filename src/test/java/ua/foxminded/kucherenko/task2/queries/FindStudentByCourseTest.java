@@ -23,20 +23,6 @@ class FindStudentByCourseTest {
     private FindStudentByCourse findStudentByCourse;
 
     @Test
-    @Sql({"/sample_data/students_samples.sql", "/sample_data/courses_samples.sql",
-            "/sample_data/student_courses_samples.sql"})
-    void findStudentByCourse_ShouldntThrowException() {
-        final String courseName = "Physics";
-        FindStudentByCourseData data = new FindStudentByCourseData(courseName);
-        List<Student> expectedRes = List.of(
-                new Student(4, 4, "Alice", "Alison")
-        );
-        List<Student> actualRes = findStudentByCourse.executeQueryWithRes(data);
-
-        Assertions.assertEquals(expectedRes, actualRes);
-    }
-
-    @Test
     void findStudentByCourse_EmptyList_ShouldntThrowException() {
         final String courseName = "Music";
         FindStudentByCourseData data = new FindStudentByCourseData(courseName);

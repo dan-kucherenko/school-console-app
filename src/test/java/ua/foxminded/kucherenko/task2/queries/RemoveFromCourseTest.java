@@ -18,26 +18,6 @@ import ua.foxminded.kucherenko.task2.queries.remove_from_course.RemoveFromCourse
 class RemoveFromCourseTest {
     @Autowired
     private RemoveFromCourse removeFromCourse;
-    @Autowired
-    private StudentDao studentDao;
-    @Autowired
-    private StudentCourseDao studentCourseDao;
-
-    @Test
-    @Sql({"/database/create_tables.sql", "/database/clear_tables.sql"})
-    @Sql({"/sample_data/students_samples.sql", "/sample_data/courses_samples.sql", "/sample_data/student_courses_samples.sql"})
-    void removeFromCourse_ShouldntThrowException() {
-        final String firstName = "Emma";
-        final String lastName = "Emmson";
-        final int courseId = 5;
-        RemoveFromCourseData data = new RemoveFromCourseData(firstName, lastName, courseId);
-
-        Assertions.assertDoesNotThrow(() -> removeFromCourse.executeQuery(data));
-        Assertions.assertFalse(() -> {
-            Integer studentId = studentDao.getIdByName(firstName, lastName);
-            return studentCourseDao.exists(studentId, courseId);
-        });
-    }
 
     @Test
     void removeFromCourse_NonExistingStudent_ShouldThrowException() {

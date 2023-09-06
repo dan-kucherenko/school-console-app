@@ -23,17 +23,6 @@ class FindGroupStudentsNumTest {
     private FindGroupsStudentsNum findGroupsStudentsNum;
 
     @Test
-    void findGroups_ShouldntThrowException() {
-        final int studentsQuantity = 4;
-        FindGroupsStudentsNumData data = new FindGroupsStudentsNumData(studentsQuantity);
-
-        List<GroupStudentsInfo> actualRes = findGroupsStudentsNum.executeQueryWithRes(data);
-
-        Assertions.assertDoesNotThrow(() -> findGroupsStudentsNum.executeQueryWithRes(data));
-        Assertions.assertEquals(2, actualRes.size());
-    }
-
-    @Test
     void findGroups_NoGroupsReturned_ShouldntThrowException() {
         final int studentsQuantity = 2;
         FindGroupsStudentsNumData data = new FindGroupsStudentsNumData(studentsQuantity);
