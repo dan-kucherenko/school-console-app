@@ -1,3 +1,3 @@
 UPDATE school.groups
-SET groups_name = ?
+SET group_name = ?
 WHERE group_id = ?;
