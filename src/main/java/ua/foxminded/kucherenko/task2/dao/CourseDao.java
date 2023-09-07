@@ -48,11 +48,7 @@ public class CourseDao implements Dao<Course> {
     }
 
     public List<Integer> getAllCourseIds() {
-        try {
-            return jdbcTemplate.queryForList(GET_COURSES_ID_QUERY, Integer.class);
-        } catch (EmptyResultDataAccessException e) {
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.queryForList(GET_COURSES_ID_QUERY, Integer.class);
     }
 
     @Override

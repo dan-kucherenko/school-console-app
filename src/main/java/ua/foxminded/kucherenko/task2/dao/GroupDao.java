@@ -62,11 +62,8 @@ public class GroupDao implements Dao<Group> {
     }
 
     public List<Integer> getAllGroupIds() {
-        try {
-            return jdbcTemplate.queryForList(GET_GROUPS_ID_QUERY, Integer.class);
-        } catch (EmptyResultDataAccessException e) {
-            return new ArrayList<>();
-        }
+
+        return jdbcTemplate.queryForList(GET_GROUPS_ID_QUERY, Integer.class);
     }
 
     public int getGroupQuantity(int groupId) {

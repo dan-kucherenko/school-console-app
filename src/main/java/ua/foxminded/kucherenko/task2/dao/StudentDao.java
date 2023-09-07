@@ -80,11 +80,7 @@ public class StudentDao implements Dao<Student> {
     }
 
     public List<Integer> getAllStudentIds() {
-        try {
-            return jdbcTemplate.queryForList(GET_STUDENTS_ID_QUERY, Integer.class);
-        } catch (EmptyResultDataAccessException e) {
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.queryForList(GET_STUDENTS_ID_QUERY, Integer.class);
     }
 
     @Override
