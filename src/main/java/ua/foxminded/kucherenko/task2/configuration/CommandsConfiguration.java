@@ -1,4 +1,4 @@
-package ua.foxminded.kucherenko.task2;
+package ua.foxminded.kucherenko.task2.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +20,7 @@ import ua.foxminded.kucherenko.task2.queries.remove_from_course.RemoveFromCourse
 import java.util.Map;
 
 @Configuration
-public class Commands {
+public class CommandsConfiguration {
     @Autowired
     private QueryResPrinter resPrinter;
     @Autowired
