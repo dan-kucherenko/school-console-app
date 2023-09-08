@@ -51,4 +51,23 @@ public class Course {
                 ", courseDescription='" + courseDescription + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Course course = (Course) o;
+
+        if (getCourseName() != null ? !getCourseName().equals(course.getCourseName()) : course.getCourseName() != null)
+            return false;
+        return getCourseDescription() != null ? getCourseDescription().equals(course.getCourseDescription()) : course.getCourseDescription() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getCourseName() != null ? getCourseName().hashCode() : 0;
+        result = 31 * result + (getCourseDescription() != null ? getCourseDescription().hashCode() : 0);
+        return result;
+    }
 }
