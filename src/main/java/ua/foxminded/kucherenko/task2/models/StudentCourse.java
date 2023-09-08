@@ -35,4 +35,22 @@ public class StudentCourse {
                 ", courseId=" + courseId +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        StudentCourse that = (StudentCourse) o;
+
+        if (getStudentId() != that.getStudentId()) return false;
+        return getCourseId() == that.getCourseId();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getStudentId();
+        result = 31 * result + getCourseId();
+        return result;
+    }
 }

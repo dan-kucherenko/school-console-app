@@ -1,0 +1,1 @@
+INSERT INTO school.student_courses VALUES (1, 5);
