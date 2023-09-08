@@ -19,7 +19,6 @@ import java.util.Optional;
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
-@Sql({"/database/create_tables.sql", "/database/clear_tables.sql"})
 class CourseDaoTest {
     @Autowired
     private CourseDao courseDao;
@@ -81,9 +80,8 @@ class CourseDaoTest {
     }
 
     @Test
+    @Sql({"/database/drop_tables.sql", "/database/create_tables.sql", "/sample_data/insert_course.sql"})
     void updateCourseById() {
-        final Course course = new Course("TestCourse", "This is a test course");
-        courseDao.save(course);
         final Optional<Course> addedCourse = courseDao.get(1);
         Assertions.assertNotNull(addedCourse);
         final String changedCourseName = "TestCourse1";
