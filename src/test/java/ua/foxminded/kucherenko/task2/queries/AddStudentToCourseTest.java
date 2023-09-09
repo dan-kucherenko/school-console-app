@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ua.foxminded.kucherenko.task2.dao.StudentCourseDao;
@@ -24,11 +25,8 @@ import static org.mockito.Mockito.when;
 class AddStudentToCourseTest {
     @Autowired
     private AddStudentToCourse addStudentToCourse;
-    @Autowired
     @Mock
     private StudentDao studentDao;
-
-    @Autowired
     @Mock
     private StudentCourseDao studentCourseDao;
 
@@ -48,12 +46,7 @@ class AddStudentToCourseTest {
 
         AddStudentToCourseData data = new AddStudentToCourseData(firstName, lastName, courseId);
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));
-        Assertions.assertFalse(() -> {
-            if (studentId == null) {
-                return false;
-            }
-            return studentCourseDao.exists(studentId, courseId);
-        });
+        Assertions.assertFalse(() -> studentCourseDao.exists(studentId, courseId));
     }
 
     @Test
@@ -67,12 +60,7 @@ class AddStudentToCourseTest {
 
         AddStudentToCourseData data = new AddStudentToCourseData(firstName, lastName, courseId);
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));
-        Assertions.assertFalse(() -> {
-            if (studentId == null) {
-                return false;
-            }
-            return studentCourseDao.exists(studentId, courseId);
-        });
+        Assertions.assertFalse(() -> studentCourseDao.exists(studentId, courseId));
     }
 
     @Test
@@ -86,11 +74,6 @@ class AddStudentToCourseTest {
 
         AddStudentToCourseData data = new AddStudentToCourseData(firstName, lastName, courseId);
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));
-        Assertions.assertFalse(() -> {
-            if (studentId == null) {
-                return false;
-            }
-            return studentCourseDao.exists(studentId, courseId);
-        });
+        Assertions.assertFalse(() -> studentCourseDao.exists(studentId, courseId));
     }
 }
