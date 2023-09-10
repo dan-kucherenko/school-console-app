@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ua.foxminded.kucherenko.task2.dao.StudentCourseDao;
@@ -15,6 +16,7 @@ import ua.foxminded.kucherenko.task2.queries.remove_from_course.RemoveFromCourse
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
+@ActiveProfiles("test")
 class RemoveFromCourseTest {
     @Autowired
     private RemoveFromCourse removeFromCourse;

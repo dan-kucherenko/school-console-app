@@ -16,9 +16,9 @@ import java.util.Optional;
 
 
 @SpringBootTest
-@ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
+@ActiveProfiles("test")
 class CourseDaoTest {
     @Autowired
     private CourseDao courseDao;
