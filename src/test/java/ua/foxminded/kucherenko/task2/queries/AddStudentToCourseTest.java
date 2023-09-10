@@ -8,7 +8,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -41,27 +40,25 @@ class AddStudentToCourseTest {
     void addStudentToCourse_MissingStudent_ThrowsException() {
         final String firstName = "Royal";
         final String lastName = "Marines";
-        final Integer studentId = studentDao.getIdByName(firstName, lastName);
+        when(studentDao.getIdByName(firstName, lastName)).thenReturn(null);
+        Integer studentId = studentDao.getIdByName(firstName, lastName);
         final int courseId = 6;
-
-        when(studentCourseDao.exists(studentId, courseId)).thenReturn(false);
 
         AddStudentToCourseData data = new AddStudentToCourseData(firstName, lastName, courseId);
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));
-        Assertions.assertFalse(() -> studentCourseDao.exists(studentId, courseId));
     }
 
     @Test
     void addStudentToCourse_MissingCourseId_ThrowsException() {
-        final String firstName = "Michael1";
+        final String firstName = "1Michael1";
         final String lastName = "Michaelson1";
         final int courseId = 60;
+        when(studentDao.getIdByName(firstName, lastName)).thenReturn(7);
         final Integer studentId = studentDao.getIdByName(firstName, lastName);
-
-        when(studentCourseDao.exists(studentId, courseId)).thenReturn(false);
 
         AddStudentToCourseData data = new AddStudentToCourseData(firstName, lastName, courseId);
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));
+        when(studentCourseDao.exists(studentId, courseId)).thenReturn(false);
         Assertions.assertFalse(() -> studentCourseDao.exists(studentId, courseId));
     }
 
@@ -70,12 +67,10 @@ class AddStudentToCourseTest {
         final String firstName = "Royal";
         final String lastName = "Marines";
         final int courseId = -6;
+        when(studentDao.getIdByName(firstName, lastName)).thenReturn(null);
         final Integer studentId = studentDao.getIdByName(firstName, lastName);
-
-        when(studentCourseDao.exists(studentId, courseId)).thenReturn(false);
 
         AddStudentToCourseData data = new AddStudentToCourseData(firstName, lastName, courseId);
         Assertions.assertThrows(IllegalArgumentException.class, () -> addStudentToCourse.executeQuery(data));
-        Assertions.assertFalse(() -> studentCourseDao.exists(studentId, courseId));
     }
 }
