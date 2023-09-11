@@ -1,0 +1,1 @@
+SELECT * FROM school.student_courses;

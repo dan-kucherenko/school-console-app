@@ -1,29 +1,32 @@
 package ua.foxminded.kucherenko.task2.models;
 
 public class Student {
-    private final int id;
-    private int groupId;
-    private final String firstName;
-    private final String lastName;
+    private int studentId;
+    private Integer groupId;
+    private String firstName;
+    private String lastName;
 
-    public Student(int id, int groupId, String firstName, String lastName) {
-        this.id = id;
+    public Student() {
+    }
+
+    public Student(int studentId, Integer groupId, String firstName, String lastName) {
+        this.studentId = studentId;
         this.groupId = groupId;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public Student(int id, String firstName, String lastName) {
-        this.id = id;
+    public Student(int groupId, String firstName, String lastName) {
+        this.groupId = groupId;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public int getId() {
-        return id;
+    public int getStudentId() {
+        return studentId;
     }
 
-    public int getGroupId() {
+    public Integer getGroupId() {
         return groupId;
     }
 
@@ -35,8 +38,30 @@ public class Student {
         return lastName;
     }
 
-    public void setGroupId(int groupId) {
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
+    }
+
+    public void setGroupId(Integer groupId) {
         this.groupId = groupId;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "studentId=" + studentId +
+                ", groupId=" + groupId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 
     @Override
@@ -46,8 +71,8 @@ public class Student {
 
         Student student = (Student) o;
 
-        if (getId() != student.getId()) return false;
-        if (getGroupId() != student.getGroupId()) return false;
+        if (getGroupId() != null ? !getGroupId().equals(student.getGroupId()) : student.getGroupId() != null)
+            return false;
         if (getFirstName() != null ? !getFirstName().equals(student.getFirstName()) : student.getFirstName() != null)
             return false;
         return getLastName() != null ? getLastName().equals(student.getLastName()) : student.getLastName() == null;
@@ -55,20 +80,9 @@ public class Student {
 
     @Override
     public int hashCode() {
-        int result = getId();
-        result = 31 * result + getGroupId();
+        int result = getGroupId() != null ? getGroupId().hashCode() : 0;
         result = 31 * result + (getFirstName() != null ? getFirstName().hashCode() : 0);
         result = 31 * result + (getLastName() != null ? getLastName().hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Student{" +
-                "id=" + id +
-                ", groupId=" + groupId +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                '}';
     }
 }

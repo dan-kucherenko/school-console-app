@@ -1,60 +1,46 @@
 package ua.foxminded.kucherenko.task2.queries.add_student;
 
-import ua.foxminded.kucherenko.task2.db.Configuration;
-import ua.foxminded.kucherenko.task2.parser.QueryParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import ua.foxminded.kucherenko.task2.dao.GroupDao;
+import ua.foxminded.kucherenko.task2.dao.StudentDao;
+import ua.foxminded.kucherenko.task2.models.Student;
 import ua.foxminded.kucherenko.task2.queries.IVoidQuery;
 
-import java.sql.*;
-import java.util.Properties;
-
+@Component
 public class AddStudent implements IVoidQuery<AddStudentData> {
-    private static final String ADD_STUDENT_QUERY_FILEPATH = "src/main/resources/sql_queries/generators/insert_student.sql";
-    private static final String ADD_STUDENT_QUERY = QueryParser.parseQuery(ADD_STUDENT_QUERY_FILEPATH);
-    private static final String STUDENT_QUANTITY_QUERY_FILEPATH = "src/main/resources/sql_queries/business_queries/get_student_group_quantity.sql";
-    private static final String STUDENT_QUANTITY_QUERY = QueryParser.parseQuery(STUDENT_QUANTITY_QUERY_FILEPATH);
-    private final String url;
-    private final Properties properties;
-
-    public AddStudent(Configuration configuration) {
-        this.url = configuration.getUrl();
-        this.properties = configuration.getProps();
-    }
+    @Autowired
+    private StudentDao studentDao;
+    @Autowired
+    private GroupDao groupDao;
+    private static final int MAX_GROUP_CAPACITY = 30;
+    private static final Logger LOGGER = LogManager.getLogger(AddStudent.class);
 
     @Override
     public void executeQuery(AddStudentData data) {
-        try (Connection connection = DriverManager.getConnection(url, properties);
-             PreparedStatement statement = connection.prepareStatement(ADD_STUDENT_QUERY)) {
-            if (data.getGroupId() < 0 || groupIsFull(data.getGroupId())) {
-                throw new IllegalArgumentException("GroupID should be positive number or group is full");
-            }
-            if (data.getGroupId() == 0) {
-                statement.setNull(1, Types.INTEGER);
-            } else {
-                statement.setInt(1, data.getGroupId());
-            }
-            statement.setString(2, data.getFirstName());
-            statement.setString(3, data.getLastName());
-            statement.executeUpdate();
-            System.out.println("User " + data.getFirstName() + ' ' + data.getLastName() + " from group "
-                    + data.getGroupId() + " was successfully added");
-        } catch (SQLException e) {
+        if (data.getGroupId() < 0) {
+            throw new IllegalArgumentException("GroupID should be a positive number");
+        }
+
+        int groupQuantity = groupDao.getGroupQuantity(data.getGroupId());
+
+        if (groupIsFull(groupQuantity)) {
+            throw new IllegalArgumentException("Group is full");
+        }
+
+        try {
+            Student student = new Student(data.getGroupId(), data.getFirstName(), data.getLastName());
+            studentDao.save(student);
+            LOGGER.info("Student " + data.getFirstName() + ' ' + data.getLastName() + " from group " +
+                    data.getGroupId() + " was successfully added");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private boolean groupIsFull(int groupId) {
-        ResultSet resultSet = null;
-        int groupQuantity = 0;
-        try (Connection connection = DriverManager.getConnection(url, properties);
-             PreparedStatement statement = connection.prepareStatement(STUDENT_QUANTITY_QUERY)) {
-
-            statement.setInt(1, groupId);
-            resultSet = statement.executeQuery();
-            resultSet.next();
-            groupQuantity = resultSet.getInt("num_of_students");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return groupQuantity >= 30;
+    private boolean groupIsFull(int groupQuantity) {
+        return groupQuantity >= MAX_GROUP_CAPACITY;
     }
 }

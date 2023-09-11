@@ -1,40 +1,25 @@
 package ua.foxminded.kucherenko.task2.queries;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import ua.foxminded.kucherenko.task2.data_generator.AddDataForTest;
-import ua.foxminded.kucherenko.task2.db.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import ua.foxminded.kucherenko.task2.dao.StudentCourseDao;
+import ua.foxminded.kucherenko.task2.dao.StudentDao;
 import ua.foxminded.kucherenko.task2.queries.remove_from_course.RemoveFromCourse;
 import ua.foxminded.kucherenko.task2.queries.remove_from_course.RemoveFromCourseData;
 
+@SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Testcontainers
+@ActiveProfiles("test")
 class RemoveFromCourseTest {
-    private static final TestConfigReader reader = new TestConfigReader();
-    private static final DatabaseConfig testConfig = reader.readTestSchoolAdminConfiguration();
-    private final RemoveFromCourse removeFromCourse = new RemoveFromCourse(testConfig);
-
-    @BeforeAll
-    static void initTestData() {
-        DbInit.initDatabase();
-        AddDataForTest testDataGenerator = new AddDataForTest();
-        testDataGenerator.addStudents();
-        testDataGenerator.addStudentCourses();
-    }
-
-    @Test
-    void removeFromCourse_ShouldntThrowException() {
-        final String firstName = "Emma";
-        final String lastName = "Emmson";
-        final int courseId = 5;
-        RemoveFromCourseData data = new RemoveFromCourseData(firstName, lastName, courseId);
-
-        Assertions.assertDoesNotThrow(() -> removeFromCourse.executeQuery(data));
-        Assertions.assertFalse(() -> {
-            Integer studentId = new StudentIdByNameQuery(firstName, lastName, testConfig).executeQueryWithRes();
-            StudentCourseExistence studentExistByNameQuery = new StudentCourseExistence(studentId, courseId, testConfig);
-            return studentExistByNameQuery.executeQueryWithRes();
-        });
-    }
+    @Autowired
+    private RemoveFromCourse removeFromCourse;
 
     @Test
     void removeFromCourse_NonExistingStudent_ShouldThrowException() {

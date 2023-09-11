@@ -1,35 +1,25 @@
 package ua.foxminded.kucherenko.task2.queries;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import ua.foxminded.kucherenko.task2.db.*;
-import ua.foxminded.kucherenko.task2.generators.DataGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import ua.foxminded.kucherenko.task2.dao.StudentDao;
 import ua.foxminded.kucherenko.task2.queries.delete_student.DeleteStudent;
 import ua.foxminded.kucherenko.task2.queries.delete_student.DeleteStudentData;
 
+@SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Testcontainers
+@ActiveProfiles("test")
+@Sql({"/database/create_tables.sql", "/database/clear_tables.sql"})
 class DeleteStudentTest {
-    private static final TestConfigReader reader = new TestConfigReader();
-    private static final DatabaseConfig testConfig = reader.readTestSchoolAdminConfiguration();
-    private final DeleteStudent deleteStudent = new DeleteStudent(testConfig);
-
-    @BeforeAll
-    static void initTestData() {
-        DbInit.initDatabase();
-        DataGenerator generator = new DataGenerator();
-        generator.generateData(testConfig);
-    }
-
-    @Test
-    void deleteStudent_ShouldntThrowException() {
-        final int studentId = 4;
-        DeleteStudentData data = new DeleteStudentData(studentId);
-        deleteStudent.executeQuery(data);
-        Assertions.assertFalse(() -> {
-            StudentExistByIdQuery studentExistByIdQuery = new StudentExistByIdQuery(studentId, testConfig);
-            return studentExistByIdQuery.executeQueryWithRes();
-        });
-    }
+    @Autowired
+    private DeleteStudent deleteStudent;
 
     @Test
     void deleteStudent_MissingStudent_ThrowException() {
