@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
@@ -31,7 +30,6 @@ class CourseDaoTest {
         final String courseDescription = "Study of numbers, quantities, and shapes.";
 
         Optional<Course> course = courseDao.get(courseId);
-        System.out.println(courseDao.getAll());
         Assertions.assertFalse(course.isEmpty());
         Assertions.assertEquals(course.get().getCourseName(), courseName);
         Assertions.assertEquals(course.get().getCourseDescription(), courseDescription);
@@ -85,9 +83,12 @@ class CourseDaoTest {
         final Optional<Course> addedCourse = courseDao.get(1);
         Assertions.assertNotNull(addedCourse);
         final String changedCourseName = "TestCourse1";
-        final Course changedCourse = new Course(changedCourseName, "This is a test course");
+        final String courseDescription = "This is a test course";
+        final Course changedCourse = new Course(changedCourseName, courseDescription);
         courseDao.update(1, changedCourse);
-        Assertions.assertNotNull(courseDao.get(1));
+        Assertions.assertTrue(courseDao.get(1).isPresent());
+        Assertions.assertEquals(courseDao.get(1).get().getCourseName(), changedCourseName);
+        Assertions.assertEquals(courseDao.get(1).get().getCourseDescription(), courseDescription);
     }
 
     @Test

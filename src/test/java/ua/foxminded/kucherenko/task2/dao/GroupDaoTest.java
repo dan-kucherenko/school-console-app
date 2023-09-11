@@ -67,21 +67,27 @@ class GroupDaoTest {
     @Test
     @Sql({"/database/drop_tables.sql", "/database/create_tables.sql"})
     void saveGroup() {
-        final Group group = new Group("TestGroup");
+        final String groupName = "TestGroup";
+        final Group group = new Group(groupName);
         final int addedGroupId = 1;
         Assertions.assertTrue(groupDao.get(addedGroupId).isEmpty());
         groupDao.save(group);
         Assertions.assertNotNull(groupDao.get(addedGroupId));
+        Assertions.assertEquals(groupDao.get(addedGroupId).get().getGroupId(), addedGroupId);
+        Assertions.assertEquals(groupDao.get(addedGroupId).get().getGroupName(), groupName);
     }
 
     @Test
     @Sql("/sample_data/insert_group.sql")
     void updateGroup() {
         final int addedGroupId = 1;
+        final String updatedGroupName = "TestGroup1";
         Assertions.assertNotNull(groupDao.get(addedGroupId));
-        final Group changedGroup = new Group("TestGroup1");
+        final Group changedGroup = new Group(updatedGroupName);
         groupDao.update(addedGroupId, changedGroup);
         Assertions.assertNotNull(groupDao.get(addedGroupId));
+        Assertions.assertEquals(groupDao.get(addedGroupId).get().getGroupId(), addedGroupId);
+        Assertions.assertEquals(groupDao.get(addedGroupId).get().getGroupName(), updatedGroupName);
     }
 
     @Test
@@ -89,6 +95,6 @@ class GroupDaoTest {
     void deleteGroup() {
         final int addedGroupId = 1;
         groupDao.delete(addedGroupId);
-        Assertions.assertNotNull(groupDao.get(addedGroupId));
+        Assertions.assertFalse(groupDao.get(addedGroupId).isPresent());
     }
 }

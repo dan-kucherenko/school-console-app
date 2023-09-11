@@ -74,21 +74,35 @@ class StudentDaoTest {
     @Test
     @Sql({"/database/drop_tables.sql", "/database/create_tables.sql"})
     void saveStudent() {
-        final Student student = new Student(4, "Daniil", "Kucherenko");
-        Assertions.assertNull(studentDao.getIdByName("Daniil", "Kucherenko"));
+        final int groupId = 4;
+        final String firstName = "Daniil";
+        final String lastName = "Kucherenko";
+        final Student student = new Student(groupId, firstName, lastName);
+        Assertions.assertNull(studentDao.getIdByName(firstName, lastName));
         studentDao.save(student);
-        Assertions.assertNotNull(studentDao.getIdByName("Daniil", "Kucherenko"));
+        final Integer studentId =studentDao.getIdByName(firstName, lastName);
+        Assertions.assertNotNull(studentId);
+        Assertions.assertEquals(studentDao.get(studentId).get().getGroupId(), groupId);
+        Assertions.assertEquals(studentDao.get(studentId).get().getFirstName(), firstName);
+        Assertions.assertEquals(studentDao.get(studentId).get().getLastName(), lastName);
     }
 
     @Test
     @Sql({"/database/drop_tables.sql", "/database/create_tables.sql", "/sample_data/insert_student.sql"})
     void updateStudentById() {
-        final Integer studentId = studentDao.getIdByName("John", "Johnson");
+        final int groupId = 4;
+        final String initialFirstName = "John";
+        final String initialLastName = "Johnson";
+        final Integer studentId = studentDao.getIdByName(initialFirstName, initialLastName);
         Assertions.assertNotNull(studentId);
         final String changedStudentName = "Daniil1";
-        final Student changedStudent = new Student(4, changedStudentName, "Johnson");
+        final Student changedStudent = new Student(groupId, changedStudentName, initialLastName);
         studentDao.update(studentId, changedStudent);
-        Assertions.assertNotNull(studentDao.getIdByName(changedStudentName, "Johnson"));
+        final Integer changedStudentId = studentDao.getIdByName(changedStudentName, initialLastName);
+        Assertions.assertNotNull(changedStudentId);
+        Assertions.assertEquals(studentDao.get(studentId).get().getGroupId(), groupId);
+        Assertions.assertEquals(studentDao.get(studentId).get().getFirstName(), changedStudentName);
+        Assertions.assertEquals(studentDao.get(studentId).get().getLastName(), initialLastName);
     }
 
     @Test
