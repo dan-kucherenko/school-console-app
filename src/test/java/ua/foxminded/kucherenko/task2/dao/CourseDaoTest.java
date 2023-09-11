@@ -12,7 +12,6 @@ import ua.foxminded.kucherenko.task2.models.Course;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -29,10 +28,10 @@ class CourseDaoTest {
         final String courseName = "Math";
         final String courseDescription = "Study of numbers, quantities, and shapes.";
 
-        Optional<Course> course = courseDao.get(courseId);
-        Assertions.assertFalse(course.isEmpty());
-        Assertions.assertEquals(course.get().getCourseName(), courseName);
-        Assertions.assertEquals(course.get().getCourseDescription(), courseDescription);
+        final Course course = courseDao.get(courseId).get();
+        Assertions.assertFalse(courseDao.get(courseId).isEmpty());
+        Assertions.assertEquals(course.getCourseName(), courseName);
+        Assertions.assertEquals(course.getCourseDescription(), courseDescription);
     }
 
     @Test
@@ -80,15 +79,17 @@ class CourseDaoTest {
     @Test
     @Sql({"/database/drop_tables.sql", "/database/create_tables.sql", "/sample_data/insert_course.sql"})
     void updateCourseById() {
-        final Optional<Course> addedCourse = courseDao.get(1);
+        final Course addedCourse = courseDao.get(1).get();
         Assertions.assertNotNull(addedCourse);
         final String changedCourseName = "TestCourse1";
         final String courseDescription = "This is a test course";
         final Course changedCourse = new Course(changedCourseName, courseDescription);
         courseDao.update(1, changedCourse);
+
+        final Course changedCourseFromDb = courseDao.get(1).get();
         Assertions.assertTrue(courseDao.get(1).isPresent());
-        Assertions.assertEquals(courseDao.get(1).get().getCourseName(), changedCourseName);
-        Assertions.assertEquals(courseDao.get(1).get().getCourseDescription(), courseDescription);
+        Assertions.assertEquals(changedCourseFromDb.getCourseName(), changedCourseName);
+        Assertions.assertEquals(changedCourseFromDb.getCourseDescription(), courseDescription);
     }
 
     @Test

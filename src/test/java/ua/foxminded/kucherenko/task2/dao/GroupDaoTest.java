@@ -12,7 +12,6 @@ import ua.foxminded.kucherenko.task2.models.Group;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -27,9 +26,9 @@ class GroupDaoTest {
     void getGroupById() {
         final int groupId = 1;
         final String groupName = "OC-26";
-        final Optional<Group> group = groupDao.get(groupId);
-        Assertions.assertFalse(group.isEmpty());
-        Assertions.assertEquals(group.get().getGroupName(), groupName);
+        final Group group = groupDao.get(groupId).get();
+        Assertions.assertFalse(groupDao.get(groupId).isEmpty());
+        Assertions.assertEquals(group.getGroupName(), groupName);
     }
 
     @Test
@@ -72,9 +71,11 @@ class GroupDaoTest {
         final int addedGroupId = 1;
         Assertions.assertTrue(groupDao.get(addedGroupId).isEmpty());
         groupDao.save(group);
-        Assertions.assertNotNull(groupDao.get(addedGroupId));
-        Assertions.assertEquals(groupDao.get(addedGroupId).get().getGroupId(), addedGroupId);
-        Assertions.assertEquals(groupDao.get(addedGroupId).get().getGroupName(), groupName);
+
+        final Group savedGroup = groupDao.get(addedGroupId).get();
+        Assertions.assertTrue(groupDao.get(addedGroupId).isPresent());
+        Assertions.assertEquals(savedGroup.getGroupId(), addedGroupId);
+        Assertions.assertEquals(savedGroup.getGroupName(), groupName);
     }
 
     @Test
@@ -85,9 +86,11 @@ class GroupDaoTest {
         Assertions.assertNotNull(groupDao.get(addedGroupId));
         final Group changedGroup = new Group(updatedGroupName);
         groupDao.update(addedGroupId, changedGroup);
-        Assertions.assertNotNull(groupDao.get(addedGroupId));
-        Assertions.assertEquals(groupDao.get(addedGroupId).get().getGroupId(), addedGroupId);
-        Assertions.assertEquals(groupDao.get(addedGroupId).get().getGroupName(), updatedGroupName);
+
+        final Group changedGroupFromDb = groupDao.get(addedGroupId).get();
+        Assertions.assertTrue(groupDao.get(addedGroupId).isPresent());
+        Assertions.assertEquals(changedGroupFromDb.getGroupId(), addedGroupId);
+        Assertions.assertEquals(changedGroupFromDb.getGroupName(), updatedGroupName);
     }
 
     @Test

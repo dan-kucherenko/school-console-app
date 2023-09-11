@@ -78,13 +78,18 @@ class StudentDaoTest {
         final String firstName = "Daniil";
         final String lastName = "Kucherenko";
         final Student student = new Student(groupId, firstName, lastName);
-        Assertions.assertNull(studentDao.getIdByName(firstName, lastName));
+        Integer studentId;
+        studentId = studentDao.getIdByName(firstName, lastName);
+        Assertions.assertNull(studentId);
         studentDao.save(student);
-        final Integer studentId = studentDao.getIdByName(firstName, lastName);
+
+        studentId = studentDao.getIdByName(firstName, lastName);
+        final Student savedStudent = studentDao.get(studentId).get();
         Assertions.assertNotNull(studentId);
-        Assertions.assertEquals(studentDao.get(studentId).get().getGroupId(), groupId);
-        Assertions.assertEquals(studentDao.get(studentId).get().getFirstName(), firstName);
-        Assertions.assertEquals(studentDao.get(studentId).get().getLastName(), lastName);
+
+        Assertions.assertEquals(savedStudent.getGroupId(), groupId);
+        Assertions.assertEquals(savedStudent.getFirstName(), firstName);
+        Assertions.assertEquals(savedStudent.getLastName(), lastName);
     }
 
     @Test
@@ -98,7 +103,7 @@ class StudentDaoTest {
         final String changedStudentName = "Daniil1";
         final Student changedStudent = new Student(groupId, changedStudentName, initialLastName);
         studentDao.update(studentId, changedStudent);
-        
+
         final Integer changedStudentId = studentDao.getIdByName(changedStudentName, initialLastName);
         final Student updatedStudent = studentDao.get(studentId).get();
 
