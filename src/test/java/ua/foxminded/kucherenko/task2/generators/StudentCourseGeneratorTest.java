@@ -4,20 +4,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import ua.foxminded.kucherenko.task2.dao.CourseDao;
 import ua.foxminded.kucherenko.task2.dao.StudentCourseDao;
+import ua.foxminded.kucherenko.task2.dao.StudentDao;
+
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Testcontainers
 @ActiveProfiles("test")
 class StudentCourseGeneratorTest {
     @Autowired
@@ -26,21 +26,30 @@ class StudentCourseGeneratorTest {
     private StudentsGenerator studentsGenerator;
     @Autowired
     private CoursesGenerator coursesGenerator;
+
     @MockBean
     private StudentCourseDao studentCourseDao;
+    @MockBean
+    private StudentDao studentDao;
+    @MockBean
+    private CourseDao courseDao;
 
     @BeforeEach
     void generateStudents() {
         MockitoAnnotations.initMocks(this);
         studentsGenerator.addToDb();
         coursesGenerator.addToDb();
+        when(studentDao.getAllStudentIds()).thenReturn(IntStream.rangeClosed(1, 200).boxed().toList());
+        when(courseDao.getAllCourseIds()).thenReturn(IntStream.rangeClosed(1, 10).boxed().toList());
         studentCourseGenerator.addToDb();
     }
 
     @Test
-    @Sql("/database/create_tables.sql")
     void checkStudentsNumber() {
-        final int studentCoursesListSize = 200;
+        final int studentListSize = 200;
+        final int coursesListSize = 10;
         verify(studentCourseDao, atLeastOnce()).save(any());
+        verify(studentDao, times(studentListSize)).save(any());
+        verify(courseDao, times(coursesListSize)).save(any());
     }
 }
