@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import ua.foxminded.kucherenko.task2.models.Course;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
