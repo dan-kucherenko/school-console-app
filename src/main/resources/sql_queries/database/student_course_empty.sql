@@ -1,0 +1,1 @@
+SELECT COUNT(*) FROM school.student_courses;
