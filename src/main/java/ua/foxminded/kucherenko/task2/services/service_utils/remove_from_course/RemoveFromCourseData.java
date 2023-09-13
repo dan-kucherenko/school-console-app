@@ -1,6 +1,6 @@
-package ua.foxminded.kucherenko.task2.queries.remove_from_course;
+package ua.foxminded.kucherenko.task2.services.service_utils.remove_from_course;
 
-import ua.foxminded.kucherenko.task2.queries.IQueryData;
+import ua.foxminded.kucherenko.task2.services.service_utils.IQueryData;
 
 public class RemoveFromCourseData implements IQueryData {
     private final String firstName;

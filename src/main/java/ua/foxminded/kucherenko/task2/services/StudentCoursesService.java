@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import ua.foxminded.kucherenko.task2.dao.StudentCourseDao;
 import ua.foxminded.kucherenko.task2.dao.StudentDao;
 import ua.foxminded.kucherenko.task2.models.StudentCourse;
-import ua.foxminded.kucherenko.task2.queries.add_student_to_course.AddStudentToCourseData;
-import ua.foxminded.kucherenko.task2.queries.remove_from_course.RemoveFromCourseData;
+import ua.foxminded.kucherenko.task2.services.service_utils.add_student_to_course.AddStudentToCourseData;
+import ua.foxminded.kucherenko.task2.services.service_utils.remove_from_course.RemoveFromCourseData;
 
 @Service
 public class StudentCoursesService {

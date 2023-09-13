@@ -1,6 +1,6 @@
-package ua.foxminded.kucherenko.task2.queries.remove_from_course;
+package ua.foxminded.kucherenko.task2.services.service_utils.remove_from_course;
 
-import ua.foxminded.kucherenko.task2.queries.IInputParser;
+import ua.foxminded.kucherenko.task2.services.service_utils.IInputParser;
 
 import java.util.Scanner;
 

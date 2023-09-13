@@ -1,6 +1,6 @@
-package ua.foxminded.kucherenko.task2.queries.add_student_to_course;
+package ua.foxminded.kucherenko.task2.services.service_utils.add_student_to_course;
 
-import ua.foxminded.kucherenko.task2.queries.IInputParser;
+import ua.foxminded.kucherenko.task2.services.service_utils.IInputParser;
 
 import java.util.Scanner;
 

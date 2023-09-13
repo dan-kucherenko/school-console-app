@@ -1,6 +1,6 @@
-package ua.foxminded.kucherenko.task2.queries.find_stud_by_course;
+package ua.foxminded.kucherenko.task2.services.service_utils.find_stud_by_course;
 
-import ua.foxminded.kucherenko.task2.queries.IQueryData;
+import ua.foxminded.kucherenko.task2.services.service_utils.IQueryData;
 
 public class FindStudentByCourseData implements IQueryData {
     private final String courseName;

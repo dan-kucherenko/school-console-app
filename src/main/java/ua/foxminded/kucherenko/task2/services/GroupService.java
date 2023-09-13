@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.foxminded.kucherenko.task2.dao.GroupDao;
 import ua.foxminded.kucherenko.task2.models.GroupStudentsInfo;
-import ua.foxminded.kucherenko.task2.queries.find_students_num.FindGroupsStudentsNumData;
+import ua.foxminded.kucherenko.task2.services.service_utils.find_students_num.FindGroupsStudentsNumData;
 
 import java.util.List;
 

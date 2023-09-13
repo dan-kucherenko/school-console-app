@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 import ua.foxminded.kucherenko.task2.dao.GroupDao;
 import ua.foxminded.kucherenko.task2.dao.StudentDao;
 import ua.foxminded.kucherenko.task2.models.Student;
-import ua.foxminded.kucherenko.task2.queries.add_student.AddStudentData;
-import ua.foxminded.kucherenko.task2.queries.delete_student.DeleteStudentData;
-import ua.foxminded.kucherenko.task2.queries.find_stud_by_course.FindStudentByCourseData;
+import ua.foxminded.kucherenko.task2.services.service_utils.add_student.AddStudentData;
+import ua.foxminded.kucherenko.task2.services.service_utils.delete_student.DeleteStudentData;
+import ua.foxminded.kucherenko.task2.services.service_utils.find_stud_by_course.FindStudentByCourseData;
 
 import java.util.List;
 

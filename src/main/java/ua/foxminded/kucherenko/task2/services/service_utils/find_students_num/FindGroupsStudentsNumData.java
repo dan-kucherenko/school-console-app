@@ -1,6 +1,6 @@
-package ua.foxminded.kucherenko.task2.queries.find_students_num;
+package ua.foxminded.kucherenko.task2.services.service_utils.find_students_num;
 
-import ua.foxminded.kucherenko.task2.queries.IQueryData;
+import ua.foxminded.kucherenko.task2.services.service_utils.IQueryData;
 
 public class FindGroupsStudentsNumData implements IQueryData {
     private final int studentsQuantity;

@@ -1,6 +1,6 @@
-package ua.foxminded.kucherenko.task2.queries.add_student;
+package ua.foxminded.kucherenko.task2.services.service_utils.add_student;
 
-import ua.foxminded.kucherenko.task2.queries.IQueryData;
+import ua.foxminded.kucherenko.task2.services.service_utils.IQueryData;
 
 public class AddStudentData implements IQueryData {
     private final int  groupId;
