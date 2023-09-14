@@ -30,8 +30,8 @@ public class DataGenerator {
         refreshId();
         List<IGenerator> generators = List.of(
                 coursesGenerator,
-                studentsGenerator,
                 groupsGenerator,
+                studentsGenerator,
                 studentCourseGenerator
         );
         generators.forEach(IGenerator::addToDb);
