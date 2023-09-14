@@ -62,6 +62,13 @@ class GroupDaoTest {
         Assertions.assertEquals(Arrays.stream(expectedGroupIds).toList(), groupsIds);
     }
 
+    @Test
+    @Sql({"/database/drop_tables.sql", "/database/create_tables.sql", "/sample_data/groups_samples.sql"})
+    void countAllGroups() {
+        final int groupsNumber = 10;
+        Assertions.assertEquals(groupsNumber, groupDao.countAll());
+    }
+
 
     @Test
     @Sql({"/database/drop_tables.sql", "/database/create_tables.sql"})

@@ -1,67 +1,56 @@
 package ua.foxminded.kucherenko.task2.configuration;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ua.foxminded.kucherenko.task2.queries.QueryResPrinter;
-import ua.foxminded.kucherenko.task2.queries.add_student.AddStudent;
-import ua.foxminded.kucherenko.task2.queries.add_student.AddStudentInput;
-import ua.foxminded.kucherenko.task2.queries.add_student_to_course.AddStudentToCourse;
-import ua.foxminded.kucherenko.task2.queries.add_student_to_course.AddStudentToCourseInput;
-import ua.foxminded.kucherenko.task2.queries.delete_student.DeleteStudent;
-import ua.foxminded.kucherenko.task2.queries.delete_student.DeleteStudentInput;
-import ua.foxminded.kucherenko.task2.queries.find_stud_by_course.FindStudentByCourse;
-import ua.foxminded.kucherenko.task2.queries.find_stud_by_course.FindStudentByCourseInput;
-import ua.foxminded.kucherenko.task2.queries.find_students_num.FindGroupsStudentNumInput;
-import ua.foxminded.kucherenko.task2.queries.find_students_num.FindGroupsStudentsNum;
-import ua.foxminded.kucherenko.task2.queries.remove_from_course.RemoveFromCourse;
-import ua.foxminded.kucherenko.task2.queries.remove_from_course.RemoveFromCourseInput;
+import ua.foxminded.kucherenko.task2.services.service_utils.QueryResPrinter;
+import ua.foxminded.kucherenko.task2.services.service_utils.add_student.AddStudentInput;
+import ua.foxminded.kucherenko.task2.services.service_utils.add_student_to_course.AddStudentToCourseInput;
+import ua.foxminded.kucherenko.task2.services.service_utils.delete_student.DeleteStudentInput;
+import ua.foxminded.kucherenko.task2.services.service_utils.find_stud_by_course.FindStudentByCourseInput;
+import ua.foxminded.kucherenko.task2.services.service_utils.find_students_num.FindGroupsStudentNumInput;
+import ua.foxminded.kucherenko.task2.services.service_utils.remove_from_course.RemoveFromCourseInput;
+import ua.foxminded.kucherenko.task2.services.GroupService;
+import ua.foxminded.kucherenko.task2.services.StudentCoursesService;
+import ua.foxminded.kucherenko.task2.services.StudentService;
 
 import java.util.Map;
 
 @Configuration
 public class CommandsConfiguration {
-    @Autowired
-    private QueryResPrinter resPrinter;
-    @Autowired
-    private AddStudent addStudent;
-    @Autowired
-    private AddStudentToCourse addStudentToCourse;
-    @Autowired
-    private DeleteStudent deleteStudent;
-    @Autowired
-    private FindGroupsStudentsNum findGroupsStudentsNum;
-    @Autowired
-    private FindStudentByCourse findStudentByCourse;
-    @Autowired
-    private RemoveFromCourse removeFromCourse;
+    private static final Logger LOGGER = LogManager.getLogger(CommandsConfiguration.class);
 
     @Bean
-    public Map<Integer, Runnable> commandsMap() {
+    public Map<Integer, Runnable> commandsMap(QueryResPrinter resPrinter,
+                                              StudentService studentService,
+                                              StudentCoursesService studentCoursesService,
+                                              GroupService groupService) {
         return Map.of(
                 1, () -> {
                     AddStudentInput addStudentInput = new AddStudentInput();
-                    addStudent.executeQuery(addStudentInput.passData());
+                    studentService.addStudent(addStudentInput.passData());
                 },
                 2, () -> {
                     AddStudentToCourseInput addStudentToCourseInput = new AddStudentToCourseInput();
-                    addStudentToCourse.executeQuery(addStudentToCourseInput.passData());
+                    studentCoursesService.addStudentToCourse(addStudentToCourseInput.passData());
                 },
                 3, () -> {
                     DeleteStudentInput deleteStudentInput = new DeleteStudentInput();
-                    deleteStudent.executeQuery(deleteStudentInput.passData());
+                    studentService.deleteStudent(deleteStudentInput.passData());
                 },
                 4, () -> {
                     FindGroupsStudentNumInput findGroupsStudentNumInput = new FindGroupsStudentNumInput();
-                    System.out.println(resPrinter.printResults(findGroupsStudentsNum.executeQueryWithRes(findGroupsStudentNumInput.passData())));
+                    LOGGER.info(resPrinter.printResults(groupService.findGroupsByStudNum(findGroupsStudentNumInput.passData())));
                 },
                 5, () -> {
                     FindStudentByCourseInput findStudentByCourseInput = new FindStudentByCourseInput();
-                    System.out.println(resPrinter.printResults(findStudentByCourse.executeQueryWithRes(findStudentByCourseInput.passData())));
+                    LOGGER.info(resPrinter.printResults(studentService.findStudentsByCourse(findStudentByCourseInput.passData())));
                 },
                 6, () -> {
                     RemoveFromCourseInput removeFromCourseInput = new RemoveFromCourseInput();
-                    removeFromCourse.executeQuery(removeFromCourseInput.passData());
+                    studentCoursesService.removeStudentFromCourse(removeFromCourseInput.passData());
                 }
         );
     }

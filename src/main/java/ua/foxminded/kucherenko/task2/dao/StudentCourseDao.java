@@ -12,11 +12,13 @@ import java.util.List;
 public class StudentCourseDao {
     private final JdbcTemplate jdbcTemplate;
     private static final String GET_ALL_STUDENT_COURSES_FILEPATH = "src/main/resources/sql_queries/dao/student_courses/get_all_student_courses.sql";
+    private static final String GET_STUDENT_COURSES_NUM_FILEPATH = "src/main/resources/sql_queries/dao/student_courses/get_student_courses_num.sql";
     private static final String ADD_STUDENT_COURSE_FILEPATH = "src/main/resources/sql_queries/dao/student_courses/add_student_courses.sql";
     private static final String DELETE_STUDENT_COURSE_FILEPATH = "src/main/resources/sql_queries/dao/student_courses/delete_student_courses.sql";
     private static final String STUDENT_COURSE_EXISTS_QUERY_FILEPATH = "src/main/resources/sql_queries/business_queries/student_course_exists.sql";
 
     private static final String GET_ALL_STUDENT_COURSES = QueryParser.parseQuery(GET_ALL_STUDENT_COURSES_FILEPATH);
+    private static final String GET_STUDENT_COURSES_NUM = QueryParser.parseQuery(GET_STUDENT_COURSES_NUM_FILEPATH);
     private static final String ADD_STUDENT_COURSE = QueryParser.parseQuery(ADD_STUDENT_COURSE_FILEPATH);
     private static final String DELETE_STUDENT_COURSE = QueryParser.parseQuery(DELETE_STUDENT_COURSE_FILEPATH);
     private static final String STUDENT_COURSE_EXISTS_QUERY = QueryParser.parseQuery(STUDENT_COURSE_EXISTS_QUERY_FILEPATH);
@@ -27,6 +29,10 @@ public class StudentCourseDao {
 
     public List<StudentCourse> getAll() {
         return jdbcTemplate.query(GET_ALL_STUDENT_COURSES, new BeanPropertyRowMapper<>(StudentCourse.class));
+    }
+
+    public Integer countAll() {
+        return jdbcTemplate.queryForObject(GET_STUDENT_COURSES_NUM, Integer.class);
     }
 
     public boolean exists(int studentId, int courseId) {

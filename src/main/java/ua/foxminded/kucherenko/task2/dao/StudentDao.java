@@ -17,21 +17,23 @@ public class StudentDao implements Dao<Student> {
     private final JdbcTemplate jdbcTemplate;
     private static final String GET_STUDENT_BY_ID_FILEPATH = "src/main/resources/sql_queries/dao/student/get_student.sql";
     private static final String GET_ALL_STUDENTS_FILEPATH = "src/main/resources/sql_queries/dao/student/get_all_students.sql";
+    private static final String GET_STUDENTS_ID_FILEPATH = "src/main/resources/sql_queries/business_queries/get_all_students_id.sql";
+    private static final String GET_STUDENTS_NUM_FILEPATH = "src/main/resources/sql_queries/dao/student/get_students_num.sql";
     private static final String ADD_STUDENT_FILEPATH = "src/main/resources/sql_queries/dao/student/add_student.sql";
     private static final String UPDATE_STUDENT_FILEPATH = "src/main/resources/sql_queries/dao/student/update_student.sql";
     private static final String DELETE_STUDENT_FILEPATH = "src/main/resources/sql_queries/dao/student/delete_student.sql";
     private static final String FIND_STUDENT_BY_COURSE_FILEPATH = "src/main/resources/sql_queries/business_queries/find_student_by_course.sql";
     private static final String STUDENT_ID_QUERY_FILEPATH = "src/main/resources/sql_queries/business_queries/student_exist_by_name.sql";
-    private static final String GET_STUDENTS_ID_FILEPATH = "src/main/resources/sql_queries/business_queries/get_all_students_id.sql";
 
     private static final String GET_STUDENT_BY_ID = QueryParser.parseQuery(GET_STUDENT_BY_ID_FILEPATH);
     private static final String GET_ALL_STUDENTS = QueryParser.parseQuery(GET_ALL_STUDENTS_FILEPATH);
+    private static final String GET_STUDENTS_ID_QUERY = QueryParser.parseQuery(GET_STUDENTS_ID_FILEPATH);
+    private static final String GET_STUDENTS_NUM_QUERY = QueryParser.parseQuery(GET_STUDENTS_NUM_FILEPATH);
     private static final String ADD_STUDENT = QueryParser.parseQuery(ADD_STUDENT_FILEPATH);
     private static final String UPDATE_STUDENT = QueryParser.parseQuery(UPDATE_STUDENT_FILEPATH);
     private static final String DELETE_STUDENT = QueryParser.parseQuery(DELETE_STUDENT_FILEPATH);
     private static final String FIND_STUDENT_BY_COURSE = QueryParser.parseQuery(FIND_STUDENT_BY_COURSE_FILEPATH);
     private static final String STUDENT_ID_QUERY = QueryParser.parseQuery(STUDENT_ID_QUERY_FILEPATH);
-    private static final String GET_STUDENTS_ID_QUERY = QueryParser.parseQuery(GET_STUDENTS_ID_FILEPATH);
 
 
     @Autowired
@@ -77,6 +79,11 @@ public class StudentDao implements Dao<Student> {
     @Override
     public List<Student> getAll() {
         return jdbcTemplate.query(GET_ALL_STUDENTS, new BeanPropertyRowMapper<>(Student.class));
+    }
+
+    @Override
+    public Integer countAll() {
+        return jdbcTemplate.queryForObject(GET_STUDENTS_NUM_QUERY, Integer.class);
     }
 
     public List<Integer> getAllStudentIds() {

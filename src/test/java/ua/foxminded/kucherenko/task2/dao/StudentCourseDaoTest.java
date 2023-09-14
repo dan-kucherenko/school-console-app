@@ -44,6 +44,14 @@ class StudentCourseDaoTest {
     }
 
     @Test
+    @Sql({"/database/drop_tables.sql", "/database/create_tables.sql", "/sample_data/courses_samples.sql",
+            "/sample_data/students_samples.sql", "/sample_data/student_courses_samples.sql"})
+    void countAllStudentCourses() {
+        final int studentCourseRecordsNum = 8;
+        Assertions.assertEquals(studentCourseRecordsNum, studentCourseDao.countAll());
+    }
+
+    @Test
     @Sql({"/database/drop_tables.sql", "/database/create_tables.sql", "/sample_data/students_samples.sql",
             "/sample_data/courses_samples.sql", "/sample_data/student_courses_samples.sql"})
     void studentCourseExists() {

@@ -8,6 +8,8 @@ public interface Dao <T>{
 
     List<T> getAll();
 
+    Integer countAll();
+
     void save(T t);
 
     void update(int id, T t);

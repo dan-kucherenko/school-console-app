@@ -16,7 +16,7 @@ public class Student {
         this.lastName = lastName;
     }
 
-    public Student(int groupId, String firstName, String lastName) {
+    public Student(Integer groupId, String firstName, String lastName) {
         this.groupId = groupId;
         this.firstName = firstName;
         this.lastName = lastName;
