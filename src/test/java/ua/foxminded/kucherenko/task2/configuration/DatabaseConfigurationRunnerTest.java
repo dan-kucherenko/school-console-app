@@ -35,4 +35,14 @@ class DatabaseConfigurationRunnerTest {
         databaseConfigurationRunner.run(null);
         verify(dataGenerator, never()).generateData();
     }
+
+    @Test
+    void dbIsPartlyEmpty_Run() throws Exception {
+        when(dbEmptinessChecker.isStudentsTableEmpty()).thenReturn(false);
+        when(dbEmptinessChecker.isCoursesTableEmpty()).thenReturn(true);
+        when(dbEmptinessChecker.isGroupsTableEmpty()).thenReturn(false);
+        when(dbEmptinessChecker.isStudentCoursesTableEmpty()).thenReturn(true);
+        databaseConfigurationRunner.run(null);
+        verify(dataGenerator, never()).generateData();
+    }
 }
