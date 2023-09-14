@@ -72,6 +72,13 @@ class StudentDaoTest {
     }
 
     @Test
+    @Sql({"/database/drop_tables.sql", "/database/create_tables.sql", "/sample_data/students_samples.sql"})
+    void countAllStudents() {
+        final int studentsNumber = 15;
+        Assertions.assertEquals(studentsNumber, studentDao.countAll());
+    }
+
+    @Test
     @Sql({"/database/drop_tables.sql", "/database/create_tables.sql"})
     void saveStudent() {
         final int groupId = 4;

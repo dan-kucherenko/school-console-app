@@ -9,6 +9,7 @@ import ua.foxminded.kucherenko.task2.dao.StudentDao;
 
 @Component
 public class CheckDbEmptiness {
+    private static final int EMPTY_DB_RES = 0;
     @Autowired
     private StudentDao studentDao;
     @Autowired
@@ -20,18 +21,18 @@ public class CheckDbEmptiness {
 
 
     public boolean isStudentsTableEmpty() {
-        return studentDao.getAll().isEmpty();
+        return studentDao.countAll() == EMPTY_DB_RES;
     }
 
     public boolean isCoursesTableEmpty() {
-        return courseDao.getAll().isEmpty();
+        return courseDao.countAll() == EMPTY_DB_RES;
     }
 
     public boolean isGroupsTableEmpty() {
-        return groupDao.getAll().isEmpty();
+        return groupDao.countAll() == EMPTY_DB_RES;
     }
 
     public boolean isStudentCoursesTableEmpty() {
-        return studentCourseDao.getAll().isEmpty();
+        return studentCourseDao.countAll() == EMPTY_DB_RES;
     }
 }

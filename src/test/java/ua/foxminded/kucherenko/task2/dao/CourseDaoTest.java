@@ -59,11 +59,18 @@ class CourseDaoTest {
     @Test
     @Sql({"/database/drop_tables.sql", "/database/create_tables.sql", "/sample_data/courses_samples.sql"})
     void getAllCourseIds() {
-        final int studentsIdListSize = 10;
-        Integer[] studentIds = new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        List<Integer> allStudentIds = courseDao.getAllCourseIds();
-        Assertions.assertEquals(studentsIdListSize, allStudentIds.size());
-        Assertions.assertEquals(Arrays.stream(studentIds).toList(), allStudentIds);
+        final int coursesIdListSize = 10;
+        Integer[] coursesIds = new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        List<Integer> allSCoursesIds = courseDao.getAllCourseIds();
+        Assertions.assertEquals(coursesIdListSize, allSCoursesIds.size());
+        Assertions.assertEquals(Arrays.stream(coursesIds).toList(), allSCoursesIds);
+    }
+
+    @Test
+    @Sql({"/database/drop_tables.sql", "/database/create_tables.sql", "/sample_data/courses_samples.sql"})
+    void countAllCourses() {
+        final int coursesNumber = 10;
+        Assertions.assertEquals(coursesNumber, courseDao.countAll());
     }
 
     @Test

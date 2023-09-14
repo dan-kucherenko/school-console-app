@@ -16,21 +16,23 @@ public class GroupDao implements Dao<Group> {
     private final JdbcTemplate jdbcTemplate;
     private static final String GET_GROUP_BY_ID_FILEPATH = "src/main/resources/sql_queries/dao/group/get_group.sql";
     private static final String GET_ALL_GROUPS_FILEPATH = "src/main/resources/sql_queries/dao/group/get_all_groups.sql";
+    private static final String GET_GROUPS_ID_FILEPATH = "src/main/resources/sql_queries/business_queries/get_all_groups_id.sql";
+    private static final String GET_GROUPS_NUM_FILEPATH = "src/main/resources/sql_queries/dao/group/get_groups_num.sql";
     private static final String ADD_GROUP_FILEPATH = "src/main/resources/sql_queries/dao/group/add_group.sql";
     private static final String UPDATE_GROUP_FILEPATH = "src/main/resources/sql_queries/dao/group/update_group.sql";
     private static final String DELETE_GROUP_FILEPATH = "src/main/resources/sql_queries/dao/group/delete_group.sql";
     private static final String STUDENT_QUANTITY_QUERY_FILEPATH = "src/main/resources/sql_queries/business_queries/get_student_group_quantity.sql";
     private static final String FIND_GROUPS_BY_STUDENTS_NUMBER_FILEPAPTH = "src/main/resources/sql_queries/business_queries/find_groups_students_num.sql";
-    private static final String GET_GROUPS_ID_FILEPATH = "src/main/resources/sql_queries/business_queries/get_all_groups_id.sql";
 
     private static final String GET_GROUP_BY_ID = QueryParser.parseQuery(GET_GROUP_BY_ID_FILEPATH);
     private static final String GET_ALL_GROUPS = QueryParser.parseQuery(GET_ALL_GROUPS_FILEPATH);
+    private static final String GET_GROUPS_ID_QUERY = QueryParser.parseQuery(GET_GROUPS_ID_FILEPATH);
+    private static final String GET_GROUPS_NUM_QUERY = QueryParser.parseQuery(GET_GROUPS_NUM_FILEPATH);
     private static final String ADD_GROUP = QueryParser.parseQuery(ADD_GROUP_FILEPATH);
     private static final String UPDATE_GROUP = QueryParser.parseQuery(UPDATE_GROUP_FILEPATH);
     private static final String DELETE_GROUP = QueryParser.parseQuery(DELETE_GROUP_FILEPATH);
     private static final String STUDENT_QUANTITY_QUERY = QueryParser.parseQuery(STUDENT_QUANTITY_QUERY_FILEPATH);
     private static final String FIND_GROUPS_BY_STUDENTS_NUMBER = QueryParser.parseQuery(FIND_GROUPS_BY_STUDENTS_NUMBER_FILEPAPTH);
-    private static final String GET_GROUPS_ID_QUERY = QueryParser.parseQuery(GET_GROUPS_ID_FILEPATH);
 
 
     public GroupDao(JdbcTemplate jdbcTemplate) {
@@ -58,6 +60,11 @@ public class GroupDao implements Dao<Group> {
     @Override
     public List<Group> getAll() {
         return jdbcTemplate.query(GET_ALL_GROUPS, new BeanPropertyRowMapper<>(Group.class));
+    }
+
+    @Override
+    public Integer countAll() {
+        return jdbcTemplate.queryForObject(GET_GROUPS_NUM_QUERY, Integer.class);
     }
 
     public List<Integer> getAllGroupIds() {
