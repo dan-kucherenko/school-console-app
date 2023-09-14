@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import ua.foxminded.kucherenko.task2.dao.GroupDao;
 import ua.foxminded.kucherenko.task2.dao.StudentDao;
 import ua.foxminded.kucherenko.task2.models.Student;
+import ua.foxminded.kucherenko.task2.services.StudentService;
+import ua.foxminded.kucherenko.task2.services.service_utils.add_student.AddStudentData;
 
 import java.util.*;
 
@@ -13,7 +15,7 @@ public class StudentsGenerator implements IGenerator {
     @Autowired
     private GroupDao groupDao;
     @Autowired
-    private StudentDao studentDao;
+    private StudentService studentService;
     private static final int NUMBER_OF_STUDENTS = 200;
     private static final int MAX_GROUP_CAPACITY = 30;
     private static final int NO_GROUP_INDEX = 0;
@@ -58,7 +60,7 @@ public class StudentsGenerator implements IGenerator {
             String firstName = FIRST_NAMES[random.nextInt(FIRST_NAMES.length)];
             String lastName = LAST_NAMES[random.nextInt(LAST_NAMES.length)];
 
-            studentDao.save(new Student(groupId, firstName, lastName));
+            studentService.addStudent(new AddStudentData(groupId, firstName, lastName));
         }
     }
 }

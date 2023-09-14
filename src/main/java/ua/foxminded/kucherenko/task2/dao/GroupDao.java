@@ -14,7 +14,6 @@ import java.util.Optional;
 @Repository
 public class GroupDao implements Dao<Group> {
     private final JdbcTemplate jdbcTemplate;
-    private static final int MAX_GROUP_CAPACITY = 30;
     private static final String GET_GROUP_BY_ID_FILEPATH = "src/main/resources/sql_queries/dao/group/get_group.sql";
     private static final String GET_ALL_GROUPS_FILEPATH = "src/main/resources/sql_queries/dao/group/get_all_groups.sql";
     private static final String ADD_GROUP_FILEPATH = "src/main/resources/sql_queries/dao/group/add_group.sql";
@@ -83,9 +82,5 @@ public class GroupDao implements Dao<Group> {
     @Override
     public void delete(int id) {
         jdbcTemplate.update(DELETE_GROUP, id);
-    }
-
-    public boolean groupIsFull(int groupQuantity) {
-        return groupQuantity >= MAX_GROUP_CAPACITY;
     }
 }
