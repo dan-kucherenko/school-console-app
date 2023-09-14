@@ -23,10 +23,10 @@ public class CommandsConfiguration {
     private static final Logger LOGGER = LogManager.getLogger(CommandsConfiguration.class);
 
     @Bean
-    public Map<Integer, Runnable> commandsMap(@Autowired QueryResPrinter resPrinter,
-                                              @Autowired StudentService studentService,
-                                              @Autowired StudentCoursesService studentCoursesService,
-                                              @Autowired GroupService groupService) {
+    public Map<Integer, Runnable> commandsMap(QueryResPrinter resPrinter,
+                                              StudentService studentService,
+                                              StudentCoursesService studentCoursesService,
+                                              GroupService groupService) {
         return Map.of(
                 1, () -> {
                     AddStudentInput addStudentInput = new AddStudentInput();
