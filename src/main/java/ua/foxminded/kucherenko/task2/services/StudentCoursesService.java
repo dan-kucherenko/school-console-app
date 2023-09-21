@@ -1,7 +1,7 @@
 package ua.foxminded.kucherenko.task2.services;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.foxminded.kucherenko.task2.dao.StudentCourseDao;
@@ -16,7 +16,7 @@ public class StudentCoursesService {
     private StudentCourseDao studentCourseDao;
     @Autowired
     private StudentDao studentDao;
-    private static final Logger LOGGER = LogManager.getLogger(StudentCoursesService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StudentCoursesService.class);
 
     public void addStudentToCourse(AddStudentToCourseData data) {
         if (data.getCourseId() <= 0) {
@@ -30,7 +30,7 @@ public class StudentCoursesService {
             throw new IllegalArgumentException("This record already exists");
         }
         studentCourseDao.save(new StudentCourse(studentId, data.getCourseId()));
-        LOGGER.info("Student with id {} was successfully added to course {}", studentId, data.getCourseId());
+        LOGGER.debug("Student with id {} was successfully added to course {}", studentId, data.getCourseId());
     }
 
     public void removeStudentFromCourse(RemoveFromCourseData data) {
@@ -42,5 +42,6 @@ public class StudentCoursesService {
             throw new IllegalArgumentException("Student doesn't exist or the studentId is incorrect");
         }
         studentCourseDao.delete(studentId, data.getCourseId());
+        LOGGER.debug("Student with id {} was successfully removed from course {}", studentId, data.getCourseId());
     }
 }
