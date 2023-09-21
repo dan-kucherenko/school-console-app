@@ -1,7 +1,7 @@
 package ua.foxminded.kucherenko.task2.services;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.foxminded.kucherenko.task2.dao.GroupDao;
@@ -19,7 +19,7 @@ public class StudentService {
     private StudentDao studentDao;
     @Autowired
     private GroupDao groupDao;
-    private static final Logger LOGGER = LogManager.getLogger(StudentService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StudentService.class);
     private static final int MAX_GROUP_CAPACITY = 30;
     private static final int NO_GROUP_INDEX = 0;
 
@@ -35,14 +35,16 @@ public class StudentService {
             }
         }
         studentDao.save(new Student(groupId, data.getFirstName(), data.getLastName()));
-        LOGGER.info("Student {} {} from group {} was successfully added", data.getFirstName(), data.getLastName(), data.getGroupId());
+        LOGGER.debug("Student {} {} from group {} was successfully added", data.getFirstName(), data.getLastName(), data.getGroupId());
     }
 
     public List<Student> findStudentsByCourse(FindStudentByCourseData data) {
         if (data.getCourseName().isBlank()) {
             throw new IllegalArgumentException("Course name can't be blank");
         }
-        return studentDao.getByCourse(data.getCourseName());
+        List<Student> resultList = studentDao.getByCourse(data.getCourseName());
+        LOGGER.debug("Students by course {} was successfully found", data.getCourseName());
+        return resultList;
     }
 
     public void deleteStudent(DeleteStudentData data) {
@@ -50,7 +52,7 @@ public class StudentService {
             throw new IllegalArgumentException("Student ID doesn't exist");
         }
         studentDao.delete(data.getStudentId());
-        LOGGER.info("Student with id {} was successfully deleted", data.getStudentId());
+        LOGGER.debug("Student with id {} was successfully deleted", data.getStudentId());
     }
 
     private boolean groupIsFull(int groupQuantity) {
