@@ -1,2 +1,1 @@
-SELECT * FROM school.courses
-WHERE course_id = ?;
+SELECT c FROM Course c WHERE c.courseId = :courseId

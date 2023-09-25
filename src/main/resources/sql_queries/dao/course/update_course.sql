@@ -1,3 +1,3 @@
-UPDATE school.courses
-SET course_name = ?, course_description = ?
-WHERE course_id = ?;
+UPDATE Course c
+SET c.courseName = :courseName, c.courseDescription = :courseDescription
+WHERE c.courseId = :courseId

@@ -1,2 +1,1 @@
-SELECT course_id
-FROM school.courses;
+SELECT c.courseId FROM Course c

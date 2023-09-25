@@ -1,1 +1,1 @@
-SELECT * FROM school.courses;
+SELECT c FROM Course c

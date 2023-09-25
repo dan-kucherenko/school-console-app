@@ -1,8 +1,16 @@
 package ua.foxminded.kucherenko.task2.models;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "courses")
 public class Course {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int courseId;
+    @Column(name = "course_name")
     private String courseName;
+    @Column(name = "course_description")
     private String courseDescription;
 
     public Course() {
