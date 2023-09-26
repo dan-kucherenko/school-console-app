@@ -1,7 +1,13 @@
 package ua.foxminded.kucherenko.task2.models;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "student_courses")
 public class StudentCourse {
+    @Id
     private int studentId;
+    @Id
     private int courseId;
 
     public StudentCourse() {

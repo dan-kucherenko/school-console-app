@@ -1,1 +1,1 @@
-SELECT COUNT(*) FROM school.student_courses;
+SELECT COUNT(sc) FROM StudentCourse sc

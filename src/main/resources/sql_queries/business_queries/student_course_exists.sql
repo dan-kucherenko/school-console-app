@@ -1,2 +1,2 @@
-SELECT COUNT(*) FROM school.student_courses
-WHERE student_id = ? AND course_id = ?;
+SELECT COUNT(sc) FROM StudentCourse sc
+WHERE sc.studentId = :studentId AND sc.courseId = :courseId
