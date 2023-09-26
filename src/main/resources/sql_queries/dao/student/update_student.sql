@@ -1,3 +1,3 @@
-UPDATE school.students
-SET group_id = ?, first_name = ?, last_name = ?
-WHERE student_id = ?;
+UPDATE Student s
+SET s.groupId = :groupId, s.firstName = :firstName, s.lastName = :lastName
+WHERE s.studentId = :studentId

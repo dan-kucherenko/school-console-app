@@ -1,2 +1,2 @@
-SELECT student_id FROM school.students
-WHERE first_name = ? AND last_name = ?;
+SELECT s.studentId FROM Student s
+WHERE s.firstName = :firstName AND s.lastName = :lastName

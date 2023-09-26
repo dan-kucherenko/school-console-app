@@ -1,2 +1,2 @@
-DELETE FROM school.students
-WHERE student_id = ?;
+DELETE FROM Student s
+WHERE s.studentId = :studentId

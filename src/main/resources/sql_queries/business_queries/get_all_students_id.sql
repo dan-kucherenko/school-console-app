@@ -1,2 +1,1 @@
-SELECT student_id
-FROM school.students;
+SELECT s.studentId FROM Student s

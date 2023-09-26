@@ -1,2 +1,2 @@
-SELECT student_id FROM school.students
-WHERE student_id = ?
+SELECT sc.studentId FROM Student s
+WHERE s.studentId = :studentId

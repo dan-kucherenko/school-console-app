@@ -1,3 +1,3 @@
 SELECT COUNT (*) AS num_of_students
-FROM school.students
-WHERE group_id = ?;
+FROM Student s
+WHERE s.groupId = :groupId
