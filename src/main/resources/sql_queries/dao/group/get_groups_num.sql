@@ -1,1 +1,1 @@
-SELECT COUNT(*) FROM school.groups;
+SELECT COUNT(g) FROM Group g

@@ -1,1 +1,1 @@
-SELECT * FROM school.groups;
+SELECT g FROM Group g

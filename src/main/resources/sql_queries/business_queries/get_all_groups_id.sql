@@ -1,2 +1,1 @@
-SELECT group_id
-FROM school.groups;
+SELECT g.groupId FROM Group g

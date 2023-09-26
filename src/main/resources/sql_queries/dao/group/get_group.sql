@@ -1,2 +1,2 @@
-SELECT * FROM school.groups
-WHERE group_id = ?;
+SELECT g FROM Group g
+WHERE g.groupId = :groupId

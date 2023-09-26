@@ -1,2 +1,2 @@
-DELETE FROM school.groups
-WHERE group_id = ?;
+DELETE FROM Group g
+WHERE g.groupId = :groupId

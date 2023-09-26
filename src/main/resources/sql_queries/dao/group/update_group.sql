@@ -1,3 +1,3 @@
-UPDATE school.groups
-SET group_name = ?
-WHERE group_id = ?;
+UPDATE Group g
+SET g.groupName = :groupName
+WHERE g.groupId = :groupId
