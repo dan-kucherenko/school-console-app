@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ua.foxminded.kucherenko.task2.models.Course;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
@@ -51,7 +50,7 @@ public class CourseDao implements Dao<Course> {
     public Integer countAll() {
         Long count = em.createQuery(GET_COURSES_NUM_QUERY, Long.class)
                 .getSingleResult();
-        return count.intValue();
+        return count == null ? 0 : count.intValue();
     }
 
     public List<Integer> getAllCourseIds() {
