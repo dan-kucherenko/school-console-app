@@ -4,10 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ua.foxminded.kucherenko.task2.models.Student;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
@@ -21,30 +17,22 @@ import java.util.Optional;
 public class StudentDao implements Dao<Student> {
     @PersistenceContext
     private EntityManager em;
-    private static final String GET_STUDENT_BY_ID_FILEPATH = "src/main/resources/sql_queries/dao/student/get_student.sql";
-    private static final String GET_ALL_STUDENTS_FILEPATH = "src/main/resources/sql_queries/dao/student/get_all_students.sql";
     private static final String GET_STUDENTS_ID_FILEPATH = "src/main/resources/sql_queries/business_queries/get_all_students_id.sql";
     private static final String GET_STUDENTS_NUM_FILEPATH = "src/main/resources/sql_queries/dao/student/get_students_num.sql";
     private static final String UPDATE_STUDENT_FILEPATH = "src/main/resources/sql_queries/dao/student/update_student.sql";
-    private static final String DELETE_STUDENT_FILEPATH = "src/main/resources/sql_queries/dao/student/delete_student.sql";
     private static final String FIND_STUDENT_BY_COURSE_FILEPATH = "src/main/resources/sql_queries/business_queries/find_student_by_course.sql";
     private static final String STUDENT_ID_QUERY_FILEPATH = "src/main/resources/sql_queries/business_queries/student_exist_by_name.sql";
 
-    private static final String GET_STUDENT_BY_ID = QueryParser.parseQuery(GET_STUDENT_BY_ID_FILEPATH);
-    private static final String GET_ALL_STUDENTS = QueryParser.parseQuery(GET_ALL_STUDENTS_FILEPATH);
     private static final String GET_STUDENTS_ID_QUERY = QueryParser.parseQuery(GET_STUDENTS_ID_FILEPATH);
     private static final String GET_STUDENTS_NUM_QUERY = QueryParser.parseQuery(GET_STUDENTS_NUM_FILEPATH);
     private static final String UPDATE_STUDENT = QueryParser.parseQuery(UPDATE_STUDENT_FILEPATH);
-    private static final String DELETE_STUDENT = QueryParser.parseQuery(DELETE_STUDENT_FILEPATH);
     private static final String FIND_STUDENT_BY_COURSE = QueryParser.parseQuery(FIND_STUDENT_BY_COURSE_FILEPATH);
     private static final String STUDENT_ID_QUERY = QueryParser.parseQuery(STUDENT_ID_QUERY_FILEPATH);
 
     @Override
     public Optional<Student> get(int id) {
         try {
-            return Optional.ofNullable(em.createQuery(GET_STUDENT_BY_ID, Student.class)
-                    .setParameter("studentId", id)
-                    .getSingleResult());
+            return Optional.ofNullable(em.find(Student.class, id));
         } catch (NoResultException e) {
             return Optional.empty();
         }
@@ -76,7 +64,7 @@ public class StudentDao implements Dao<Student> {
 
     @Override
     public List<Student> getAll() {
-        return em.createQuery(GET_ALL_STUDENTS, Student.class)
+        return em.createQuery("FROM Student", Student.class)
                 .getResultList();
     }
 
@@ -98,6 +86,8 @@ public class StudentDao implements Dao<Student> {
 
     @Override
     public void update(int id, Student student) {
+        Student existingStudent = em.find(Student.class, id);
+//        existingStudent.
         em.createQuery(UPDATE_STUDENT)
                 .setParameter("groupId", student.getGroupId())
                 .setParameter("firstName", student.getFirstName())
@@ -108,8 +98,7 @@ public class StudentDao implements Dao<Student> {
 
     @Override
     public void delete(int id) {
-        em.createQuery(DELETE_STUDENT)
-                .setParameter("studentId", id)
-                .executeUpdate();
+        Student existingStudent = em.find(Student.class, id);
+        em.remove(existingStudent);
     }
 }

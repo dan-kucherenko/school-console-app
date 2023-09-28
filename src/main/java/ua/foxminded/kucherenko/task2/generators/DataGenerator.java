@@ -18,9 +18,6 @@ public class DataGenerator {
     @Autowired
     private StudentCourseGenerator studentCourseGenerator;
     private static final Logger LOGGER = LogManager.getLogger(DataGenerator.class);
-//    private static final String REFRESH_ID_QUERY_FILEPATH = "src/main/resources/sql_queries/database/refresh_autoincrement.sql";
-
-//    private static final String REFRESH_ID = QueryParser.parseQuery(REFRESH_ID_QUERY_FILEPATH);
 
     public void generateData() {
         List<IGenerator> generators = List.of(
