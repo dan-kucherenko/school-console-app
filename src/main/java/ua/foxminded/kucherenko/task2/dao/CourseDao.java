@@ -18,11 +18,9 @@ public class CourseDao implements Dao<Course> {
     private EntityManager em;
     private static final String GET_COURSES_ID_FILEPATH = "src/main/resources/sql_queries/business_queries/get_all_courses_id.sql";
     private static final String GET_COURSES_NUM_FILEPATH = "src/main/resources/sql_queries/dao/course/get_courses_num.sql";
-    private static final String UPDATE_COURSE_FILEPATH = "src/main/resources/sql_queries/dao/course/update_course.sql";
 
     private static final String GET_COURSES_ID_QUERY = QueryParser.parseQuery(GET_COURSES_ID_FILEPATH);
     private static final String GET_COURSES_NUM_QUERY = QueryParser.parseQuery(GET_COURSES_NUM_FILEPATH);
-    private static final String UPDATE_COURSE = QueryParser.parseQuery(UPDATE_COURSE_FILEPATH);
 
     @Override
     public Optional<Course> get(int id) {
@@ -35,7 +33,8 @@ public class CourseDao implements Dao<Course> {
 
     @Override
     public List<Course> getAll() {
-        return em.createQuery("FROM Course").getResultList();
+        return em.createQuery("FROM Course", Course.class)
+                .getResultList();
     }
 
     @Override
@@ -46,7 +45,8 @@ public class CourseDao implements Dao<Course> {
     }
 
     public List<Integer> getAllCourseIds() {
-        return em.createQuery(GET_COURSES_ID_QUERY, Integer.class).getResultList();
+        return em.createQuery(GET_COURSES_ID_QUERY, Integer.class)
+                .getResultList();
     }
 
     @Override
@@ -56,11 +56,9 @@ public class CourseDao implements Dao<Course> {
 
     @Override
     public void update(int id, Course course) {
-        em.createQuery(UPDATE_COURSE)
-                .setParameter("courseName", course.getCourseName())
-                .setParameter("courseDescription", course.getCourseDescription())
-                .setParameter("courseId", id)
-                .executeUpdate();
+        Course existingCourse = em.find(Course.class, id);
+        existingCourse.setCourseName(course.getCourseName());
+        existingCourse.setCourseDescription(course.getCourseDescription());
     }
 
     @Override

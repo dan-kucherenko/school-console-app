@@ -19,13 +19,11 @@ public class GroupDao implements Dao<Group> {
     private EntityManager em;
     private static final String GET_GROUPS_ID_FILEPATH = "src/main/resources/sql_queries/business_queries/get_all_groups_id.sql";
     private static final String GET_GROUPS_NUM_FILEPATH = "src/main/resources/sql_queries/dao/group/get_groups_num.sql";
-    private static final String UPDATE_GROUP_FILEPATH = "src/main/resources/sql_queries/dao/group/update_group.sql";
     private static final String STUDENT_QUANTITY_QUERY_FILEPATH = "src/main/resources/sql_queries/business_queries/get_student_group_quantity.sql";
     private static final String FIND_GROUPS_BY_STUDENTS_NUMBER_FILEPAPTH = "src/main/resources/sql_queries/business_queries/find_groups_students_num.sql";
 
     private static final String GET_GROUPS_ID_QUERY = QueryParser.parseQuery(GET_GROUPS_ID_FILEPATH);
     private static final String GET_GROUPS_NUM_QUERY = QueryParser.parseQuery(GET_GROUPS_NUM_FILEPATH);
-    private static final String UPDATE_GROUP = QueryParser.parseQuery(UPDATE_GROUP_FILEPATH);
     private static final String STUDENT_QUANTITY_QUERY = QueryParser.parseQuery(STUDENT_QUANTITY_QUERY_FILEPATH);
     private static final String FIND_GROUPS_BY_STUDENTS_NUMBER = QueryParser.parseQuery(FIND_GROUPS_BY_STUDENTS_NUMBER_FILEPAPTH);
 
@@ -48,7 +46,8 @@ public class GroupDao implements Dao<Group> {
 
     @Override
     public List<Group> getAll() {
-        return em.createQuery("FROM Group").getResultList();
+        return em.createQuery("FROM Group", Group.class)
+                .getResultList();
     }
 
     @Override
@@ -59,7 +58,8 @@ public class GroupDao implements Dao<Group> {
     }
 
     public List<Integer> getAllGroupIds() {
-        return em.createQuery(GET_GROUPS_ID_QUERY, Integer.class).getResultList();
+        return em.createQuery(GET_GROUPS_ID_QUERY, Integer.class)
+                .getResultList();
     }
 
     public int getGroupQuantity(int groupId) {
@@ -76,12 +76,8 @@ public class GroupDao implements Dao<Group> {
 
     @Override
     public void update(int id, Group group) {
-        Group initialGroup = em.find(Group.class, id);
-//        initialGroup.merge()
-        em.createQuery(UPDATE_GROUP)
-                .setParameter("groupName", group.getGroupName())
-                .setParameter("groupId", id)
-                .executeUpdate();
+        Group existingGroup = em.find(Group.class, id);
+        existingGroup.setGroupName(group.getGroupName());
     }
 
     @Override

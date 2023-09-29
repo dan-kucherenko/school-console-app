@@ -87,13 +87,9 @@ public class StudentDao implements Dao<Student> {
     @Override
     public void update(int id, Student student) {
         Student existingStudent = em.find(Student.class, id);
-//        existingStudent.
-        em.createQuery(UPDATE_STUDENT)
-                .setParameter("groupId", student.getGroupId())
-                .setParameter("firstName", student.getFirstName())
-                .setParameter("lastName", student.getLastName())
-                .setParameter("studentId", id)
-                .executeUpdate();
+        existingStudent.setFirstName(student.getFirstName());
+        existingStudent.setLastName(student.getLastName());
+        existingStudent.setGroupId(student.getGroupId());
     }
 
     @Override
