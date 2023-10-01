@@ -29,7 +29,7 @@ public class StudentCourseDao {
 
     public Integer countAll() {
         Long count = em.createQuery(GET_STUDENT_COURSES_NUM, Long.class).getSingleResult();
-        return count.intValue();
+        return count == null ? 0 : count.intValue();
     }
 
     public boolean exists(int studentId, int courseId) {
