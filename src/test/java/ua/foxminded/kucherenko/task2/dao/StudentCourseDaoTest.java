@@ -8,9 +8,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import ua.foxminded.kucherenko.task2.models.StudentCourse;
+import ua.foxminded.kucherenko.task2.models.Course;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -26,18 +29,19 @@ class StudentCourseDaoTest {
     @Sql({"/database/drop_tables.sql", "/database/create_tables.sql", "/sample_data/courses_samples.sql",
             "/sample_data/students_samples.sql", "/sample_data/student_courses_samples.sql"})
     void getAllStudentCourses() {
-        final int studentCourseRecordsNum = 8;
-        final List<StudentCourse> expectedStudentCourses = List.of(
-                new StudentCourse(1, 5),
-                new StudentCourse(2, 5),
-                new StudentCourse(4, 3),
-                new StudentCourse(4, 5),
-                new StudentCourse(5, 6),
-                new StudentCourse(6, 5),
-                new StudentCourse(7, 5),
-                new StudentCourse(8, 5)
+        final int studentCourseRecordsNum = 7;
+        final Map<Integer, Set<Course>> expectedStudentCourses = Map.of(
+                1, new HashSet<>(List.of(new Course(5, "History", "Study of past events and human societies."))),
+                2, new HashSet<>(List.of(new Course(5, "History", "Study of past events and human societies."))),
+                4, new HashSet<>(List.of(new Course(3, "Physics", "Study of matter, energy, and fundamental forces."),
+                        new Course(5, "History", "Study of past events and human societies."))),
+                5, new HashSet<>(List.of(new Course(6, "English", "Study of the English language and literature."))),
+                6, new HashSet<>(List.of(new Course(5, "History", "Study of past events and human societies."))),
+                7, new HashSet<>(List.of(new Course(5, "History", "Study of past events and human societies."))),
+                8, new HashSet<>(List.of(new Course(5, "History", "Study of past events and human societies.")))
         );
-        final List<StudentCourse> studentCourses = studentCourseDao.getAll();
+
+        final Map<Integer, Set<Course>> studentCourses = studentCourseDao.getAll();
 
         Assertions.assertEquals(studentCourseRecordsNum, studentCourses.size());
         Assertions.assertEquals(expectedStudentCourses, studentCourses);
@@ -68,9 +72,8 @@ class StudentCourseDaoTest {
         final int studentId = 4;
         final int courseId = 5;
         System.out.println(studentDao.getAll());
-        final StudentCourse studentCourse = new StudentCourse(studentId, courseId);
         Assertions.assertFalse(studentCourseDao.exists(studentId, courseId));
-        studentCourseDao.save(studentCourse);
+        studentCourseDao.save(studentId, courseId);
         Assertions.assertTrue(studentCourseDao.exists(studentId, courseId));
     }
 

@@ -1,2 +1,5 @@
-SELECT COUNT(sc) FROM StudentCourse sc
-WHERE sc.studentId = :studentId AND sc.courseId = :courseId
+SELECT COUNT(s)
+FROM Student s
+         INNER JOIN s.courses c
+WHERE s.id = :studentId
+  AND c.id = :courseId

@@ -1,1 +1,1 @@
-SELECT sc FROM StudentCourse sc
+SELECT c FROM Student s INNER JOIN s.courses c

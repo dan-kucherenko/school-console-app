@@ -1,1 +1,3 @@
-SELECT COUNT(sc) FROM StudentCourse sc
+SELECT COUNT(c)
+FROM Student s
+         INNER JOIN s.courses c

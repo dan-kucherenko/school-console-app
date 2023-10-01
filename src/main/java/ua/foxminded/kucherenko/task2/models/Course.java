@@ -2,6 +2,9 @@ package ua.foxminded.kucherenko.task2.models;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "courses")
 public class Course {
@@ -10,6 +13,9 @@ public class Course {
     private int courseId;
     private String courseName;
     private String courseDescription;
+
+    @ManyToMany(mappedBy = "courses")
+    private Set<Student> students = new HashSet<>();
 
     public Course() {
     }
