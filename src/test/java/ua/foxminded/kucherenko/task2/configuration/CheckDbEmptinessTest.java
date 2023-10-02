@@ -11,6 +11,7 @@ import ua.foxminded.kucherenko.task2.dao.StudentCourseDao;
 import ua.foxminded.kucherenko.task2.dao.StudentDao;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -31,9 +32,6 @@ class CheckDbEmptinessTest {
     @MockBean
     private GroupDao groupDao;
 
-    @MockBean
-    private StudentCourseDao studentCourseDao;
-
     @Test
     void isStudentsTableEmpty_DaoReturnsEmptyList_ShouldReturnTrue() {
         when(studentDao.getAll()).thenReturn(List.of());
@@ -50,11 +48,5 @@ class CheckDbEmptinessTest {
     void isGroupsTableEmpty_DaoReturnsEmptyList_ShouldReturnTrue() {
         when(groupDao.getAll()).thenReturn(List.of());
         assertTrue(checkDbEmptiness.isGroupsTableEmpty());
-    }
-
-    @Test
-    void isStudentCoursesTableEmpty_DaoReturnsEmptyList_ShouldReturnTrue() {
-        when(studentCourseDao.getAll()).thenReturn(List.of());
-        assertTrue(checkDbEmptiness.isStudentCoursesTableEmpty());
     }
 }

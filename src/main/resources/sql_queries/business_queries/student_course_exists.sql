@@ -1,2 +1,5 @@
-SELECT COUNT(*) FROM school.student_courses
-WHERE student_id = ? AND course_id = ?;
+SELECT COUNT(s)
+FROM Student s
+         INNER JOIN s.courses c
+WHERE s.id = :studentId
+  AND c.id = :courseId

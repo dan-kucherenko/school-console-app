@@ -1,1 +1,1 @@
-SELECT COUNT(*) FROM school.students;
+SELECT COUNT(s) FROM Student s

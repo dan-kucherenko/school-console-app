@@ -1,6 +1,12 @@
 package ua.foxminded.kucherenko.task2.models;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "groups")
 public class Group {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int groupId;
     private String groupName;
 

@@ -1,1 +1,1 @@
-SELECT * FROM school.student_courses;
+SELECT c FROM Student s INNER JOIN s.courses c

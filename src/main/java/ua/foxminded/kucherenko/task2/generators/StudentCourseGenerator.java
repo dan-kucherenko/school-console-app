@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import ua.foxminded.kucherenko.task2.dao.CourseDao;
 import ua.foxminded.kucherenko.task2.dao.StudentCourseDao;
 import ua.foxminded.kucherenko.task2.dao.StudentDao;
-import ua.foxminded.kucherenko.task2.models.StudentCourse;
 
 import java.util.*;
 
@@ -39,7 +38,7 @@ public class StudentCourseGenerator implements IGenerator {
             }
             studentCourseMap.put(studentId, studentCourses);
             for (int courseId : studentCourses) {
-                studentCourseDao.save(new StudentCourse(studentId, courseId));
+                studentCourseDao.save(studentId, courseId);
             }
         }
     }

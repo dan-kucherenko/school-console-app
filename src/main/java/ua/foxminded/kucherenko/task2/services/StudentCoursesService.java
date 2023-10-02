@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.foxminded.kucherenko.task2.dao.StudentCourseDao;
 import ua.foxminded.kucherenko.task2.dao.StudentDao;
-import ua.foxminded.kucherenko.task2.models.StudentCourse;
 import ua.foxminded.kucherenko.task2.services.service_utils.add_student_to_course.AddStudentToCourseData;
 import ua.foxminded.kucherenko.task2.services.service_utils.remove_from_course.RemoveFromCourseData;
 
@@ -29,7 +28,7 @@ public class StudentCoursesService {
         if (studentCourseDao.exists(studentId, data.getCourseId())) {
             throw new IllegalArgumentException("This record already exists");
         }
-        studentCourseDao.save(new StudentCourse(studentId, data.getCourseId()));
+        studentCourseDao.save(studentId, data.getCourseId());
         LOGGER.debug("Student with id {} was successfully added to course {}", studentId, data.getCourseId());
     }
 

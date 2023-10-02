@@ -38,6 +38,6 @@ class StudentCourseGeneratorTest {
         when(studentDao.getAllStudentIds()).thenReturn(IntStream.rangeClosed(1, 200).boxed().toList());
         when(courseDao.getAllCourseIds()).thenReturn(IntStream.rangeClosed(1, 10).boxed().toList());
         studentCourseGenerator.addToDb();
-        verify(studentCourseDao, atLeastOnce()).save(any());
+        verify(studentCourseDao, atLeastOnce()).save(any(), any());
     }
 }

@@ -1,14 +1,19 @@
 package ua.foxminded.kucherenko.task2.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class GroupStudentsInfo {
+    @Id
     private int groupId;
     private String groupName;
-    private int numOfStudents;
+    private long numOfStudents;
 
     public GroupStudentsInfo() {
     }
 
-    public GroupStudentsInfo(int groupId, String groupName, int numOfStudents) {
+    public GroupStudentsInfo(int groupId, String groupName, long numOfStudents) {
         this.groupId = groupId;
         this.groupName = groupName;
         this.numOfStudents = numOfStudents;
@@ -22,7 +27,7 @@ public class GroupStudentsInfo {
         return groupName;
     }
 
-    public int getNumOfStudents() {
+    public long getNumOfStudents() {
         return numOfStudents;
     }
 
