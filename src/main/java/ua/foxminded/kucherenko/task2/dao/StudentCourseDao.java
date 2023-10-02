@@ -8,8 +8,6 @@ import ua.foxminded.kucherenko.task2.models.Course;
 import ua.foxminded.kucherenko.task2.models.Student;
 import ua.foxminded.kucherenko.task2.parser.QueryParser;
 
-import java.util.*;
-
 @Transactional
 @Repository
 public class StudentCourseDao {
@@ -19,13 +17,6 @@ public class StudentCourseDao {
     private static final String STUDENT_COURSES_EXISTANCE_FILEPATH = "src/main/resources/sql_queries/business_queries/student_course_exists.sql";
     private static final String GET_STUDENT_COURSES_NUM = QueryParser.parseQuery(GET_STUDENT_COURSES_NUM_FILEPATH);
     private static final String STUDENT_COURSES_EXISTANCE = QueryParser.parseQuery(STUDENT_COURSES_EXISTANCE_FILEPATH);
-
-    public Map<Integer, Set<Course>> getAll() {
-        List<Student> studentInCourses = em.createQuery("FROM Student s INNER JOIN s.courses", Student.class).getResultList();
-        Map<Integer, Set<Course>> resultMap = new LinkedHashMap<>();
-        studentInCourses.forEach((student -> resultMap.put(student.getStudentId(), student.getCourses())));
-        return resultMap;
-    }
 
     public Integer countAll() {
         Long count = em.createQuery(GET_STUDENT_COURSES_NUM, Long.class).getSingleResult();
@@ -44,7 +35,11 @@ public class StudentCourseDao {
         Student student = em.find(Student.class, studentId);
         Course course = em.find(Course.class, courseId);
 
-        if (student != null && course != null) {
+        if (student == null) {
+            throw new IllegalArgumentException("No student was found with given id");
+        } else if (course == null) {
+            throw new IllegalArgumentException("No course was found with given id");
+        } else {
             student.getCourses().add(course);
         }
     }

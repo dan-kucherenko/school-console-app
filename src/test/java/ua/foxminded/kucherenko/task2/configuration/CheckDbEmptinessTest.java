@@ -32,9 +32,6 @@ class CheckDbEmptinessTest {
     @MockBean
     private GroupDao groupDao;
 
-    @MockBean
-    private StudentCourseDao studentCourseDao;
-
     @Test
     void isStudentsTableEmpty_DaoReturnsEmptyList_ShouldReturnTrue() {
         when(studentDao.getAll()).thenReturn(List.of());
@@ -51,11 +48,5 @@ class CheckDbEmptinessTest {
     void isGroupsTableEmpty_DaoReturnsEmptyList_ShouldReturnTrue() {
         when(groupDao.getAll()).thenReturn(List.of());
         assertTrue(checkDbEmptiness.isGroupsTableEmpty());
-    }
-
-    @Test
-    void isStudentCoursesTableEmpty_DaoReturnsEmptyList_ShouldReturnTrue() {
-        when(studentCourseDao.getAll()).thenReturn(Map.of());
-        assertTrue(checkDbEmptiness.isStudentCoursesTableEmpty());
     }
 }
