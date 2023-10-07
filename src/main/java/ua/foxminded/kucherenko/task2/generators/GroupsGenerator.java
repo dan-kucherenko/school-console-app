@@ -2,15 +2,15 @@ package ua.foxminded.kucherenko.task2.generators;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.foxminded.kucherenko.task2.dao.GroupDao;
 import ua.foxminded.kucherenko.task2.models.Group;
+import ua.foxminded.kucherenko.task2.repositories.GroupRepository;
 
 import java.util.Random;
 
 @Component
 public class GroupsGenerator implements IGenerator {
     @Autowired
-    private GroupDao groupDao;
+    private GroupRepository repository;
     private static final int GROUPS_QUANTITY = 10;
     private static final String ALPHABET_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String DIGITS = "0123456789";
@@ -19,7 +19,7 @@ public class GroupsGenerator implements IGenerator {
     public void addToDb() {
         for (int i = 0; i < GROUPS_QUANTITY; i++) {
             String groupName = generateGroupNames();
-            groupDao.save(new Group(groupName));
+            repository.save(new Group(groupName));
         }
     }
 

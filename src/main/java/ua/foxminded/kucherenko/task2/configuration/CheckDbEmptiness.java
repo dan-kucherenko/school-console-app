@@ -2,37 +2,38 @@ package ua.foxminded.kucherenko.task2.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.foxminded.kucherenko.task2.dao.CourseDao;
-import ua.foxminded.kucherenko.task2.dao.GroupDao;
-import ua.foxminded.kucherenko.task2.dao.StudentCourseDao;
-import ua.foxminded.kucherenko.task2.dao.StudentDao;
+import ua.foxminded.kucherenko.task2.repositories.CourseRepository;
+import ua.foxminded.kucherenko.task2.repositories.GroupRepository;
+import ua.foxminded.kucherenko.task2.repositories.StudentCourseRepository;
+import ua.foxminded.kucherenko.task2.repositories.StudentRepository;
+import ua.foxminded.kucherenko.task2.services.StudentCoursesService;
 
 @Component
 public class CheckDbEmptiness {
     private static final int EMPTY_DB_RES = 0;
     @Autowired
-    private StudentDao studentDao;
+    private StudentRepository studentRepository;
     @Autowired
-    private CourseDao courseDao;
+    private CourseRepository courseRepository;
     @Autowired
-    private GroupDao groupDao;
+    private GroupRepository groupRepository;
     @Autowired
-    private StudentCourseDao studentCourseDao;
+    private StudentCourseRepository studentCourseRepository;
 
 
     public boolean isStudentsTableEmpty() {
-        return studentDao.countAll() == EMPTY_DB_RES;
+        return studentRepository.count() == EMPTY_DB_RES;
     }
 
     public boolean isCoursesTableEmpty() {
-        return courseDao.countAll() == EMPTY_DB_RES;
+        return courseRepository.count() == EMPTY_DB_RES;
     }
 
     public boolean isGroupsTableEmpty() {
-        return groupDao.countAll() == EMPTY_DB_RES;
+        return groupRepository.count() == EMPTY_DB_RES;
     }
 
     public boolean isStudentCoursesTableEmpty() {
-        return studentCourseDao.countAll() == EMPTY_DB_RES;
+        return studentCourseRepository.count() == EMPTY_DB_RES;
     }
 }
