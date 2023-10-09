@@ -5,13 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import ua.foxminded.kucherenko.task2.dao.CourseDao;
-import ua.foxminded.kucherenko.task2.dao.GroupDao;
-import ua.foxminded.kucherenko.task2.dao.StudentCourseDao;
-import ua.foxminded.kucherenko.task2.dao.StudentDao;
+import ua.foxminded.kucherenko.task2.repositories.CourseRepository;
+import ua.foxminded.kucherenko.task2.repositories.GroupRepository;
+import ua.foxminded.kucherenko.task2.repositories.StudentRepository;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -24,29 +22,29 @@ class CheckDbEmptinessTest {
     private CheckDbEmptiness checkDbEmptiness;
 
     @MockBean
-    private StudentDao studentDao;
+    private StudentRepository studentRepository;
 
     @MockBean
-    private CourseDao courseDao;
+    private CourseRepository courseRepository;
 
     @MockBean
-    private GroupDao groupDao;
+    private GroupRepository groupRepository;
 
     @Test
     void isStudentsTableEmpty_DaoReturnsEmptyList_ShouldReturnTrue() {
-        when(studentDao.getAll()).thenReturn(List.of());
+        when(studentRepository.findAll()).thenReturn(List.of());
         assertTrue(checkDbEmptiness.isStudentsTableEmpty());
     }
 
     @Test
     void isCoursesTableEmpty_DaoReturnsEmptyList_ShouldReturnTrue() {
-        when(courseDao.getAll()).thenReturn(List.of());
+        when(courseRepository.findAll()).thenReturn(List.of());
         assertTrue(checkDbEmptiness.isCoursesTableEmpty());
     }
 
     @Test
     void isGroupsTableEmpty_DaoReturnsEmptyList_ShouldReturnTrue() {
-        when(groupDao.getAll()).thenReturn(List.of());
+        when(groupRepository.findAll()).thenReturn(List.of());
         assertTrue(checkDbEmptiness.isGroupsTableEmpty());
     }
 }

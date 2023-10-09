@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import ua.foxminded.kucherenko.task2.dao.GroupDao;
 import ua.foxminded.kucherenko.task2.models.GroupStudentsInfo;
+import ua.foxminded.kucherenko.task2.repositories.GroupRepository;
 import ua.foxminded.kucherenko.task2.services.service_utils.find_students_num.FindGroupsStudentsNumData;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 class GroupServiceTest {
     @MockBean
-    private GroupDao groupDao;
+    private GroupRepository groupRepository;
     @Autowired
     private GroupService groupService;
 
@@ -34,7 +34,7 @@ class GroupServiceTest {
     void findGroups_NoGroupsReturned_ShouldntThrowException() {
         final int studentsQuantity = 2;
         FindGroupsStudentsNumData data = new FindGroupsStudentsNumData(studentsQuantity);
-        when(groupDao.getGroupByStudentNum(studentsQuantity)).thenReturn(new ArrayList<>());
+        when(groupRepository.getGroupByStudentNum(studentsQuantity)).thenReturn(new ArrayList<>());
         List<GroupStudentsInfo> actualRes = groupService.findGroupsByStudNum(data);
 
         Assertions.assertDoesNotThrow(() -> groupService.findGroupsByStudNum(data));

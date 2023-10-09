@@ -1,5 +1,6 @@
 package ua.foxminded.kucherenko.task2.services;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import ua.foxminded.kucherenko.task2.services.service_utils.find_stud_by_course.
 import java.util.List;
 
 @Service
+@Transactional
 public class StudentService {
     private StudentRepository studentRepository;
     private GroupRepository groupRepository;

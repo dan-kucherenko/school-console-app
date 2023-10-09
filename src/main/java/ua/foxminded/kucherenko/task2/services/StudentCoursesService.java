@@ -1,5 +1,6 @@
 package ua.foxminded.kucherenko.task2.services;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,11 @@ import ua.foxminded.kucherenko.task2.repositories.StudentRepository;
 import ua.foxminded.kucherenko.task2.services.service_utils.add_student_to_course.AddStudentToCourseData;
 import ua.foxminded.kucherenko.task2.services.service_utils.remove_from_course.RemoveFromCourseData;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class StudentCoursesService {
     private StudentRepository studentRepository;
     private CourseRepository courseRepository;
@@ -29,7 +32,8 @@ public class StudentCoursesService {
         if (data.getCourseId() <= 0) {
             throw new IllegalArgumentException("Invalid course id: it should be more than 0");
         }
-        Integer studentId = studentRepository.getIdByName(data.getFirstName(), data.getLastName());
+        List<Integer> studentIds = studentRepository.getIdByName(data.getFirstName(), data.getLastName());
+        Integer studentId = studentIds.isEmpty() ? null : studentIds.get(0);
         if (studentId == null) {
             throw new IllegalArgumentException("Invalid student id: student id is less than 0 or student doesn't exist");
         }
@@ -44,10 +48,12 @@ public class StudentCoursesService {
         if (data.getCourseId() <= 0 || data.getCourseId() > 10) {
             throw new IllegalArgumentException("Course Id should be between 1 and 10");
         }
-        Integer studentId = studentRepository.getIdByName(data.getFirstName(), data.getLastName());
-        if (studentId == null) {
+        List<Integer> studentIds = studentRepository.getIdByName(data.getFirstName(), data.getLastName());
+        if(studentIds.isEmpty()){
             throw new IllegalArgumentException("Student doesn't exist or the studentId is incorrect");
         }
+        Integer studentId = studentIds.get(0);
+
         delete(studentId, data.getCourseId());
         LOGGER.debug("Student with id {} was successfully removed from course {}", studentId, data.getCourseId());
     }

@@ -8,13 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import ua.foxminded.kucherenko.task2.dao.StudentDao;
 import ua.foxminded.kucherenko.task2.models.Student;
+import ua.foxminded.kucherenko.task2.repositories.StudentRepository;
 import ua.foxminded.kucherenko.task2.services.service_utils.add_student.AddStudentData;
 import ua.foxminded.kucherenko.task2.services.service_utils.delete_student.DeleteStudentData;
 import ua.foxminded.kucherenko.task2.services.service_utils.find_stud_by_course.FindStudentByCourseData;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 class StudentServiceTest {
     @MockBean
-    private StudentDao studentDao;
+    private StudentRepository studentRepository;
     @Autowired
     private StudentService studentService;
 
@@ -40,8 +41,8 @@ class StudentServiceTest {
         AddStudentData addStudentData = new AddStudentData(groupId, firstName, lastName);
         Assertions.assertDoesNotThrow(() -> studentService.addStudent(addStudentData));
         Assertions.assertTrue(() -> {
-            when(studentDao.getIdByName(firstName, lastName)).thenReturn(1);
-            Integer studentId = studentDao.getIdByName(firstName, lastName);
+            when(studentRepository.getIdByName(firstName, lastName)).thenReturn(Collections.singletonList(1));
+            Integer studentId = studentRepository.getIdByName(firstName, lastName).get(0);
             return studentId != null;
         });
     }
@@ -55,9 +56,8 @@ class StudentServiceTest {
         AddStudentData addStudentData = new AddStudentData(groupId, firstName, lastName);
         Assertions.assertThrows(IllegalArgumentException.class, () -> studentService.addStudent(addStudentData));
         Assertions.assertFalse(() -> {
-            when(studentDao.getIdByName(firstName, lastName)).thenReturn(null);
-            Integer studentId = studentDao.getIdByName(firstName, lastName);
-            return studentId != null;
+            when(studentRepository.getIdByName(firstName, lastName)).thenReturn(Collections.emptyList());
+            return !studentRepository.getIdByName(firstName, lastName).isEmpty();
         });
     }
 
@@ -65,7 +65,7 @@ class StudentServiceTest {
     void findStudentByCourse_EmptyList_ShouldntThrowException() {
         final String courseName = "Music";
         FindStudentByCourseData data = new FindStudentByCourseData(courseName);
-        when(studentDao.getByCourse(courseName)).thenReturn(new ArrayList<>());
+        when(studentRepository.getByCourse(courseName)).thenReturn(new ArrayList<>());
         List<Student> actualRes = studentService.findStudentsByCourse(data);
         Assertions.assertTrue(actualRes.isEmpty());
     }

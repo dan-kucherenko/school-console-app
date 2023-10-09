@@ -1,5 +1,6 @@
 package ua.foxminded.kucherenko.task2.services;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,11 @@ import ua.foxminded.kucherenko.task2.services.service_utils.find_students_num.Fi
 import java.util.List;
 
 @Service
+@Transactional
 public class GroupService {
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupService.class);
     private GroupRepository repository;
+
     @Autowired
     public GroupService(GroupRepository repository) {
         this.repository = repository;

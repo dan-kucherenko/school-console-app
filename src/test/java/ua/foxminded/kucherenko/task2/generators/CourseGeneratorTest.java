@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import ua.foxminded.kucherenko.task2.dao.CourseDao;
+import ua.foxminded.kucherenko.task2.repositories.CourseRepository;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -18,7 +18,7 @@ class CourseGeneratorTest {
     @Autowired
     private CoursesGenerator coursesGenerator;
     @MockBean
-    private CourseDao courseDao;
+    private CourseRepository courseRepository;
 
     @BeforeEach
     void generateGroups() {
@@ -29,6 +29,6 @@ class CourseGeneratorTest {
     @Test
     void checkNumberOfCourses(){
         final int courseListSize = 10;
-        verify(courseDao, times(courseListSize)).save(any());
+        verify(courseRepository, times(courseListSize)).save(any());
     }
 }

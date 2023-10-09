@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import ua.foxminded.kucherenko.task2.dao.StudentDao;
+import ua.foxminded.kucherenko.task2.repositories.StudentRepository;
 
 import static org.mockito.Mockito.*;
 
@@ -17,7 +17,7 @@ class StudentGeneratorTest {
     @Autowired
     private StudentsGenerator studentsGenerator;
     @MockBean
-    private StudentDao studentDao;
+    private StudentRepository studentRepository;
 
     @BeforeEach
     void generateStudents() {
@@ -28,6 +28,6 @@ class StudentGeneratorTest {
     @Test
     void checkStudentsNumber() {
         final int studentsListSize = 200;
-        verify(studentDao, times(studentsListSize)).save(any());
+        verify(studentRepository, times(studentsListSize)).save(any());
     }
 }
