@@ -2,6 +2,7 @@ package ua.foxminded.kucherenko.task2.generators;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ua.foxminded.kucherenko.task2.models.Student;
 import ua.foxminded.kucherenko.task2.repositories.CourseRepository;
 import ua.foxminded.kucherenko.task2.repositories.StudentRepository;
 import ua.foxminded.kucherenko.task2.services.StudentCoursesService;
@@ -39,8 +40,9 @@ public class StudentCourseGenerator implements IGenerator {
             }
             studentCourseMap.put(studentId, studentCourses);
             for (int courseId : studentCourses) {
-                final String firstName = studentRepository.findById(studentId).get().getFirstName();
-                final String lastName = studentRepository.findById(studentId).get().getLastName();
+                final Student student = studentRepository.findById(studentId).get();
+                final String firstName = student.getFirstName();
+                final String lastName = student.getLastName();
                 studentCoursesService.addStudentToCourse(new AddStudentToCourseData(firstName, lastName, courseId));
             }
         }
