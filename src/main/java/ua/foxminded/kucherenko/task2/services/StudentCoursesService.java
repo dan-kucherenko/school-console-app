@@ -63,14 +63,6 @@ public class StudentCoursesService {
         LOGGER.debug("Student with id {} was successfully removed from course {}", studentId, data.getCourseId());
     }
 
-//    private boolean exists(int studentId, int courseId) {
-//        Optional<Student> student = studentRepository.findById(studentId);
-//        student.orElseThrow(() -> new IllegalArgumentException("Student with given id wasn't found"));
-//        Optional<Course> course = courseRepository.findById(courseId);
-//        course.orElseThrow(() -> new IllegalArgumentException("Course with given id wasn't found"));
-//        return student.get().getCourses().contains(course.get());
-//    }
-
     private void save(int studentId, int courseId) {
         Optional<Student> student = studentRepository.findById(studentId);
         student.orElseThrow(() -> new IllegalArgumentException("Student with given id wasn't found"));
@@ -83,11 +75,11 @@ public class StudentCoursesService {
 
     private void delete(int studentId, int courseId) {
         Optional<Student> student = studentRepository.findById(studentId);
-        student.orElseThrow(() -> new IllegalArgumentException("Student with given id wasn't found"));
+        Student existingStudent = student.orElseThrow(() -> new IllegalArgumentException("Student with given id wasn't found"));
         Optional<Course> course = courseRepository.findById(courseId);
-        course.orElseThrow(() -> new IllegalArgumentException("Course with given id wasn't found"));
+        Course existingCourse = course.orElseThrow(() -> new IllegalArgumentException("Course with given id wasn't found"));
 
-        student.get().getCourses().remove(course.get());
-        studentRepository.save(student.get());
+        existingStudent.getCourses().remove(existingCourse);
+        studentRepository.save(existingStudent);
     }
 }
