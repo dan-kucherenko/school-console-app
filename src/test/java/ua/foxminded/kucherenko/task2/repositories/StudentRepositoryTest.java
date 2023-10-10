@@ -1,4 +1,4 @@
-package ua.foxminded.kucherenko.task2.dao;
+package ua.foxminded.kucherenko.task2.repositories;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,9 +18,9 @@ import java.util.Optional;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
 @ActiveProfiles("test")
-class StudentDaoTest {
+class StudentRepositoryTest {
     @Autowired
-    private StudentDao studentDao;
+    private StudentRepository repository;
 
     @Test
     @Sql("/sample_data/students_samples.sql")
@@ -28,7 +28,7 @@ class StudentDaoTest {
         final int studentId = 1;
         final String firstName = "John";
         final String lastName = "Johnson";
-        Optional<Student> student = studentDao.get(studentId);
+        Optional<Student> student = repository.findById(studentId);
         Assertions.assertFalse(student.isEmpty());
         Assertions.assertEquals(student.get().getFirstName(), firstName);
         Assertions.assertEquals(student.get().getLastName(), lastName);
@@ -55,7 +55,7 @@ class StudentDaoTest {
                 new Student(6, "2Alice2", "Alison2"),
                 new Student(6, "2David2", "Davidson2")
         );
-        List<Student> allStudents = studentDao.getAll();
+        List<Student> allStudents = repository.findAll();
         Assertions.assertEquals(studentsListSize, allStudents.size());
         Assertions.assertEquals(expectedStudentsList, allStudents);
     }
@@ -66,7 +66,7 @@ class StudentDaoTest {
     void getAllStudentIds() {
         final int studentsIdListSize = 15;
         final Integer[] expectedStudentIds = new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-        List<Integer> allStudentIds = studentDao.getAllStudentIds();
+        List<Integer> allStudentIds = repository.getAllStudentIds();
         Assertions.assertEquals(studentsIdListSize, allStudentIds.size());
         Assertions.assertEquals(Arrays.stream(expectedStudentIds).toList(), allStudentIds);
     }
@@ -75,7 +75,7 @@ class StudentDaoTest {
     @Sql({"/database/drop_tables.sql", "/database/create_tables.sql", "/sample_data/students_samples.sql"})
     void countAllStudents() {
         final int studentsNumber = 15;
-        Assertions.assertEquals(studentsNumber, studentDao.countAll());
+        Assertions.assertEquals(studentsNumber, repository.count());
     }
 
     @Test
@@ -85,13 +85,14 @@ class StudentDaoTest {
         final String firstName = "Daniil";
         final String lastName = "Kucherenko";
         final Student student = new Student(groupId, firstName, lastName);
+        List<Integer> studentIdsList = repository.getIdByName(firstName, lastName);
         Integer studentId;
-        studentId = studentDao.getIdByName(firstName, lastName);
+        studentId = studentIdsList.isEmpty() ? null : studentIdsList.get(0);
         Assertions.assertNull(studentId);
-        studentDao.save(student);
+        repository.save(student);
 
-        studentId = studentDao.getIdByName(firstName, lastName);
-        final Student savedStudent = studentDao.get(studentId).get();
+        studentId = repository.getIdByName(firstName, lastName).get(0);
+        final Student savedStudent = repository.findById(studentId).get();
         Assertions.assertNotNull(studentId);
 
         Assertions.assertEquals(savedStudent.getGroupId(), groupId);
@@ -105,14 +106,14 @@ class StudentDaoTest {
         final int groupId = 4;
         final String initialFirstName = "John";
         final String initialLastName = "Johnson";
-        final Integer studentId = studentDao.getIdByName(initialFirstName, initialLastName);
+        final Integer studentId = repository.getIdByName(initialFirstName, initialLastName).get(0);
         Assertions.assertNotNull(studentId);
         final String changedStudentName = "Daniil1";
-        final Student changedStudent = new Student(groupId, changedStudentName, initialLastName);
-        studentDao.update(studentId, changedStudent);
+        final Student changedStudent = new Student(studentId, groupId, changedStudentName, initialLastName);
+        repository.save(changedStudent);
 
-        final Integer changedStudentId = studentDao.getIdByName(changedStudentName, initialLastName);
-        final Student updatedStudent = studentDao.get(studentId).get();
+        final Integer changedStudentId = repository.getIdByName(changedStudentName, initialLastName).get(0);
+        final Student updatedStudent = repository.findById(studentId).get();
 
         Assertions.assertNotNull(changedStudentId);
         Assertions.assertEquals(updatedStudent.getGroupId(), groupId);
@@ -123,9 +124,9 @@ class StudentDaoTest {
     @Test
     @Sql({"/database/drop_tables.sql", "/database/create_tables.sql", "/sample_data/insert_student.sql"})
     void deleteStudentById() {
-        final Integer studentId = studentDao.getIdByName("John", "Johnson");
+        final Integer studentId = repository.getIdByName("John", "Johnson").get(0);
         Assertions.assertNotNull(studentId);
-        studentDao.delete(studentId);
-        Assertions.assertNull(studentDao.getIdByName("John", "Johnson"));
+        repository.deleteById(studentId);
+        Assertions.assertTrue(repository.getIdByName("John", "Johnson").isEmpty());
     }
 }

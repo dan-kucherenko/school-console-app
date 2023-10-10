@@ -8,17 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import ua.foxminded.kucherenko.task2.dao.StudentDao;
+import ua.foxminded.kucherenko.task2.repositories.StudentRepository;
 import ua.foxminded.kucherenko.task2.services.service_utils.add_student_to_course.AddStudentToCourseData;
 import ua.foxminded.kucherenko.task2.services.service_utils.remove_from_course.RemoveFromCourseData;
 
+import java.util.Collections;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ActiveProfiles("test")
 class StudentCourseServiceTest {
     @MockBean
-    private StudentDao studentDao;
+    private StudentRepository studentRepository;
     @Autowired
     private StudentCoursesService studentCoursesService;
 
@@ -31,8 +32,7 @@ class StudentCourseServiceTest {
     void addStudentToCourse_MissingStudent_ThrowsException() {
         final String firstName = "Royal";
         final String lastName = "Marines";
-        when(studentDao.getIdByName(firstName, lastName)).thenReturn(null);
-        Integer studentId = studentDao.getIdByName(firstName, lastName);
+        when(studentRepository.getIdByName(firstName, lastName)).thenReturn(Collections.emptyList());
         final int courseId = 6;
 
         AddStudentToCourseData data = new AddStudentToCourseData(firstName, lastName, courseId);
@@ -45,7 +45,7 @@ class StudentCourseServiceTest {
         final String lastName = "Petrovych";
         final int courseId = 5;
         RemoveFromCourseData data = new RemoveFromCourseData(firstName, lastName, courseId);
-        when(studentDao.getIdByName(firstName, lastName)).thenReturn(null);
+        when(studentRepository.getIdByName(firstName, lastName)).thenReturn(Collections.emptyList());
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> studentCoursesService.removeStudentFromCourse(data));
     }

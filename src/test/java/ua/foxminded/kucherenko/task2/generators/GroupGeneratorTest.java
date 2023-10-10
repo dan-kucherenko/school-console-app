@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import ua.foxminded.kucherenko.task2.dao.GroupDao;
+import ua.foxminded.kucherenko.task2.repositories.GroupRepository;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -18,7 +18,7 @@ class GroupGeneratorTest {
     @Autowired
     private GroupsGenerator groupsGenerator;
     @MockBean
-    private GroupDao groupDao;
+    private GroupRepository groupRepository;
 
     @BeforeEach
     void generateGroups() {
@@ -29,6 +29,6 @@ class GroupGeneratorTest {
     @Test
     void checkNumberOfGroups(){
         final int groupListSize = 10;
-        verify(groupDao, times(groupListSize)).save(any());
+        verify(groupRepository, times(groupListSize)).save(any());
     }
 }

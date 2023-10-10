@@ -3,8 +3,8 @@ package ua.foxminded.kucherenko.task2.generators;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.foxminded.kucherenko.task2.dao.CourseDao;
 import ua.foxminded.kucherenko.task2.models.Course;
+import ua.foxminded.kucherenko.task2.repositories.CourseRepository;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -12,7 +12,7 @@ import java.util.Map;
 @Component
 public class CoursesGenerator implements IGenerator {
     @Autowired
-    private CourseDao courseDao;
+    private CourseRepository repository;
 
     @Override
     public void addToDb() {
@@ -29,7 +29,7 @@ public class CoursesGenerator implements IGenerator {
         courses.put("Music", "Study of musical theory, composition, and performance.");
 
         for (Map.Entry<String, String> entry : courses.entrySet()) {
-            courseDao.save(new Course(entry.getKey(), entry.getValue()));
+            repository.save(new Course(entry.getKey(), entry.getValue()));
         }
     }
 }

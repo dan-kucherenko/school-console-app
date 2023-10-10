@@ -2,9 +2,7 @@ package ua.foxminded.kucherenko.task2.generators;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.foxminded.kucherenko.task2.dao.GroupDao;
-import ua.foxminded.kucherenko.task2.dao.StudentDao;
-import ua.foxminded.kucherenko.task2.models.Student;
+import ua.foxminded.kucherenko.task2.repositories.GroupRepository;
 import ua.foxminded.kucherenko.task2.services.StudentService;
 import ua.foxminded.kucherenko.task2.services.service_utils.add_student.AddStudentData;
 
@@ -13,7 +11,7 @@ import java.util.*;
 @Component
 public class StudentsGenerator implements IGenerator {
     @Autowired
-    private GroupDao groupDao;
+    private GroupRepository groupRepository;
     @Autowired
     private StudentService studentService;
     private static final int NUMBER_OF_STUDENTS = 200;
@@ -38,7 +36,7 @@ public class StudentsGenerator implements IGenerator {
     public void addToDb() {
         Random random = new Random();
 
-        List<Integer> availableGroupIds = groupDao.getAllGroupIds();
+        List<Integer> availableGroupIds = groupRepository.getAllGroupIds();
 
         Set<Integer> assignedStudents = new HashSet<>();
         Map<Integer, Integer> groupCounts = new HashMap<>();

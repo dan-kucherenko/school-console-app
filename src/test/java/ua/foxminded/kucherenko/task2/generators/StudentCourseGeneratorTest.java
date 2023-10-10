@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import ua.foxminded.kucherenko.task2.dao.CourseDao;
-import ua.foxminded.kucherenko.task2.dao.StudentCourseDao;
-import ua.foxminded.kucherenko.task2.dao.StudentDao;
+import ua.foxminded.kucherenko.task2.repositories.CourseRepository;
+import ua.foxminded.kucherenko.task2.repositories.StudentRepository;
+import ua.foxminded.kucherenko.task2.services.StudentCoursesService;
 
 import java.util.stream.IntStream;
 
@@ -22,11 +22,11 @@ class StudentCourseGeneratorTest {
     @Autowired
     private StudentCourseGenerator studentCourseGenerator;
     @MockBean
-    private StudentCourseDao studentCourseDao;
+    private StudentCoursesService studentCoursesService;
     @MockBean
-    private StudentDao studentDao;
+    private StudentRepository studentRepository;
     @MockBean
-    private CourseDao courseDao;
+    private CourseRepository courseRepository;
 
     @BeforeEach
     void generateStudents() {
@@ -35,9 +35,9 @@ class StudentCourseGeneratorTest {
 
     @Test
     void checkStudentsNumber() {
-        when(studentDao.getAllStudentIds()).thenReturn(IntStream.rangeClosed(1, 200).boxed().toList());
-        when(courseDao.getAllCourseIds()).thenReturn(IntStream.rangeClosed(1, 10).boxed().toList());
+        when(studentRepository.getAllStudentIds()).thenReturn(IntStream.rangeClosed(1, 200).boxed().toList());
+        when(courseRepository.getAllCourseIds()).thenReturn(IntStream.rangeClosed(1, 10).boxed().toList());
         studentCourseGenerator.addToDb();
-        verify(studentCourseDao, atLeastOnce()).save(any(), any());
+        verify(studentCoursesService, atLeastOnce()).addStudentToCourse(any());
     }
 }

@@ -2,20 +2,22 @@ package ua.foxminded.kucherenko.task2.generators;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.foxminded.kucherenko.task2.dao.CourseDao;
-import ua.foxminded.kucherenko.task2.dao.StudentCourseDao;
-import ua.foxminded.kucherenko.task2.dao.StudentDao;
+import ua.foxminded.kucherenko.task2.models.Student;
+import ua.foxminded.kucherenko.task2.repositories.CourseRepository;
+import ua.foxminded.kucherenko.task2.repositories.StudentRepository;
+import ua.foxminded.kucherenko.task2.services.StudentCoursesService;
+import ua.foxminded.kucherenko.task2.services.service_utils.add_student_to_course.AddStudentToCourseData;
 
 import java.util.*;
 
 @Component
 public class StudentCourseGenerator implements IGenerator {
     @Autowired
-    private StudentDao studentDao;
+    private StudentRepository studentRepository;
     @Autowired
-    private CourseDao courseDao;
+    private CourseRepository courseRepository;
     @Autowired
-    private StudentCourseDao studentCourseDao;
+    private StudentCoursesService studentCoursesService;
     private static final int MAX_STUDENT_COURSES_NUM = 3;
 
     @Override
@@ -23,9 +25,9 @@ public class StudentCourseGenerator implements IGenerator {
         Random random = new Random();
         Map<Integer, Set<Integer>> studentCourseMap = new HashMap<>();
 
-        List<Integer> availableStudentsIds = studentDao.getAllStudentIds();
+        List<Integer> availableStudentsIds = studentRepository.getAllStudentIds();
 
-        List<Integer> availableCoursesIds = courseDao.getAllCourseIds();
+        List<Integer> availableCoursesIds = courseRepository.getAllCourseIds();
 
         for (Integer studentId : availableStudentsIds) {
             Set<Integer> studentCourses = studentCourseMap.computeIfAbsent(studentId, k -> new HashSet<>());
@@ -38,7 +40,10 @@ public class StudentCourseGenerator implements IGenerator {
             }
             studentCourseMap.put(studentId, studentCourses);
             for (int courseId : studentCourses) {
-                studentCourseDao.save(studentId, courseId);
+                final Student student = studentRepository.findById(studentId).get();
+                final String firstName = student.getFirstName();
+                final String lastName = student.getLastName();
+                studentCoursesService.addStudentToCourse(new AddStudentToCourseData(firstName, lastName, courseId));
             }
         }
     }

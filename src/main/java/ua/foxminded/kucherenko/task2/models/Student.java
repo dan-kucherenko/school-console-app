@@ -15,12 +15,7 @@ public class Student {
     private String firstName;
     private String lastName;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
-    @JoinTable(
-            name = "student_courses",
-            joinColumns = {@JoinColumn(name = "student_id")},
-            inverseJoinColumns = {@JoinColumn(name = "course_id")}
-    )
+    @ManyToMany(mappedBy = "students")
     private Set<Course> courses = new HashSet<>();
 
     public Student() {

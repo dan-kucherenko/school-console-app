@@ -14,7 +14,12 @@ public class Course {
     private String courseName;
     private String courseDescription;
 
-    @ManyToMany(mappedBy = "courses")
+    @ManyToMany
+    @JoinTable(
+            name = "student_courses",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
     private Set<Student> students = new HashSet<>();
 
     public Course() {

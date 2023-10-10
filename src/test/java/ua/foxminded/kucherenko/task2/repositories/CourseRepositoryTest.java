@@ -1,4 +1,4 @@
-package ua.foxminded.kucherenko.task2.dao;
+package ua.foxminded.kucherenko.task2.repositories;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,9 +17,9 @@ import java.util.List;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
 @ActiveProfiles("test")
-class CourseDaoTest {
+class CourseRepositoryTest {
     @Autowired
-    private CourseDao courseDao;
+    private CourseRepository repository;
 
     @Test
     @Sql({"/database/drop_tables.sql", "/database/create_tables.sql", "/sample_data/courses_samples.sql"})
@@ -28,8 +28,8 @@ class CourseDaoTest {
         final String courseName = "Math";
         final String courseDescription = "Study of numbers, quantities, and shapes.";
 
-        final Course course = courseDao.get(courseId).get();
-        Assertions.assertFalse(courseDao.get(courseId).isEmpty());
+        final Course course = repository.findById(courseId).get();
+        Assertions.assertFalse(repository.findById(courseId).isEmpty());
         Assertions.assertEquals(course.getCourseName(), courseName);
         Assertions.assertEquals(course.getCourseDescription(), courseDescription);
     }
@@ -50,7 +50,7 @@ class CourseDaoTest {
                 new Course(9, "Art", "Study of visual arts and creative expression."),
                 new Course(10, "Music", "Study of musical theory, composition, and performance.")
         );
-        List<Course> allCourses = courseDao.getAll();
+        List<Course> allCourses = repository.findAll();
         Assertions.assertEquals(coursesListSize, allCourses.size());
         Assertions.assertEquals(expectedAllCourses, allCourses);
     }
@@ -61,7 +61,7 @@ class CourseDaoTest {
     void getAllCourseIds() {
         final int coursesIdListSize = 10;
         Integer[] coursesIds = new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        List<Integer> allSCoursesIds = courseDao.getAllCourseIds();
+        List<Integer> allSCoursesIds = repository.getAllCourseIds();
         Assertions.assertEquals(coursesIdListSize, allSCoursesIds.size());
         Assertions.assertEquals(Arrays.stream(coursesIds).toList(), allSCoursesIds);
     }
@@ -70,31 +70,31 @@ class CourseDaoTest {
     @Sql({"/database/drop_tables.sql", "/database/create_tables.sql", "/sample_data/courses_samples.sql"})
     void countAllCourses() {
         final int coursesNumber = 10;
-        Assertions.assertEquals(coursesNumber, courseDao.countAll());
+        Assertions.assertEquals(coursesNumber, repository.count());
     }
 
     @Test
     @Sql({"/database/drop_tables.sql", "/database/create_tables.sql"})
     void saveCourse() {
         final Course course = new Course("TestCourse", "This is a test course");
-        Assertions.assertTrue(courseDao.getAll().isEmpty());
-        courseDao.save(course);
-        List<Course> allCourses = courseDao.getAll();
+        Assertions.assertTrue(repository.findAll().isEmpty());
+        repository.save(course);
+        List<Course> allCourses = repository.findAll();
         Assertions.assertTrue(allCourses.contains(course));
     }
 
     @Test
     @Sql({"/database/drop_tables.sql", "/database/create_tables.sql", "/sample_data/insert_course.sql"})
     void updateCourseById() {
-        final Course addedCourse = courseDao.get(1).get();
+        final Course addedCourse = repository.findById(1).get();
         Assertions.assertNotNull(addedCourse);
         final String changedCourseName = "TestCourse1";
         final String courseDescription = "This is a test course";
-        final Course changedCourse = new Course(changedCourseName, courseDescription);
-        courseDao.update(1, changedCourse);
+        final Course changedCourse = new Course(1, changedCourseName, courseDescription);
+        repository.save(changedCourse);
 
-        final Course changedCourseFromDb = courseDao.get(1).get();
-        Assertions.assertTrue(courseDao.get(1).isPresent());
+        final Course changedCourseFromDb = repository.findById(1).get();
+        Assertions.assertTrue(repository.findById(1).isPresent());
         Assertions.assertEquals(changedCourseFromDb.getCourseName(), changedCourseName);
         Assertions.assertEquals(changedCourseFromDb.getCourseDescription(), courseDescription);
     }
@@ -103,7 +103,7 @@ class CourseDaoTest {
     @Sql("/sample_data/insert_course.sql")
     void deleteCourseById() {
         final int addedCourseId = 1;
-        courseDao.delete(addedCourseId);
-        Assertions.assertTrue(courseDao.get(addedCourseId).isEmpty());
+        repository.deleteById(addedCourseId);
+        Assertions.assertTrue(repository.findById(addedCourseId).isEmpty());
     }
 }
